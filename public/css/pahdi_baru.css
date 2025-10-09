@@ -1,0 +1,136 @@
+.tebal {
+    font-weight:bold;
+  }
+  .tengah {
+    text-align:center;
+  }
+  .tengah2 {
+    vertical-align: middle;
+  }
+  
+  
+  .tabel1 {
+    width:100%;
+    font-size:0.88em;
+  }
+  
+  /*---------------------------------------- */
+  .button1 {
+    padding: 3px 5px;
+    font-size:0.7em;
+    border-radius: 0px;
+  }
+  
+  
+  
+  /* ----------------------------------------------- */
+  .text-phd{
+    border-radius: 0px !important;
+    padding: 2px 5px !important;
+    border: 1px solid #ccc;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.3);
+    font-size:0.89em;
+  }
+  
+  .date-phd{
+    border-radius: 0px !important;
+    padding: 2px 5px;
+    border: 1px solid #ccc;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.3);
+    font-size:0.89em;
+  }
+  
+  .select-phd{
+    border-radius: 0px !important;
+    padding: 2px 5px;
+    border: 1px solid #ccc;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.3);
+    font-size:0.89em;
+  }
+  
+  .label-phd{
+    font-size:0.89em;
+  }
+  /* ----------------------------------------------- */
+  .text-phd2{
+    border-radius: 0px !important;
+    padding: 2px 0px;
+    border: 0px solid #ccc;
+    box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3);
+  }
+  
+  .date-phd2{
+    border-radius: 0px !important;
+    padding: 2px 0px;
+    border: 0px solid #ccc;
+    box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3);
+  }
+  
+  .select-phd2{
+    border-radius: 0px !important;
+    padding: 2px 0px;
+    border: 0px solid #ccc;
+    box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3);
+  }
+  .number-phd2{
+    border-radius: 0px !important;
+    padding: 2px 0px;
+    border: 0px solid #ccc;
+    box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3);
+  }
+
+/*------------------------------------------------------------ --*/
+.text-pahdi3{
+  border-radius: 0px !important;
+  border:0px solid red;
+  border-bottom:1px solid #ddd;
+  color:#626262;
+  font-size:0.9em !important;
+}
+.date-pahdi3{
+  border-radius: 0px !important;
+  border:0px;
+  border-bottom:1px solid #ddd;
+  color:#626262;
+  font-size:0.9em !important;
+}
+.date-pahdi31{
+  border-radius: 0px !important;
+  border:0px;
+  border-bottom:1px solid red;
+  color:#626262;
+  font-size:0.9em !important;
+}
+.select-pahdi3{
+  border-radius: 0px !important;
+  border:0px solid red;
+  border-bottom:1px solid #ddd;
+  color:#626262;
+  font-size:0.9em !important;
+  padding:4px !important;
+}
+.number-pahdi3{
+  border-radius: 0px !important;
+  border:0px;
+  border-bottom:1px solid #ddd;
+  color:#626262;
+  font-size:0.9em !important;
+}
+
+/*------------------------------------------*/
+.sertifikasi1{
+  width:100%;
+  border:0px !important;
+}
+.sertifikasi1 td{
+  padding:0px !important;
+  padding:5px 10px !important;
+  font-family:'calibri','Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-size:1em;
+}
+.sertifikasi1 th{
+  padding:0px !important;
+  padding:5px 10px !important;
+  font-family:'calibri','Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-size:1em;
+}

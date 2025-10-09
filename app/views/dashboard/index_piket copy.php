@@ -1,0 +1,351 @@
+<head>
+   <title>Daftar Hadir SMK Telkom Banjarbaru</title>
+   <link rel="shortcut icon" href="<?= URLROOT; ?>/skatel/img/ts_icon1.png">
+   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+   <meta http-equiv="refresh" content="600">
+</head>
+
+<?php
+$tanggal = date("Y-m-d");
+$hari   = date('l', microtime($tanggal));
+$hari_indonesia = array(
+   'Monday'  => 'Senin',
+   'Tuesday'  => 'Selasa',
+   'Wednesday' => 'Rabu',
+   'Thursday' => 'Kamis',
+   'Friday' => 'Jumat',
+   'Saturday' => 'Sabtu',
+   'Sunday' => 'Minggu'
+);
+?>
+
+<body>
+   <div class="container-fluid mt-2">
+      <div class="row">
+         <?php
+         $tanggal = date("Y-m-d");
+         $no = 1;
+         if ($data['daftar']) :
+            foreach ($data['daftar'] as $field) :
+               $niknya = $field->nik;
+
+               $daftar_byid_tanggal = $this->Mpresensi->daftar_byid_tanggal($niknya, $tanggal);
+
+               if ($daftar_byid_tanggal) :
+                  foreach ($daftar_byid_tanggal as $field2) {
+
+                     // MASUK BELUM PULANG
+                     if (($field2->status_masuk == 'Hadir') and ($field2->status_pulang == '-')) { ?>
+
+                        <?php
+                        // ABSEN MASUK WFO ---------------------------- 
+                        if ($field2->from_masuk == 'WFO') {
+                           if ($field2->jam_masuk > '08:00:00') {
+                              $warna = 'bg-danger';
+                           } else {
+                              $warna = 'bg-success';
+                           } ?>
+                           <div class="utama">
+                              <div class="circular-image">
+                                 <?php if (!$field->avatar) { ?>
+                                    <img src="<?= URLROOT ?>/img/avatar/no_avatar.png" class="fotonya img-thumbnail rounded-circle">
+                                 <?php } else { ?>
+                                    <img src="<?= URLROOT ?>/skatel/avatar/<?= $field->avatar ?>" class="fotonya img-thumbnail rounded-circle">
+                                 <?php } ?>
+                              </div>
+                              <div class="isi <?= $warna ?> text-white shadow">
+                                 <div class="row" style="font-size:11px; margin-top:14px">
+                                    <div class="col" style="text-align:center; padding-right:80px">
+                                       <?= $field2->status_masuk; ?>
+                                       <br />
+                                       (<?= $field2->from_masuk; ?>)
+                                    </div>
+                                    <div class="col" style="text-align:center;padding-right:25px">
+                                       <?= substr($field2->jam_masuk, 0, 5); ?>
+                                       <br />
+                                       WITA
+                                    </div>
+                                 </div>
+                                 <div class="row" style="margin-top:11px; font-size:16px">
+                                    <div class="col"><?= substr($field->nama, 0, 27); ?></div>
+                                 </div>
+                              </div>
+                           </div>
+                        <?php
+                        } else
+                        // ABSEN MASUK WFH ---------------------------- 
+                        {
+                           if ($field2->jam_masuk > '08:00:00') {
+                              $warna = 'bg-danger';
+                           } else {
+                              $warna = 'bg-info';
+                           }
+                        ?>
+                           <div class="utama">
+                              <div class="circular-image">
+                                 <?php if (!$field->avatar) { ?>
+                                    <img src="<?= URLROOT ?>/img/avatar/no_avatar.png" class="fotonya img-thumbnail rounded-circle">
+                                 <?php } else { ?>
+                                    <img src="<?= URLROOT ?>/skatel/avatar/<?= $field->avatar ?>" class="fotonya img-thumbnail rounded-circle">
+                                 <?php } ?>
+                              </div>
+                              <div class="isi <?= $warna ?> text-white shadow">
+                                 <div class="row" style="font-size:11px; margin-top:14px">
+                                    <div class="col" style="text-align:center; padding-right:80px">
+                                       <?= $field2->status_masuk; ?>
+                                       <br />
+                                       (<?= $field2->from_masuk; ?>)
+                                    </div>
+                                    <div class="col" style="text-align:center; padding-right:25px">
+                                       <?= substr($field2->jam_masuk, 0, 5); ?>
+                                       <br />
+                                       WITA
+                                    </div>
+                                 </div>
+                                 <div class="row" style="margin-top:11px; font-size:16px">
+                                    <div class="col"><?= substr($field->nama, 0, 29); ?></div>
+                                 </div>
+                              </div>
+                           </div>
+                        <?php
+                        }
+                     }
+                     // masuk dan sudah pulang
+                     else if (($field2->status_masuk == 'Hadir') and ($field2->status_pulang == 'Pulang')) { ?>
+                        <!-- SUDAH PULANG ---------------------------- -->
+                        <div class="utama">
+                           <div class="circular-image">
+                              <?php if (!$field->avatar) { ?>
+                                 <img src="<?= URLROOT ?>/img/avatar/no_avatar.png" class="fotonya img-thumbnail rounded-circle" style="filter: grayscale(100%);">
+                              <?php } else { ?>
+                                 <img src="<?= URLROOT ?>/skatel/avatar/<?= $field->avatar ?>" class="fotonya img-thumbnail rounded-circle" style="filter: grayscale(100%);">
+                              <?php } ?>
+                           </div>
+                           <div class="isi bg-secondary text-white shadow">
+                              <div class="row" style="font-size:11px; margin-top:14px">
+                                 <div class="col" style="text-align:center; padding-right:40px">
+                                    <?= $field2->status_pulang; ?>
+                                    <br />
+                                    (<?= $field2->from_pulang; ?>)
+                                 </div>
+                                 <div class="col" style="text-align:center;padding-right:10px">
+                                    <?= substr($field2->jam_pulang, 0, 5); ?>
+                                    <br />
+                                    WITA
+                                 </div>
+                              </div>
+                              <div class="row" style="margin-top:11px; font-size:16px">
+                                 <div class="col"><?= substr($field->nama, 0, 29); ?></div>
+                              </div>
+                           </div>
+                        </div>
+                        <?php
+                     }
+                     // jika tidak masuk
+                     else {
+                        // JIKA IZIN dan belum jam pulang ----------------------
+                        if (date('H:i:s', time()) < date('16:00:00')) { ?>
+                           <div class="utama">
+                              <div class="circular-image">
+                                 <?php if (!$field->avatar) { ?>
+                                    <img src="<?= URLROOT ?>/img/avatar/no_avatar.png" class="fotonya img-thumbnail rounded-circle">
+                                 <?php } else { ?>
+                                    <img src="<?= URLROOT ?>/skatel/avatar/<?= $field->avatar ?>" class="fotonya img-thumbnail rounded-circle">
+                                 <?php } ?>
+                              </div>
+                              <div class="isi bg-warning shadow">
+                                 <div class="row" style="font-size:11px; margin-top:14px">
+                                    <div class="col" style="text-align:center; padding-right:50px">
+                                       Sedang<br />
+                                       <?= $field2->status_masuk; ?>
+                                    </div>
+                                    <div class="col" style="text-align:center;">
+                                       <?php // substr($field2->jam_pulang, 0, 5); 
+                                       ?>
+                                    </div>
+                                 </div>
+                                 <div class="row" style="margin-top:11px; font-size:16px">
+                                    <div class="col"><?= substr($field->nama, 0, 29); ?></div>
+                                 </div>
+                              </div>
+                           </div>
+                        <?php
+                        }
+                        // JIKA IZIN dan sudah jam pulang ----------------------
+                        else { ?>
+                           <div class="utama">
+                              <div class="circular-image">
+                                 <?php if (!$field->avatar) { ?>
+                                    <img src="<?= URLROOT ?>/img/avatar/no_avatar.png" class="fotonya img-thumbnail rounded-circle" style="filter: grayscale(100%);">
+                                 <?php } else { ?>
+                                    <img src="<?= URLROOT ?>/skatel/avatar/<?= $field->avatar ?>" class="fotonya img-thumbnail rounded-circle" style="filter: grayscale(100%);">
+                                 <?php } ?>
+                              </div>
+                              <div class="isi bg-secondary text-white shadow">
+                                 <div class="row" style="font-size:11px; margin-top:14px">
+                                    <div class="col" style="text-align:center; padding-right:40px">
+                                       Sedang<br />
+                                       <?= $field2->status_masuk; ?>
+                                    </div>
+                                    <div class="col" style="text-align:center; padding-right:25px">
+                                    </div>
+                                 </div>
+
+                                 <div class="row" style="margin-top:11px; font-size:16px">
+                                    <div class="col"><?= substr($field->nama, 0, 29); ?></div>
+                                 </div>
+                              </div>
+                           </div>
+                  <?php
+                        }
+                     }
+                  }
+               // Yang Belum Absen
+               else :
+                  ?>
+                  <div class="utama">
+                     <div class="circular-image">
+                        <?php if (!$field->avatar) { ?>
+                           <img src="<?= URLROOT ?>/img/avatar/no_avatar.png" class="fotonya img-thumbnail rounded-circle" style="filter: grayscale(100%);">
+                        <?php } else { ?>
+                           <img src="<?= URLROOT ?>/skatel/avatar/<?= $field->avatar ?>" class="fotonya img-thumbnail rounded-circle" style="filter: grayscale(100%);">
+                        <?php } ?>
+                     </div>
+                     <div class="isi text-white shadow" style="background-color: #999;">
+                        <div class="row" style="font-size:11px; margin-top:14px">
+                           <div class="col" style="text-align:center; padding-right:80px">
+                              Belum<br />Absen
+                           </div>
+                           <div class="col" style="text-align:center; padding-right:0px">
+                              &nbsp;
+                           </div>
+                        </div>
+                        <div class="row" style="margin-top:11px; font-size:16px">
+                           <div class="col"><?= substr($field->nama, 0, 29); ?></div>
+                        </div>
+                     </div>
+                  </div>
+
+         <?php
+               endif;
+
+            endforeach;
+         else :
+            echo "Data tidak ditemukan	";
+         endif;
+         ?>
+
+      </div>
+
+      <div class="row mt-4 mb-3" style="padding-left:10px">
+         <a href="<?= URLROOT ?>/logout" class="btn btn-danger btn-sm">Logout</a>
+      </div>
+
+   </div>
+</body>
+
+
+
+
+
+
+
+
+
+
+
+<style>
+   body {
+      background: url(skatel/img/skatel3.jpg) no-repeat center center fixed;
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      -o-background-size: cover;
+      background-size: cover;
+   }
+
+   .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+   }
+
+   .utama {
+      border: 0px solid gray;
+      width: 260px;
+      height: 120px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      position: relative;
+      text-align: center;
+      font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+      font-size: 13px;
+      margin: 5px;
+      font-weight: bold;
+   }
+
+   .foto {
+      height: 50%;
+      border: 0px solid red;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+   }
+
+   .isi {
+      margin-top: 30px;
+      height: 100%;
+      border: 2px solid white;
+      width: 100%;
+      border-radius: 40px 40px 10px 10px;
+   }
+
+   .circular-image {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      top: 18%;
+      transform: translateY(-30%);
+      border: 1px solid #ddd;
+   }
+
+   .circular-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+   }
+
+
+
+   ::-webkit-scrollbar {
+      width: 5px;
+   }
+
+   ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+   }
+
+   ::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 6px;
+   }
+
+   ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+   }
+
+   .scroll-container {
+      width: 300px;
+      height: 200px;
+      overflow-y: scroll;
+      border: 1px solid #ccc;
+   }
+</style>

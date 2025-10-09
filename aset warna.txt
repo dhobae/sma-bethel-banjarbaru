@@ -1,0 +1,5 @@
+merah     : ab1d1d  (171, 29, 29)
+merah tua : 6a1212  (106, 18, 18)
+putih     : f1f1f1  (241, 241, 241)
+abu       : dddddd
+text      : 555555

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="Keywords" content="igracias, telkom university, academic information system, universitas telkom">
+	<meta name="Description" content="igracias, telkom university, academic information system, universitas telkom">
+	<title>
+		Presensi SMK Telkom Banjarbaru</title>
+	<link rel="shortcut icon" href="<?= URLROOT; ?>/skatel/img/ts_icon1.png">
+
+	<style>
+		.full-page-wrapper.wrapper {
+			background: url(../skatel/img/skatel.jpg) no-repeat center center fixed;
+			-webkit-background-size: cover;
+			-moz-background-size: cover;
+			-o-background-size: cover;
+			background-size: cover;
+		}
+	</style>
+</head>
+
+<body>
+	<!DOCTYPE html>
+	<html lang="en" class="no-js">
+
+	<head>
+
+		<link href="<?= URLROOT; ?>/skatel/bootstrap.min.css" rel="stylesheet" type="text/css">
+		<link href="<?= URLROOT; ?>/skatel/style.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	</head>
+
+	<?php
+	require APPROOT . '../../public/dist/lib/ip.php';
+	get_client_ip();
+	$ipnya = get_client_ip();
+
+	$i = 0;
+	$ada = 0;
+
+	foreach ($data['ip'] as $field_ip) :
+		$i++;
+		if (ip_in_range2($ipnya, $field_ip->ip_address)) {
+			$status[$i] = 1;
+		} else {
+			$status[$i] = 0;
+		}
+		$ada = $ada + $status[$i];
+	endforeach;
+	?>
+
+	<body>
+		<div class="wrapper full-page-wrapper page-auth page-login text-center" style="min-height:100%">
+			<div class="inner-page">
+				<div class="login-box center-block" style="margin-left:7%; margin-right:10%">
+
+					<div class="text-center" style="margin-bottom:10px">
+						<a href="index.html"><img src="<?= URLROOT; ?>/skatel/img/ts.png" alt="Skatel" style="width: 150px;height: auto;" /></a>
+					</div>
+
+					<div class="text-center" style="font-family: 'calibri'; font-size:18px;">
+						<b>~ Presensi Pegawai SMK Telkom Banjarbaru ~</b>
+					</div>
+
+					<form class="form-horizontal" role="form" method="post" action="<?= URLROOT; ?>/auth/login" id="pahdi">
+
+						<div class="text-center" style="font-family: 'calibri'; margin-bottom:10px">
+							<span style="font-size:14px; font-weight:bold">Status Posisi berdasarkan IP Address Device,
+								<?php if ($ada > 0) {
+									echo "anda berada di lingkungan sekolah<br/>";
+									echo "<span style='font-size:30px; color:green'>WFO</span>";
+									echo "<input type='hidden' name='dari' value='WFO'>";
+								} else {
+									echo "anda berada di luar lingkungan sekolah<br/>";
+									echo "<span style='font-size:30px; color:red'>WFH</span>";
+									echo "<input type='hidden' name='dari' value='WFH'>";
+								}
+								?>
+							</span>
+						</div>
+
+						<?php flash('register_success'); ?>
+
+						<div class="form-group">
+							<label for="username" class="control-label sr-only">Username</label>
+							<div class="col-sm-12">
+								<div class="input-group">
+									<input type="text" class="form-control <?php echo (!empty($data['username_err'])) ? 'is-invalid' : ''; ?>" name="username" value="<?php echo $data['username']; ?>" id="inputUsername" placeholder="Username atau NIP">
+									<span class="input-group-addon"><i class="fa fa-user"></i></span>
+								</div>
+								<span class="invalid-feedback" style="color:red"><?php echo $data['username_err']; ?> </span>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="password" class="control-label sr-only">Password</label>
+							<div class="col-sm-12">
+								<div class="input-group">
+									<input type="password" class="form-control <?php echo (!empty($data['password_err'])) ? 'is-invalid' : ''; ?>" name="password" id="inputPassword" placeholder="Password">
+									<span class="input-group-addon"><i class="fa fa-lock"></i></span>
+								</div>
+								<span class="invalid-feedback" style="color:red"><?php echo $data['password_err']; ?> </span>
+							</div>
+						</div>
+						<button class="btn btn-custom-primary btn-lg btn-block btn-auth" name="submit" value="submit"><i class="fa fa-arrow-circle-o-right"></i> Login</button>
+					</form>
+					<br />
+				</div>
+			</div>
+		</div>
+		<script src="<?= URLROOT; ?>/skatel/js/jquery-2.1.0.min.js"></script>
+		<script src="<?= URLROOT; ?>/skatel/js/bootstrap.js"></script>
+		<script src="<?= URLROOT; ?>/skatel/js/modernizr.js"></script>
+	</body>

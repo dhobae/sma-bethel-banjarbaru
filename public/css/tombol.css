@@ -1,0 +1,77 @@
+.tombol button.btn-floating {
+  position: fixed;
+  background-color: #0d6efd;
+  right: 25px;
+  /*top: 600px;*/
+  bottom:50px;
+  overflow: hidden;
+  width: 50px;
+  height: 50px;
+  border-radius: 100px;
+  border: 2px solid white;
+  z-index: 99;
+  color: white;
+  transition: .2s;
+}
+
+.tombol button.btn-floating:hover {
+  background-color: #0c54bf;
+  width: auto;
+  padding:  0 20px;
+  cursor: pointer;
+}
+
+.tombol button.btn-floating span {
+  font-size: 16px;
+  margin-left: 5px;
+  transition: 2s;
+  line-height: 0px;
+  display: none;
+}
+
+.tombol button.btn-floating:hover span {
+  display: inline-block;
+}
+
+.tombol button.btn-floating i {
+  margin-top: 6px;
+}
+
+.tombol button.btn-floating:hover i {
+  margin-top: 6px;
+}
+
+.tombol button.btn-floating.riwayat {
+  bottom: 0px;
+}
+
+
+/* ----------------------------------------------- */
+.tombolsatu {
+  padding:5px 5px !important;
+  font-size:0.7em !important;
+  width: 25px !important;
+  line-height: 0px !important;
+}
+.tomboldua {
+  padding:2px 5px !important;
+  font-size:0.8em !important;
+  border-radius: 0px !important;
+}
+.tomboltiga {
+  padding:2px 5px !important;
+  font-size:0.8em !important;
+  border-radius: 0px !important;
+  width:22px  !important;
+}
+.tombolempat {
+  padding:3px 5px !important;
+  font-size:0.8em !important;
+  border-radius: 0px !important;
+}
+.tombollima {
+  padding:2px 5px !important;
+  font-size:0.85em !important;
+  border-radius: 0px !important;
+  width:25px !important;
+}

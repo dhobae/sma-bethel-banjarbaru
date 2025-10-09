@@ -1,0 +1,375 @@
+.tabelsatu
+{
+    font-size:0.8em;
+}
+.tabelsatu td{
+    padding:0px;
+    padding-top:10px !important;
+    padding-bottom:10px !important;
+}
+/* ----------------------------------------------- */
+.tabeldua
+{
+    font-size:0.8em;
+}
+.tabeldua td{
+    padding:0px;
+    padding-top:10px !important;
+    padding-bottom:10px !important;
+    font-size:0.95em;
+}
+/* ----------------------------------------------- */
+.tabeltiga {
+    width:100%;
+    font-size:0.9em !important;
+}
+.tabeltiga td {
+    font-family :'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    padding:4px 0px;
+}
+/* ----------------------------------------------- */
+.tabelempat {
+    width:100%;
+    font-size:0.9em !important;
+}
+.tabelempat th {
+    font-family :'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    padding:7px 8px;
+}
+.tabelempat td {
+    font-family :'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    padding:4px 8px;
+}
+/* ----------------------------------------------- */
+.tabellima {
+    width:100%;
+    font-size:0.78em !important;
+}
+.tabellima th {
+    font-family :'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    padding:7px 10px !important;
+    
+}
+.tabellima td {
+    font-family :'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    padding:4px 10px;
+}
+/* ----------------------------------------------- */
+.tabelenam {
+    width:100%;
+    font-size:0.78em !important;
+}
+.tabelenam th {
+    font-family :'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    padding:0px 8px !important;
+    border:1px solid #dddddd;
+    
+}
+.tabelenam td {
+    font-family :'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    padding:1px 8px;
+    border:1px solid #dddddd;
+}
+
+
+/* ----------------------------------------------- */
+.tabeltujuh {
+    width:100%;
+    font-size:0.88em !important;
+}
+.tabeltujuh th {
+    font-family :'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    padding:0px 8px !important;
+    border:1px solid #dddddd;
+    vertical-align: middle !important;
+    
+}
+.tabeltujuh td {
+    font-family :'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    padding:1px 9px !important;
+    border:1px solid #dddddd;
+}
+
+* ----------------------------------------------- */
+.tabeldelapan {
+    width:100% !important;
+}
+.tabeldelapan th {
+    font-family :'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    padding:13px 10px !important;
+    font-size:0.85em !important;
+}
+.tabeldelapan td {
+    font-family :'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    padding:12px 15px !important;
+    font-size:0.85em !important;
+}
+
+/* ----------------------------------------------- */
+.tabelsembilan {
+    width:100%;
+    font-size:0.9em !important;
+}
+.tabelsembilan th {
+    font-family :'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding:10px 10px !important;
+}
+.tabelsembilan td {
+    font-family :'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding:10px 10px !important;
+}
+
+* ----------------------------------------------- */
+.tabelsepuluh {
+    width:100% !important;
+}
+.tabelsepuluh th {
+    font-family :Verdana, 'Trebuchet MS', Geneva, Tahoma, sans-serif;
+    padding:13px 10px !important;
+    font-size:0.80em !important;
+}
+.tabelsepuluh td {
+    font-family :Verdana, 'Trebuchet MS', Geneva, Tahoma, sans-serif;
+    padding:8px 10px !important;
+    font-size:0.80em !important;
+}
+
+* ----------------------------------------------- */
+.tabel11 {
+    width:100% !important;
+}
+.tabel11 th {
+    font-family :Verdana, 'Trebuchet MS', Geneva, Tahoma, sans-serif;
+    padding:13px 10px !important;
+    font-size:0.90em !important;
+}
+.tabel11 td {
+    font-family :Verdana, 'Trebuchet MS', Geneva, Tahoma, sans-serif;
+    padding:8px 10px !important;
+    font-size:0.90em !important;
+}
+
+
+* ----------------------------------------------- */
+.tabelpegawai {
+    width:100% !important;
+}
+.tabelpegawai th {
+    font-family :'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    padding:13px 8px !important;
+    font-size:0.85em !important;
+}
+.tabelpegawai td {
+    font-family :'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    padding:5px 8px !important;
+    font-size:0.85em !important;
+    white-space: nowrap;
+}
+
+
+
+
+.divtujuh{
+    font-family :'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size:0.86em !important;
+}
+
+/* ----------------------------------------------- */
+.tengah {
+    text-align:center !important;
+}
+.tengah2 {
+    vertical-align: middle !important;
+}
+/* ----------------------------------------------- */
+.tombolsatu {
+    padding:5px 5px;
+    font-size:0.7em;
+    width: 25px;
+    line-height: 0px;
+}
+.tomboldua {
+    padding:2px 5px;
+    font-size:0.8em;
+    border-radius: 0px;
+}
+.tomboltiga {
+    padding:2px 5px;
+    font-size:0.8em;
+    border-radius: 0px;
+    width:22px
+}
+.tombolempat {
+    padding:3px 5px;
+    font-size:0.8em;
+    border-radius: 0px;
+}
+.tombollima {
+    padding:2px 5px;
+    font-size:0.85em;
+    border-radius: 0px;
+    width:25px;
+}
+
+/* ----------------------------------------------- */
+.text-pahdi{
+    border-radius: 0px !important;
+    padding: 2px 5px;
+    border: 1px solid #ccc;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+.date-pahdi{
+    border-radius: 0px !important;
+    padding: 2px 5px;
+    border: 1px solid #ccc;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+.select-pahdi{
+    border-radius: 0px !important;
+    padding: 2px 5px;
+    border: 1px solid #ccc;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.3);
+}
+/* ----------------------------------------------- */
+.text-pahdi2{
+    border-radius: 0px !important;
+    padding: 2px 0px;
+    border: 0px solid #ccc;
+    box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3);
+}
+
+.date-pahdi2{
+    border-radius: 0px !important;
+    padding: 2px 0px;
+    border: 0px solid #ccc;
+    box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3);
+}
+
+.select-pahdi2{
+    border-radius: 0px !important;
+    padding: 2px 0px;
+    border: 0px solid #ccc;
+    box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3);
+}
+.number-pahdi2{
+    border-radius: 0px !important;
+    padding: 2px 0px;
+    border: 0px solid #ccc;
+    box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3);
+}
+/* ----------------------------------------------- */
+.text-pahdi3{
+    border-radius: 0px !important;
+    padding: 2px 0px;
+    border: 0px solid #ccc !important;
+    border-bottom: 1px solid red !important;
+    text-align: center;
+    font-family: 'calibri';
+}
+
+.date-pahdi3{
+    border-radius: 0px !important;
+    padding: 2px 0px;
+    border: 0px solid #ccc;
+    box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3);
+}
+
+.select-pahdi3{
+    border-radius: 0px !important;
+    padding: 2px 0px;
+    border: 0px solid #ccc;
+    box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3);
+}
+.number-pahdi3{
+    border-radius: 0px !important;
+    padding: 2px 0px;
+    border: 0px solid #ccc !important;
+    border-bottom: 1px solid red !important;
+    font-family: 'calibri';
+}
+
+/* ----------------------------------------------- */
+.text-pahdi4{
+    border-radius: 0px !important;
+    padding: 2px 0px;
+    border: 0px solid #ccc !important;
+    border-bottom: 1px dashed #aaaaaa !important;
+    font-family: 'calibri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size:1.1em !important;
+}
+
+.date-pahdi4{
+    border-radius: 0px !important;
+    padding: 2px 0px;
+    border: 0px solid #ccc;
+    box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3);
+}
+
+.select-pahdi4{
+    border-radius: 0px !important;
+    padding: 2px 0px;
+    border: 0px solid #ccc;
+    box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3);
+    font-family: 'calibri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size:1.1em !important;
+    color : #646464 !important;
+}
+.number-pahdi4{
+    border-radius: 0px !important;
+    padding: 2px 0px;
+    border: 0px solid #ccc !important;
+    border-bottom: 1px solid red !important;
+    font-family: 'calibri';
+    font-size:1.1em !important;
+    color : #646464 !important;
+}
+
+
+/* DASHBOARD ------------------------------------------ */
+.dash {
+    font-family :'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size:0.86em !important;
+}
+
+.filter {
+    border:1px solid #dddddd;
+    background-color: #f4f4f4;
+}
+
+.text-dash{
+    border-radius: 0px !important;
+    padding: 2px 5px;
+    border: 1px solid #ccc;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+.date-dash{
+    border-radius: 0px !important;
+    padding: 2px 5px;
+    border: 1px solid #ccc;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+.select-dash{
+    border-radius: 0px !important;
+    padding: 3px 2px;
+    border: 1px solid #ccc;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.3);
+    color:#646464;
+}
+
+.tabel-dash1 {
+    width:100%;
+}
+.tabel-dash1 td {
+    padding:3px 0px;
+}
+.tombol-dash1 {
+    border-radius: 0px;
+    font-family :'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size:0.86em !important;
+    height:58px;
+    font-weight:bold;
+}

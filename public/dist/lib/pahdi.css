@@ -1,0 +1,717 @@
+.huruf
+	{
+		font-family: "Trebuchet MS", Helvetica, sans-serif;
+		letter-spacing: 1px;
+	}
+	#jam 
+	{
+		font-family: "Trebuchet MS", Helvetica, sans-serif;
+		font-size: 27px;
+		letter-spacing: 2px;
+		word-spacing: 0.2px;
+		color: #000000;
+		font-weight: 700;
+		text-decoration: none;
+		font-style: normal;
+		font-variant: normal;
+		text-transform: none;
+	}
+	#jam3 
+	{
+		font-family: "Trebuchet MS", Helvetica, sans-serif;
+		font-size: 16px;
+		letter-spacing: 2px;
+		word-spacing: 0.2px;
+		color: #000000;
+		font-weight: 700;
+		text-decoration: none;
+		font-style: normal;
+		font-variant: normal;
+		text-transform: none;
+	}
+	#jam2 
+	{
+		font-family: "Trebuchet MS", Helvetica, sans-serif;
+		font-size: 18px;
+		letter-spacing: 2px;
+		word-spacing: 0.2px;
+		color: #000000;
+		font-weight: 700;
+		text-decoration: none;
+		font-style: normal;
+		font-variant: normal;
+		text-transform: none;
+	}
+	
+	.blink {
+	  animation: blink 1s steps(1, end) infinite;
+	}
+	@keyframes blink {
+	  0% {
+		opacity: 1;
+	  }
+	  50% {
+		opacity: 0.5;
+	  }
+	  100% {
+		opacity: 1;
+	  }
+	}
+
+	a.disabled {
+		pointer-events: none;
+		cursor: default;
+		
+		opacity: .5;
+		cursor: default !important;
+		pointer-events: none;
+	}
+
+
+
+.putih
+{
+	/* background-color: #f8f8f8; */
+	background-color: #f4f6f9;
+}
+.dalam
+{
+	background-color: white;
+	color: black;
+	width:98%;
+	margin: auto;
+	box-shadow: 1px gray;
+	padding: 10px;
+}
+
+.judulsatu
+{
+	font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+	font-size: 1em;
+	font-weight: bold;
+}
+
+.center
+{
+	margin-top:20px;
+	width:98%;
+	margin: auto;
+}
+
+.centertengah
+{
+	margin: auto;
+	margin-top:40px;
+	width: 50%;
+	background-color :#343a40;
+	padding: 10px 50px 30px;
+	border: 1px solid gray;
+	border-radius: 20px 20px;
+		-moz-box-shadow:    3px 3px 5px 6px #343a40;
+		-webkit-box-shadow: 3px 3px 5px 6px #343a40
+		box-shadow:         3px 3px 5px 6px #ccc;
+}
+
+.kotak1
+{
+	margin: auto;
+	width: 100%;
+	padding: 20px 20px;
+	background-color: #343a40;
+	margin-top: 10px;
+	border-radius: 10px;
+}
+
+.kotak2
+{
+	margin: auto;
+	width: 50%;
+	padding: 20px 30px;
+	background-color: #343a40;
+	margin-top: 10px;
+	border: 1px solid white;
+	border-radius: 30px;
+}
+
+.kotaklogin
+{
+	margin: auto;
+	width: 100%;
+	height: 100%;
+	padding: 20px 20px;
+	margin-top: 10px;
+	border-radius: 10px;
+}
+
+
+::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+::-webkit-scrollbar-button:start:decrement,
+::-webkit-scrollbar-button:end:increment  {
+	height: 10px;
+	background-color: transparent;
+}
+::-webkit-scrollbar-track-piece  {
+	background-color: #eeeeee;
+	-webkit-border-radius: 16px;
+}
+::-webkit-scrollbar-thumb:vertical {
+	height: 10px;
+	background-color: #666;
+	border: 1px solid #eee;
+	-webkit-border-radius: 16px;
+}
+
+
+.tombolpahdi100
+{
+	font-size: 0.8em;
+	font-weight: bold;
+	width: 100px;
+	padding: 4px 0px;
+}
+
+
+
+.myButton {
+	background:linear-gradient(to bottom, #c62d1f 5%, #f24437 100%);
+	background-color:#c62d1f;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Trebuchet MS;
+	font-size:11px;
+	font-weight:bold;
+	width: 90%;
+	text-decoration:none;
+	border: 0px solid black;
+	}
+	.myButton:hover {
+		color: black;
+	}
+	.myButton:active {
+		position:relative;
+		top:1px;
+		color: white;
+	}
+	.myButton:link {
+		position:relative;
+		top:1px;
+		color: white;
+	}
+	.myButton:visited {
+		position:relative;
+		top:1px;
+		color: white;
+	}
+
+
+
+
+.myButton5 {
+	box-shadow: 3px 2px 11px -8px #000000;
+	background:linear-gradient(to bottom, #ff0000 5%, #c40000 100%);
+	background-color:#ff0000;
+	border-radius:7px;
+	border:2px solid #e00000;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Trebuchet MS;
+	font-size:11px;
+	font-weight:bold;
+	padding:8px 15px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #2f6627;
+}
+.myButton5:hover {
+	background:linear-gradient(to bottom, #c40000 5%, #ff0000 100%);
+	background-color:#c40000;
+	color: white;
+}
+.myButton5:active {
+	position:relative;
+	top:1px;
+	color: white;
+}
+.myButton5:visited {
+	position:relative;
+	top:1px;
+	color: white;
+}
+
+/* ------------------------------------------------------------------------ */
+
+
+.myabsen {
+	box-shadow: 3px 2px 11px -8px #000000;
+	background:linear-gradient(to bottom, #ff0000 5%, #c40000 100%);
+	background-color:#ff0000;
+	border-radius:4px;
+	border: 1px solid red;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Trebuchet MS;
+	font-size:11px;
+	font-weight:bold;
+	padding:4px 0px;
+	width:85%;
+	text-decoration:none;
+}
+.myabsen:hover {
+	background-color:#c40000;
+	color: white;
+	text-decoration: none;
+	font-size:12px !important;
+	font-weight: bold;
+}
+.myabsen:active {
+	position:relative;
+	top:1px;
+	color: white;
+	text-decoration: none;
+}
+.myabsen:visited {
+	position:relative;
+	top:1px;
+	color: white;
+	text-decoration: none;
+}
+.myabsen:link {
+	text-decoration: none;
+}
+
+/* ------------------------------------------------------------------------ */
+
+
+.myButton6 {
+	box-shadow: 3px 2px 11px -8px #000000;
+	background:linear-gradient(to bottom, #ff0000 5%, #c40000 100%);
+	background-color:#ff0000;
+	border-radius:3px;
+	border:2px solid #e00000;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Trebuchet MS;
+	font-size:11px;
+	font-weight:bold;
+	padding:3px 15px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #2f6627;
+}
+.myButton6:hover {
+	background:linear-gradient(to bottom, #c40000 5%, #ff0000 100%);
+	background-color:#c40000;
+	color: white;
+}
+.myButton6:active {
+	position:relative;
+	top:1px;
+	color: white;
+}
+.myButton6:visited {
+	position:relative;
+	top:1px;
+	color: white;
+}
+
+
+/* ------------------------------------------------------------------------ */
+
+.myButton7 {
+	box-shadow: 3px 2px 11px -8px #000000;
+	background:linear-gradient(to bottom, #ff0000 5%, #c40000 100%);
+	background-color:#ff0000;
+	border-radius:3px;
+	border:2px solid #e00000;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Trebuchet MS;
+	font-size:13px;
+	font-weight:bold;
+	padding:15px 20px;
+	width: 210px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #2f6627;
+}
+.myButton7:hover {
+	background:linear-gradient(to bottom, #c40000 5%, #ff0000 100%);
+	background-color:#c40000;
+	color: white;
+}
+.myButton7:active {
+	position:relative;
+	top:1px;
+	color: white;
+}
+.myButton7:visited {
+	position:relative;
+	top:1px;
+	color: white;
+}
+
+
+/* ------------------------------------------------------------------------ */
+
+.myButton8 {
+	box-shadow: 3px 2px 11px -8px #000000;
+	background-color:green;
+	border-radius:3px;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Trebuchet MS;
+	font-size:10px;
+	font-weight:bold;
+	padding:8px 15px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #2f6627;
+	margin-bottom: 5px;
+}
+.myButton8:hover {
+	background:linear-gradient(to bottom, #c40000 5%, #ff0000 100%);
+	background-color:#c40000;
+	color: white;
+}
+.myButton8:active {
+	position:relative;
+	top:1px;
+	color: white;
+}
+.myButton8:visited {
+	position:relative;
+	top:1px;
+	color: white;
+}
+
+/* ------------------------------------------------------------------------ */
+
+.myButton9 {
+	box-shadow: 3px 2px 11px -8px #000000;
+  height: 24px;
+	background-color:black;
+	border-radius:3px;
+	border:none;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Trebuchet MS;
+	font-size:10px;
+	text-decoration:none;
+  padding:7px 10px 10px;
+}
+.myButton9:hover {
+	background-color:green;
+	color: white;
+}
+.myButton9:active {
+	position:relative;
+	top:1px;
+	color: white;
+}
+.myButton9:visited {
+	position:relative;
+	top:1px;
+	color: white;
+}
+
+
+/* ------------------------------------------------------------------------ */
+
+.myButton9b {
+	box-shadow: 0px 1px 0px 0px #c2c2c2;
+	background-color: red;
+	font-family: Verdana, Geneva, Tahoma, sans-serif;
+	font-size: 9px;
+	border: none;
+	color: white;
+	text-decoration: none;
+	cursor: pointer;
+	display: inline-block; /* gasan a href */
+	padding: 3px 5px; /* biar sama submit wa a href */
+	border-radius: 3px;;
+	margin-bottom: 5px;
+}
+.myButton9b:hover {
+	color:white !important;
+	font-size:10px;
+	font-weight:bold;
+	text-decoration: none;
+	background-color: black;
+}
+.myButton9b:disabled {
+	box-shadow: 0px 1px 0px 0px #c2c2c2;
+	background-color: black;
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+
+/* ------------------------------------------------------------------------ */
+
+.myButton11 {
+    box-shadow: 0px 1px 0px 0px #c2c2c2;
+	background-color:#f39c12;
+    border-radius:3px;
+    display:inline-block;
+    cursor:pointer;
+    color:#000000;
+    font-family:Verdana;
+    font-size:9px;
+    font-weight:bold;
+    padding:4px 5px;
+    text-decoration:none;
+	margin: 5px 5px 0px 0px;
+  }
+  .myButton11:hover {
+    background-color:black;
+	color:white;
+  }
+  .myButton11:active {
+    position:relative;
+    top:1px;
+  }
+  .myButton11:visited {
+    color: black;
+  }
+  .myButton11:link {
+    color: black;
+  }
+
+
+/* ------------------------------------------------------------------------ */
+
+.myButton12 {
+    box-shadow: 0px 1px 0px 0px #c2c2c2;
+	background-color:#f39c12;
+    border-radius:3px;
+    display:inline-block;
+    cursor:pointer;
+    color:#000000;
+    font-family:Verdana;
+    font-size:9px;
+    font-weight:bold;
+    padding:4px 0px;
+    text-decoration:none;
+	width: 70px;
+	margin: 5px 0px 5px 0px;
+  }
+  .myButton12:hover {
+    background-color:black;
+	color:white;
+  }
+  .myButton12:active {
+    position:relative;
+    top:1px;
+  }
+  .myButton12:visited {
+    color: black;
+  }
+  .myButton12:link {
+    color: black;
+  }
+
+/*   ------------------------------------------------------------------------ */
+
+  .myButton13 {
+	  box-shadow: 0px 1px 0px 0px #c2c2c2;
+	  background-color:red;
+	  color: white;
+	  border-radius:3px;
+	  display:inline-block;
+	  cursor:pointer;
+	  font-family:Verdana;
+	  font-size:9px;
+	  font-weight:bold;
+	  padding:4px 0px;
+	  text-decoration:none;
+	  width: 70px;
+	  margin: 5px 0px 5px 0px;
+	}
+	.myButton13:hover {
+	  background-color:black;
+	  color:white;
+	}
+	.myButton13:active {
+	  position:relative;
+	  top:1px;
+	}
+	.myButton13:visited {
+	  color: white;
+	}
+	.myButton13:link {
+	  color: white;
+	} 
+
+
+/* ------------------------------------------------------------------------ */
+
+.myButton14 {
+    box-shadow: 0px 1px 0px 0px #c2c2c2;
+	background-color:#f39c12;
+    border-radius:3px;
+    display:inline-block;
+    cursor:pointer;
+    color:#000000;
+    font-family:Verdana;
+    font-size:9px;
+    font-weight:bold;
+    padding:4px 5px;
+    text-decoration:none;
+	margin: 0px 0px 30px 0px;
+  }
+  .myButton14:hover {
+    background-color:black;
+	color:white;
+  }
+  .myButton14:active {
+    position:relative;
+    top:1px;
+  }
+  .myButton14:visited {
+    color: black;
+  }
+  .myButton14:link {
+    color: black;
+  }
+
+
+
+
+  /* ------------------------------------------------------------------------ */
+
+.myButton15 {
+	box-shadow: 0px 1px 0px 0px #c2c2c2;
+	background-color:#f39c12;
+    border-radius:3px;
+    display:inline-block;
+    cursor:pointer;
+    color:#000000;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size:9px;
+    font-weight:bold;
+    padding:3px 5px;
+    text-decoration:none;
+	border: none;
+	margin-bottom: 5px;
+  }
+  .myButton15:hover {
+    background-color:black;
+	color:white;
+  }
+  .myButton15:active {
+    position:relative;
+    top:1px;
+  }
+  .myButton15:visited {
+    color: black;
+  }
+  .myButton15:link {
+    color: black;
+  }
+
+
+
+
+.formattbl {
+	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+	font-size: 11px;
+	background: #fff;
+	margin: 15px 25px 0 0;
+	border-collapse: collapse;
+	float: left;
+	width: 100%;
+	}
+#empTable th {
+	font-size: 12px;
+	font-weight: normal;
+	color: #039;
+	padding: 10px 8px;
+	border-bottom: 2px solid #6678b1;
+	}
+#empTable td {
+	border-bottom: 1px solid #ccc;
+	color: #039;
+	padding: 8px 10px;
+	}
+#empTable tbody tr:hover td {
+	color: #009;
+	}
+
+
+
+
+	.container1 {
+		display: inline;
+		position: relative;
+		padding-left: 11px;
+		padding-right: 6px;
+		margin-bottom: 0px;
+		cursor: pointer;
+		font-size: 9px;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+	  }
+	  
+	  /* Hide the browser's default checkbox */
+	  .container1 input {
+		position: absolute;
+		opacity: 0;
+		cursor: pointer;
+		height: 0;
+		width: 0;
+	  }
+	  
+	  /* Create a custom checkbox */
+	  .checkmark1 {
+		position: absolute;
+		top: 2px;
+		left: 0;
+		height: 9px;
+		width: 9px;
+		background-color:white;
+		border: 1px solid gray;
+		border-radius: 2px;
+	  }
+	  
+	  /* On mouse-over, add a grey background color */
+	  .container1:hover input ~ .checkmark1 {
+		background-color: #ccc;
+	  }
+	  
+	  /* When the checkbox is checked, add a blue background */
+	  .container1 input:checked ~ .checkmark1 {
+		background-color: red;
+	  }
+	  
+	  /* Create the checkmark/indicator (hidden when not checked) */
+	  .checkmark1:after {
+		content: "";
+		position: absolute;
+		display: none;
+	  }
+	  
+	  /* Show the checkmark when checked */
+	  .container1 input:checked ~ .checkmark1:after {
+		display: block;
+	  }
+	  
+	  /* Style the checkmark/indicator */
+	  .container1 .checkmark1:after {
+		left: 2px;
+		top: -1px;
+		width: 4px;
+		height: 8px;
+		border: solid white;
+		border-width: 0 2px 2px 0;
+		-webkit-transform: rotate(45deg);
+		-ms-transform: rotate(45deg);
+		transform: rotate(45deg);
+	  }

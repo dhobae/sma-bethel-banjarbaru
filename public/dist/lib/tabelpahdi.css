@@ -1,0 +1,500 @@
+.tengah {
+    text-align:center !important;
+}
+
+.tengah2 {
+    vertical-align: middle !important;
+}
+
+.huruf1 {
+    font-family: 'calibri', 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color: #555555;
+}
+
+.judul1 {
+    font-family: 'calibri', 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color: #555555;
+    font-size:20px;
+    line-height:24px;
+}
+
+.tabel1 {
+    font-family: 'calibri';
+    font-size:0.94rem;
+    color: #555555 !important;
+    border: 1px solid #dddddd !important;
+}
+
+.tabel1 th {
+    padding:2px 5px !important;
+    vertical-align: middle !important;
+    border: 1px solid #dddddd !important;
+    background-color:azure;
+}
+
+.tabel1 td {
+    padding:2px 5px !important;
+    border: 1px solid #dddddd !important;
+}
+
+.tabel2 {
+    font-family: 'calibri';
+    font-size:0.97rem;
+    color: #555555 !important;
+}
+
+.tabel2 th {
+    padding:2px 5px !important;
+    vertical-align: middle !important;
+    border: 1px solid #dddddd !important;
+    background-color:azure;
+}
+
+.tabel2 td {
+    padding:2px 5px !important;
+    border-bottom: 1px solid #dddddd !important;
+}
+
+.tabel3 {
+    font-family: 'calibri';
+    font-size:0.94rem;
+    color: #555555 !important;
+    border: 1px solid #dddddd !important;
+}
+
+.tabel3 th {
+    padding:2px 5px !important;
+    vertical-align: middle !important;
+    border: 1px solid #dddddd !important;
+    text-align:center;
+}
+
+.tabel3 td {
+    padding:2px 10px !important;
+    border: 1px solid #dddddd !important;
+}
+
+
+.tabel4 {
+    font-family: 'calibri';
+    font-size:0.94rem;
+    color: #555555 !important;
+    border: 1px solid #dddddd !important;
+    font-weight:bold;
+}
+
+.tabel4 th {
+    padding:2px 5px !important;
+    vertical-align: middle !important;
+    border: 1px solid #dddddd !important;
+    text-align:center;
+}
+
+.tabel4 td {
+    padding:2px 10px !important;
+    border: 1px solid #dddddd !important;
+    border:1px solid rgb(187, 187, 187) !important;
+}
+
+.tabeljadwal {
+    width:100%;
+    border:2px solid #dddddd;
+    font-family: 'calibri';
+    font-size:0.94rem;
+
+}
+
+.tabeljadwal td {
+    border:2px solid rgb(212, 212, 212);
+    padding:5px 5px !important;
+    text-align: center;
+    vertical-align: middle !important;
+    height: 60px !important;
+}
+
+.tabeljadwal th {
+    border:2px solid  rgb(212, 212, 212);
+    background-color:rgb(158, 29, 29);
+    color: white;
+    padding:0px !important;
+    text-align: center;
+    vertical-align: middle !important;
+    height:49px; 
+}
+
+
+/*---------------------------------------------- */
+.tombol1 {
+    line-height: 0px !important;
+    padding:5px !important;
+    border-radius: 0px !important;
+    font-size: 9px !important;
+    width:23px !important;
+}
+
+.tombol2 {
+    line-height: 0px !important;
+    padding:5px !important;
+    border-radius: 0px !important;
+    font-size: 0.85rem !important;
+}
+
+.tombol3 {
+    line-height: 12px !important;
+    padding:5px !important;
+    border-radius: 0px !important;
+    font-size: 0.85rem !important;
+}
+
+.tombollokasi {
+    line-height: 10px !important;
+    padding:4px !important;
+    border-radius: 0px !important;
+    font-size: 0.8rem !important;
+}
+
+
+.label1 {
+    font-family: 'calibri';
+    margin-bottom: 2px;
+}
+.text1 {
+    border-radius: 0px !important;
+    font-family: 'calibri';
+}
+/*---------------------------------------------- */
+
+.tabelsatu
+{
+    width : 100%;
+}
+.tabelsatu td
+{
+    border-bottom:1px solid gray; 
+    height:25px; 
+    font-size:0.8em;
+}
+
+
+.tabeldua
+{
+    width:100%;
+    border:1px solid gray;
+    border-collapse:collapse;
+}
+.tabeldua th
+{
+    font-size: 0.8em;
+    border: 1px solid gray;
+    text-align: center;
+}
+.tabeldua th.minggu
+{
+    font-size: 0.7em;
+}
+.tabeldua td
+{
+    font-size: 0.8em;
+    border: 1px solid gray;
+    padding:2px 7px;
+}
+.tabeldua .isiabsen
+{
+    text-align: center;
+    padding:0px;
+    width: 31px; 
+    text-align: center; 
+    font-size:11px; 
+    background:#d81212;
+    color:white;
+    font-weight:bold;
+}
+.tabeldua a
+{
+    text-decoration: none;
+    color:white;
+}
+.tabeldua a:hover
+{
+    color:black;
+    font-size:13px;
+    text-decoration: underline;
+}
+.tabeldua a:link
+{
+    color:white;
+}
+.tabeldua a:visited
+{
+    color:white;
+}
+
+
+.tabeljurnal
+    {
+        width : 100%;
+        border-bottom:1px solid gray; 
+        border-collapse: collapse;
+    }
+.tabeljurnal td
+    {
+        border:2px solid gray; 
+        height:120px; 
+        font-size:0.8em;
+        padding: 0px 7px;
+        vertical-align: top;
+    }
+.tabeljurnal th
+    {
+        font-size: 12px; 
+        text-align: center; 
+        height: 50px;
+        border: 2px solid gray;
+    }
+
+
+
+.tabeltiga
+    {
+        width : 100%;
+        border: 1px solid gray;
+        border-collapse: collapse;
+    }
+.tabeltiga td
+    {
+        border-bottom: 1px solid gray;
+        border-left: 1px solid gray;
+        height:25px; 
+        font-size:0.9em;
+        padding: 0px 7px;
+    }
+.tabeltiga th
+    {
+        border-bottom: 1px solid gray;
+        border-left: 1px solid gray;
+        height:25px; 
+        font-size:0.9em;
+        text-align: center;
+    }    
+
+  
+.tabeltiga2
+    {
+        width : 100%;
+        border: 1px solid gray;
+        border-collapse: collapse;
+    }
+.tabeltiga2 td
+    {
+        border-bottom: 1px solid gray;
+        border-left: 1px solid gray;
+        height:25px; 
+        font-size:0.8em;
+        padding: 0px 7px;
+    }
+.tabeltiga2 th
+    {
+        border-bottom: 1px solid gray;
+        border-left: 1px solid gray;
+        height:25px; 
+        font-size:0.9em;
+        text-align: center;
+    }     
+.tabeltiga2 a
+    {
+        text-decoration: none;
+        color: white;
+        font-weight:bold;
+    }     
+
+
+
+.tabelempat
+    {
+        width : 100%;
+        border: 1px solid gray;
+        border-collapse: collapse;
+    }
+.tabelempat td
+    {
+        border-bottom: 1px solid gray;
+        border-left: 1px solid gray;
+        height:25px; 
+        font-size:0.8em;
+        padding: 0px 7px;
+    }
+.tabelempat th
+    {
+        border-bottom: 1px solid gray;
+        border-left: 1px solid gray;
+        height:25px; 
+        font-size:0.9em;
+        text-align: center;
+    }   
+
+
+
+
+.tabellima
+    {
+        width : 100%;
+    }
+.tabellima td
+    {
+        border-bottom:1px solid gray; 
+        height:25px; 
+        font-size:0.9em;
+    }
+.tabellima th
+    {
+        border-bottom: 1px solid gray;
+        border-left: 1px solid gray;
+        height:25px; 
+        font-size:0.9em;
+        text-align: center;
+    }     
+
+
+.tabelenam
+    {
+        width : 100%;
+        border: 1px solid gray;
+        border-collapse: collapse;
+    }
+.tabelenam td
+    {
+        border-bottom: 1px solid gray;
+        border-left: 1px solid gray;
+        height:25px; 
+        font-size:0.9em;
+        padding: 0px 7px;
+    }
+.tabelenam th
+    {
+        border-bottom: 1px solid gray;
+        border-left: 1px solid gray;
+        height:25px; 
+        font-size:0.9em;
+        text-align: center;
+    } 
+
+
+
+    .tabeltujuh
+    {
+        width:100%;
+        border:1px solid gray;
+        border-collapse:collapse;
+    }
+    .tabeltujuh th
+    {
+        font-size: 0.9em;
+        border: 1px solid gray;
+        text-align: center;
+    }
+    .tabeltujuh th.minggu
+    {
+        font-size: 0.7em;
+    }
+    .tabeltujuh td
+    {
+        font-size: 0.9em;
+        border: 1px solid gray;
+        padding:2px 7px;
+    }
+    .tabeltujuh .isiabsen
+    {
+        text-align: center;
+        padding:0px;
+        width: 31px; 
+        text-align: center; 
+        font-size:11px; 
+        background:#d81212;
+        color:white;
+        font-weight:bold;
+    }
+    .tabeltujuh a
+    {
+        text-decoration: none;
+        color:cyan
+    }
+    .tabeltujuh a:hover
+    {
+        font-size:0.9em;
+        font-weight: bold;
+    }
+    .tabeltujuh a:link
+    {
+        color:cyan;
+    }
+    .tabeltujuh a:visited
+    {
+        color:cyan;
+    }
+
+
+
+
+    .tabeldelapan
+    {
+        width:100%;
+        border:1px solid gray;
+        border-collapse:collapse;
+    }
+    .tabeldelapan th
+    {
+        font-size: 0.9em;
+        border: 1px solid gray;
+        text-align: center;
+    }
+    .tabeldelapan td
+    {
+        font-size: 0.8em;
+        border: 1px solid gray;
+        padding:2px 7px;
+    }
+    .tabeldelapan a
+    {
+        text-decoration: none;
+        color:cyan
+    }
+    .tabeldelapan a:hover
+    {
+        font-size:0.9em;
+        font-weight: bold;
+        color: red;
+    }
+    .tabeldelapan a:link
+    {
+        color:cyan;
+    }
+    .tabeldelapan a:visited
+    {
+        color:cyan;
+    }
+
+
+
+
+.tabelsembilan
+    {
+        width : 100%;
+        border: 1px solid gray;
+        border-collapse: collapse;
+    }
+.tabelsembilan td
+    {
+        border-bottom: 1px solid gray;
+        border-left: 1px solid gray;
+        height:25px; 
+        font-size:0.9em;
+        padding: 0px 7px;
+    }
+.tabelsembilan th
+    {
+        border-bottom: 1px solid gray;
+        border-left: 1px solid gray;
+        height:25px; 
+        font-size:0.9em;
+        text-align: center;
+    } 

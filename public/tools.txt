@@ -1,0 +1,567 @@
+<?php require APPROOT . '/views/inc/header.php'; ?>
+<?php require APPROOT . '/views/inc/footer.php'; ?>
+
+---------------------------------------------------
+ada enter :
+---------------------------------------------------
+<?= nl2br($j->uraian) ?>
+
+
+---------------------------------------------------
+NicEdit
+---------------------------------------------------
+menampilkannya :
+    <?= html_entity_decode($j->uraian); ?>
+
+atau spt ini :    
+    $asli = $cttn->isi_catatan;
+    $proses = htmlspecialchars_decode($asli);
+    $proses1 = str_replace('&nbsp;', ' ', $proses); ?>
+    <textarea cols="75" rows="10" id="area3" name="isi_catatan"><?= $proses1 ?></textarea>
+
+
+
+<script src="<?= URLROOT; ?>/js/nicEdit.js"></script>
+<script type="text/javascript">
+   var iconsPath = '<?= URLROOT ?>/js/nicEditorIcons.gif';
+</script>
+<script type="text/javascript">
+   bkLib.onDomLoaded(function() {
+      new nicEditor({
+         iconsPath: iconsPath
+      }).panelInstance('area3');
+
+      function untuk_edit(modalId) {
+         new nicEditor({
+            iconsPath: iconsPath
+         }).panelInstance('area3_' + modalId);
+      }
+
+      $('.modal').on('shown.bs.modal', function() {
+         var modalId = $(this).attr('id').replace('edit', '');
+         untuk_edit(modalId);
+      });
+   });
+</script>
+
+
+---------------------------------------------------
+View 
+---------------------------------------------------
+<?php require APPROOT . '/views/inc/header.php'; ?>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card mb-4">
+            <div class="card-body">
+            
+            </div>
+        </div>
+    </div>
+</div>
+<?php require APPROOT . '/views/inc/footer.php'; ?>
+
+
+--------------------------------------------------------------
+Notif WA 
+-------------------------------------------------------------
+$ats = $this->pegawaiModel->getByNIP($_POST['pemohon']);
+$data['no_telp'] = $ats->no_telp;
+$data['isi_pesan'] = "[BSPJI:SIP-Kendi] Kendaraan dapat dipergunakan";
+notifWA($data);
+
+
+--------------------------------------------------------------
+Notif WA 
+-------------------------------------------------------------
+$notif = $this->Mpengeluaran->notif_ppspm();
+$data['no_telp'] = $notif->no_telp;
+$data['isi_pesan'] = "[BSPJI] Ada permohonan dana baru yang harus di validasi PPSPM";
+notifWA($data);
+exit();
+
+
+----------------------------------------------------------
+select admin.nip_pegawai, users.nama, users.no_telp from admin left join users on admin.nip_pegawai = users.nip where admin.nip_pegawa=....
+
+
+-----------------------------------------------------
+Cetak Ranger SQL
+------------------------------------------------------
+public function cetak_range($mulai, $sampai)
+    {
+        $query =  "SELECT persediaan_progres.*,users.nama FROM " . $this->tablep . " JOIN users ON users.nip=persediaan_progres.nip where persediaan_progres.tanggal >= '$mulai' and persediaan_progres.tanggal <='$sampai' ORDER BY id DESC";
+        $this->db->query($query);
+        return $this->db->resultSet();
+    }
+
+
+-------------------------------------------------------
+Set flash
+-------------------------------------------------------
+<div id="waktu-flash">
+    <?php flash(); ?>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#waktu-flash').fadeIn().delay(2000).fadeOut();
+    });
+</script>
+
+
+
+-------------------------------------------------------
+Set flash
+-------------------------------------------------------
+view :
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+      <?php sflash() ?>
+controller :
+      setFlash('Whatsapp berhasil dikirm', 'success');
+
+
+
+-------------------------------------------------------
+Auto Save
+-------------------------------------------------------
+    <?php if ($d->nama_file) { ?>
+       <form id="myForm_<?= $d->id_dok_permohonan ?>" method="post" action="<?= URLROOT ?>/sertifikasi/simpan_sesuai">
+          <input type="hidden" name="id_dok_permohonan_select" value="<?= $d->id_dok_permohonan ?>">
+          <input type="hidden" name="id_sertifikasi_select" value="<?= $data['sertifikasi']->id_sertifikasi ?>">
+          <select class="select-pahdi" name="sesuai_tidak" style="padding:0px !important; font-size:0.9em" data-unique="<?= $d->id_dok_permohonan ?>">
+             <option value="" <?= ($d->sesuai_file == '') ? 'selected' : '' ?>></option>
+             <option value="Sesuai" <?= ($d->sesuai_file == 'Sesuai') ? 'selected' : '' ?>>Sesuai</option>
+             <option value="Tidak" <?= ($d->sesuai_file == 'Tidak') ? 'selected' : '' ?>>Tidak Sesuai</option>
+          </select>
+       </form>
+    <?php } ?>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+   $(document).ready(function() {
+      $('.select-pahdi').on('change', function() {
+         var uniqueId = $(this).data('unique');
+         $('#myForm_' + uniqueId).submit();
+      });
+   });
+</script>
+
+
+
+--------------------------------------------------------------
+Cetak versi awal
+--------------------------------------------------------------
+<a href="javascript:printDiv('printly');" class="btn btn-danger tomboldua"><i class="fa fa-print"></i> &nbsp;Cetak</a>
+
+<textarea id="printing-css" style="display:none;">
+        @media all {
+            .page-break { display: none; }
+            .header {display:none;}
+            .main-header{display:block}
+        }
+
+        @media print 
+        {
+            @page { 
+                size: 210mm 297mm; 
+                margin-left:60px; 
+                margin-right:60px;
+                margin-top:100px; 
+                margin-bottom:10px;
+            }
+            .noPrint { 
+                display: none; 
+            }
+
+            .page-break { 
+                display: block; 
+                page-break-before: always; 
+            }
+            .header {
+                display:block
+            }
+            .main-header {
+                display:block
+            }
+         }
+            <?php
+            include "vendor/bootstrap/css/bootstrap.min.css";
+            ?>
+</textarea>
+
+<iframe id="printing-frame" name="print_frame" src="about:blank" style="display:none;"></iframe>
+<script type="text/javascript">
+    function printDiv(elementId) {
+        var a = document.getElementById('printing-css').value;
+        var b = document.getElementById(elementId).innerHTML;
+        window.frames["print_frame"].document.title = document.title;
+        window.frames["print_frame"].document.body.innerHTML = '<!DOCTYPE html> <html moznomarginboxes mozdisallowselectionprint><style>' + a + '</style>' + b;
+        window.frames["print_frame"].window.focus();
+        window.frames["print_frame"].window.print();
+    }
+</script>
+
+
+<div class="d-none">
+    <div id="printly">
+
+
+--------------------------------------------------------------
+print versi terbaik
+--------------------------------------------------------------
+<iframe id="printing-frame" name="print_frame" src="about:blank" style="display:none;"></iframe>
+    <script type="text/javascript">
+        function printDiv(divId) {
+            var printContents = document.getElementById(divId).innerHTML;
+            var originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+        }
+    </script>
+
+
+---------------------------------------------------------------------------------------
+CETAK
+---------------------------------------------------------------------------------------
+<a href="javascript:printDiv('printly');" class="btn btn-danger tomboldua"><i class="fa fa-print"></i> &nbsp;Cetak</a>
+
+<textarea id="printing-css" style="display:none;">
+        @media all {
+            .page-break { display: none; }
+            .header {display:none;}
+            .main-header{display:block}
+        }
+
+        @media print 
+        {
+            @page { 
+                size: 210mm 297mm; 
+                margin-left:70px; 
+                margin-right:70px;
+                margin-top:100px; 
+                margin-bottom:10px;
+            }
+            .noPrint { 
+                display: none; 
+            }
+        }
+        .page-break-after {
+            page-break-after: always;
+        }
+</textarea>
+
+<iframe id="printing-frame" name="print_frame" src="about:blank" style="display:none;"></iframe>
+<script type="text/javascript">
+    function printDiv(elementId) {
+        var a = document.getElementById('printing-css').value;
+        var b = document.getElementById(elementId).innerHTML;
+        window.frames["print_frame"].document.title = document.title;
+        window.frames["print_frame"].document.body.innerHTML = '<!DOCTYPE html> <html moznomarginboxes mozdisallowselectionprint><style>' + a + '</style>' + b;
+        window.frames["print_frame"].window.focus();
+        window.frames["print_frame"].window.print();
+    }
+</script>
+
+
+<div class="d-none">
+    <div id="printly">
+
+        <?php
+        $data = array(
+            array('halaman' => 1),
+            array('halaman' => 2),
+            array('halaman' => 3),
+            array('halaman' => 4),
+            array('halaman' => 5)
+        );
+        ?>
+
+        <?php
+        foreach ($data as $item) {
+            echo '<div class="page-break-after">Halaman ' . $item['halaman'] . '</div>';
+        }
+        ?>
+
+    </div>
+</div>
+
+
+
+---------------------------------------------
+UPLOAD FILE 
+---------------------------------------------
+$uploadDirectory = "../public/files/sertifikasi/" . $id . "/";
+        $fileExtension = pathinfo($files['file_kontrak']['name'], PATHINFO_EXTENSION);
+        $newFileName = $id . '_' . date('dmyhis') . '_kontrak.' . $fileExtension;
+        move_uploaded_file($files['file_kontrak']['tmp_name'], $uploadDirectory . $newFileName);
+        $namaFileValue = $newFileName;
+
+
+
+
+---------------------------------------------
+try catch
+---------------------------------------------
+try {
+
+} catch (Exception $e) {
+    // Blok kode yang akan dijalankan jika terjadi pengecualian
+    echo "Terjadi kesalahan: " . $e->getMessage();
+}
+
+
+--------------------------------------
+warna
+--------------------------------------
+background:rgba(0,255,0,0.05)
+background:rgba(255,0,0,0.05)
+
+foreach ($data['sertifikasi'] as $d) :
+                     if ($d->validasi_dokumen_pji == 'diterima') {
+                        $warna = 'rgba(0,255,0,0.05)';
+                     } else if ($d->validasi_dokumen_pji == 'ditolak') {
+                        $warna = 'rgba(255,0,0,0.05)';
+                     } else {
+                        $warna = '';
+                     }
+
+
+---------------------------------------
+Cek all 
+--------------------------------------
+
+<button type="button" onclick="checkAda()">Check All</button>
+
+
+<script>
+   function checkAda() {
+      var checkboxes = document.querySelectorAll('input[type="radio"][name^="cukup"][value="tidak"]');
+      checkboxes.forEach(function(checkbox) {
+         checkbox.checked = true;
+      });
+   }
+</script>
+
+
+---------------------------------------
+HAPUS
+--------------------------------------
+view :
+	<a href="javascript:void(0)" onclick="deleteData('<?= $field->idtmpnya ?>')">Delete</a>
+
+	<script>
+	   function deleteData(id) {
+		  console.log('URL: ' + '<?= URLROOT ?>/presensi/hapus_pengajuan_izin/' + id);
+		  Swal.fire({
+			 title: "Apakah anda yakin?",
+			 text: "Anda tidak bisa mengembalikan data yang dihapus!",
+			 icon: "warning",
+			 showCancelButton: true,
+			 confirmButtonColor: "#3085d6",
+			 cancelButtonColor: "#d33",
+			 confirmButtonText: "Ye, hapus!",
+			 cancelButtonText: 'Batal'
+		  }).then((result) => {
+			 if (result.isConfirmed) {
+				$.ajax({
+				   url: '<?= URLROOT ?>/presensi/hapus_pengajuan_izin/' + id,
+				   type: 'GET',
+				   dataType: 'json',
+
+				   success: function(response) {
+					  if (response.status == 'success') {
+						 // Tampilkan SweetAlert untuk sukses
+						 Swal.fire({
+							title: 'Sukses!',
+							text: response.message,
+							icon: 'success'
+						 }).then((result) => {
+							// Redirect atau lakukan tindakan lain setelah penghapusan
+							location.reload();
+						 });
+					  } else {
+						 // Tampilkan SweetAlert untuk kesalahan
+						 Swal.fire({
+							title: 'Error!',
+							text: response.message,
+							icon: 'error'
+						 });
+					  }
+				   }
+				});
+			 }
+		  });
+	   }
+	</script>
+
+controller :
+	public function hapus_pengajuan_izin($id)
+    {
+        if ($id !== false && $id > 0) {
+            $result = $this->Mpresensi->hapus_pengajuan_izin($id);
+            if ($result) {
+                $response = array('status' => 'success', 'message' => 'Data berhasil dihapus.');
+            } else {
+                $response = array('status' => 'error', 'message' => 'Gagal menghapus data.');
+            }
+        } else {
+            $response = array('status' => 'error', 'message' => 'ID tidak valid.');
+        }
+        echo json_encode($response);
+    }
+
+model :
+	public function hapus_pengajuan_izin($id)
+    {
+        $sql = "DELETE from tmp_izin where id=:id";
+        $this->db->query($sql);
+        $this->db->bind('id', $id);
+        $this->db->execute();
+        return true;
+    }
+
+
+---------------------------------------
+HAPUS CARA 2 = $_GET
+--------------------------------------
+view :
+	<a href="javascript:void(0)" onclick="deleteData('<?= $field->idtmpnya ?>')">Delete</a>
+
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+   function deleteData(id) {
+      console.log('URL: ' + '<?= URLROOT ?>/presensi/karyawan_hapus/' + id);
+      Swal.fire({
+         title: "Apakah anda yakin?",
+         text: "Anda tidak bisa mengembalikan data yang dihapus!",
+         icon: "warning",
+         showCancelButton: true,
+         confirmButtonColor: "#3085d6",
+         cancelButtonColor: "#d33",
+         confirmButtonText: "Ye, hapus!",
+         cancelButtonText: 'Batal'
+      }).then((result) => {
+         if (result.isConfirmed) {
+            $.ajax({
+               url: '<?= URLROOT ?>/presensi/karyawan_hapus?id=' + id,
+               type: 'POST',
+               dataType: 'json',
+               success: function(response) {
+                  if (response.status == 'success') {
+                     // Tampilkan SweetAlert untuk sukses
+                     Swal.fire({
+                        title: 'Sukses!',
+                        text: response.message,
+                        icon: 'success'
+                     }).then((result) => {
+                        // Redirect atau lakukan tindakan lain setelah penghapusan
+                        location.reload();
+                     });
+                  } else {
+                     // Tampilkan SweetAlert untuk kesalahan
+                     Swal.fire({
+                        title: 'Error!',
+                        text: response.message,
+                        icon: 'error'
+                     });
+                  }
+               }
+            });
+         }
+      });
+   }
+</script>
+
+controller :
+	public function karyawan_hapus()
+    {
+        $id = $_GET['id'];
+        $result = $this->Mpresensi->karyawan_hapus($id);
+        if ($result) {
+            $response = array('status' => 'success', 'message' => 'Data berhasil dihapus.');
+        } else {
+            $response = array('status' => 'error', 'message' => 'Gagal menghapus data.');
+        }
+        echo json_encode($response);
+    }
+
+model :
+	public function karyawan_hapus($id)
+    {
+        $sql = "DELETE from dosen where npk=:npk";
+        $this->db->query($sql);
+        $this->db->bind('npk', $id);
+        $this->db->execute();
+        return true;
+    }
+	
+
+
+
+
+---------------------------------------
+sudah belum 
+---------------------------------------
+controller :
+	public function permohonan_sertifikasi($status = null)
+    {
+        $data['main_title'] = "Sertifikasi";
+        $data['title'] = "Permohonan Baru";
+        $data['p_umum'] = $this->db->get_where('pengaturan_umum', ['id' => 1])->row_array();
+        $data['user'] = $this->db->get_where('user', ['id_user' => $this->session->userdata('id_user')])->row_array();
+
+        if ($status == "") {
+            $status = "Belum";
+        } else {
+        }
+        $data['status'] = $status;
+
+        $data['riwayat'] = $this->Sertifikasi_model->permohonan_sertifikasi($status);
+
+        $this->load->view('templates/supadmin/table_header', $data);
+        $this->load->view('templates/supadmin/sidebar', $data);
+        if ($status == 'Belum') {
+            $this->load->view('sertifikasi/sertifikasi_diterima', $data);
+        } else {
+            $this->load->view('sertifikasi/sertifikasi_diterima_tim', $data);
+        }
+    }
+	
+model :
+    function permohonan_sertifikasi($status)
+    {
+        $this->db->select('*');
+        $this->db->from('pemohon_sertifikasi a');
+        $this->db->join('perusahaan b', 'a.nama_perusahaan_sertifikasi=b.id_perusahaan', 'left');
+        $this->db->join('ser_checklist c', 'a.id_pemohon_sertifikasi=c.id_pemohon_sertifikasi_checklist', 'left');
+        $this->db->where('a.status_sertifikasi = "Approved"');
+        if ($status == 'Belum') {
+            $this->db->where('(a.tgl_validasi_cs <> "0000-00-00" or a.tgl_validasi_cs IS NOT NULL) ');
+            $this->db->where('(a.tgl_validasi_tim_sertifikasi = "0000-00-00 00:00:00" or tgl_validasi_tim_sertifikasi IS NULL)');
+        } else {
+            $this->db->where('a.tgl_validasi_tim_sertifikasi <> "0000-00-00 00:00:00"');
+        }
+        $query = $this->db->get();
+        if ($query->num_rows() != 0) {
+            return $query->result_array();
+        } else {
+            return false;
+        }
+    }
+	
+
+View :
+<div class="form-group col-sm-4" style="padding-left:0px;">
+    <label><b>Status SK Kelanjutan</b></label>
+        <select name="status" id="status" class="form-control" style="height:30px; padding:0px 10px; margin-top:-3px;" onchange="change_status()">
+            <option <?php if ($status == "Belum") echo "selected='selected'"; ?> value="Belum">Belum Divalidasi</option>
+            <option <?php if ($status == "Sudah") echo "selected='selected'"; ?> value="Sudah">Sudah Divalidasi</option>
+        </select>
+</div>
+
+function change_status() {
+      var status = document.getElementById('status').value;
+      window.location.href = "<?php echo base_url('sertifikasi/SK_kelanjutan/') ?>" + status;
+   }
