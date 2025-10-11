@@ -6,6 +6,18 @@ class Mabsen
         $this->db = new Database;
     }
 
+    // KHUSUS RFID SISWA -----------------
+
+    public function ambil_pegawai_by_rfid($rfid)
+    {
+        $sql = "SELECT * FROM pegawai WHERE rfid = :rfid";
+        $this->db->query($sql);
+        $this->db->bind('rfid', $rfid);
+        return $this->db->single();
+    }
+
+    // KHUSUS RFID SISWA -----------------
+
     public function jadwal()
     {
         $sql = "SELECT * from jadwal";
@@ -83,13 +95,13 @@ class Mabsen
     public function rekap_mengajar_admin($bulan, $tahun)
     {
         /*
-        $sql = "SELECT pegawai.*, COUNT(absen_kelas.tgl_absen_kelas) as jumlah 
-        FROM pegawai 
-        LEFT JOIN absen_kelas ON pegawai.nik = absen_kelas.nik_absen_kelas 
-            AND MONTH(absen_kelas.tgl_absen_kelas) = :bulan 
-            AND YEAR(absen_kelas.tgl_absen_kelas) = :tahun 
+        $sql = "SELECT pegawai.*, COUNT(absen_kelas.tgl_absen_kelas) as jumlah
+        FROM pegawai
+        LEFT JOIN absen_kelas ON pegawai.nik = absen_kelas.nik_absen_kelas
+        AND MONTH(absen_kelas.tgl_absen_kelas) = :bulan
+        AND YEAR(absen_kelas.tgl_absen_kelas) = :tahun
         WHERE pegawai.mengajar=:mengajar
-        GROUP BY pegawai.nik 
+        GROUP BY pegawai.nik
         ORDER BY mengajar DESC, nama, CAST(nik as signed)";
 
         $this->db->query($sql);
@@ -97,21 +109,21 @@ class Mabsen
         $this->db->bind('tahun', $tahun);
         $this->db->bind('mengajar', 'Ya');
         return $this->db->resultSet();
-        */
-        $sql = "SELECT 
-                pegawai.*, 
+         */
+        $sql = "SELECT
+                pegawai.*,
                 COUNT(absen_kelas.tgl_absen_kelas) AS jumlah,
                 SUM(CASE WHEN DATE_FORMAT(absen_kelas.tgl_absen_kelas, '%u') = DATE_FORMAT(CONCAT(:tahun, '-', :bulan, '-01'), '%u') THEN 1 ELSE 0 END) AS minggu_1,
                 SUM(CASE WHEN DATE_FORMAT(absen_kelas.tgl_absen_kelas, '%u') = DATE_FORMAT(CONCAT(:tahun, '-', :bulan, '-08'), '%u') THEN 1 ELSE 0 END) AS minggu_2,
                 SUM(CASE WHEN DATE_FORMAT(absen_kelas.tgl_absen_kelas, '%u') = DATE_FORMAT(CONCAT(:tahun, '-', :bulan, '-15'), '%u') THEN 1 ELSE 0 END) AS minggu_3,
                 SUM(CASE WHEN DATE_FORMAT(absen_kelas.tgl_absen_kelas, '%u') = DATE_FORMAT(CONCAT(:tahun, '-', :bulan, '-22'), '%u') THEN 1 ELSE 0 END) AS minggu_4,
                 SUM(CASE WHEN DATE_FORMAT(absen_kelas.tgl_absen_kelas, '%u') = DATE_FORMAT(CONCAT(:tahun, '-', :bulan, '-29'), '%u') THEN 1 ELSE 0 END) AS minggu_5
-            FROM pegawai 
-            LEFT JOIN absen_kelas ON pegawai.nik = absen_kelas.nik_absen_kelas 
-                AND MONTH(absen_kelas.tgl_absen_kelas) = :bulan 
-                AND YEAR(absen_kelas.tgl_absen_kelas) = :tahun 
+            FROM pegawai
+            LEFT JOIN absen_kelas ON pegawai.nik = absen_kelas.nik_absen_kelas
+                AND MONTH(absen_kelas.tgl_absen_kelas) = :bulan
+                AND YEAR(absen_kelas.tgl_absen_kelas) = :tahun
             WHERE pegawai.mengajar=:mengajar
-            GROUP BY pegawai.nik 
+            GROUP BY pegawai.nik
             ORDER BY pegawai.nama, CAST(pegawai.nik AS SIGNED)";
 
         $this->db->query($sql);
@@ -187,7 +199,7 @@ class Mabsen
     {
         $query = "INSERT INTO izin_mengajar (id_izin, nik, tanggal_awal, tanggal_akhir) values (:id_izin, :nik, :tanggal_awal, :tanggal_akhir)";
         $this->db->query($query);
-        $this->db->bind('id_izin', NULL);
+        $this->db->bind('id_izin', null);
         $this->db->bind('nik', $_SESSION['nik']);
         $this->db->bind('tanggal_awal', $data['tanggal_awal']);
         $this->db->bind('tanggal_akhir', $data['tanggal_akhir']);
@@ -198,14 +210,14 @@ class Mabsen
         if (isset($data['kelas']) && isset($data['mata_pelajaran']) && isset($data['status_izin']) && isset($data['alasan_izin'])) {
             $count = count($data['kelas']);
             for ($i = 0; $i < $count; $i++) {
-                $kelas          = $data['kelas'][$i];
+                $kelas = $data['kelas'][$i];
                 $mata_pelajaran = $data['mata_pelajaran'][$i];
-                $status_izin    = $data['status_izin'][$i];
-                $alasan_izin    = $data['alasan_izin'][$i];
+                $status_izin = $data['status_izin'][$i];
+                $alasan_izin = $data['alasan_izin'][$i];
 
                 $query = "INSERT INTO izin_mengajar_transaksi (id_transaksi, id_izin_transaksi, kelas, mata_pelajaran, status_izin, alasan_izin) values (:id_transaksi, :id_izin_transaksi, :kelas, :mata_pelajaran, :status_izin, :alasan_izin)";
                 $this->db->query($query);
-                $this->db->bind('id_transaksi', NULL);
+                $this->db->bind('id_transaksi', null);
                 $this->db->bind('id_izin_transaksi', $id_izin);
                 $this->db->bind('kelas', $kelas);
                 $this->db->bind('mata_pelajaran', $mata_pelajaran);
@@ -241,11 +253,11 @@ class Mabsen
         if (isset($data['kelas']) && isset($data['mata_pelajaran']) && isset($data['status_izin']) && isset($data['alasan_izin'])) {
             $count = count($data['kelas']);
             for ($i = 0; $i < $count; $i++) {
-                $id_transaksi   = $data['id_transaksi'][$i];
-                $kelas          = $data['kelas'][$i];
+                $id_transaksi = $data['id_transaksi'][$i];
+                $kelas = $data['kelas'][$i];
                 $mata_pelajaran = $data['mata_pelajaran'][$i];
-                $status_izin    = $data['status_izin'][$i];
-                $alasan_izin    = $data['alasan_izin'][$i];
+                $status_izin = $data['status_izin'][$i];
+                $alasan_izin = $data['alasan_izin'][$i];
 
                 $query = "UPDATE izin_mengajar_transaksi set kelas=:kelas, mata_pelajaran=:mata_pelajaran, status_izin=:status_izin, alasan_izin=:alasan_izin WHERE id_transaksi=:id_transaksi";
                 $this->db->query($query);
@@ -261,14 +273,14 @@ class Mabsen
         if (isset($data['kelas2']) && isset($data['mata_pelajaran2']) && isset($data['status_izin2']) && isset($data['alasan_izin2'])) {
             $count = count($data['kelas2']);
             for ($i = 0; $i < $count; $i++) {
-                $kelas          = $data['kelas2'][$i];
+                $kelas = $data['kelas2'][$i];
                 $mata_pelajaran = $data['mata_pelajaran2'][$i];
-                $status_izin    = $data['status_izin2'][$i];
-                $alasan_izin    = $data['alasan_izin2'][$i];
+                $status_izin = $data['status_izin2'][$i];
+                $alasan_izin = $data['alasan_izin2'][$i];
 
                 $query = "INSERT INTO izin_mengajar_transaksi (id_transaksi, id_izin_transaksi, kelas, mata_pelajaran, status_izin, alasan_izin) values (:id_transaksi, :id_izin_transaksi, :kelas, :mata_pelajaran, :status_izin, :alasan_izin)";
                 $this->db->query($query);
-                $this->db->bind('id_transaksi', NULL);
+                $this->db->bind('id_transaksi', null);
                 $this->db->bind('id_izin_transaksi', $data['id_izin']);
                 $this->db->bind('kelas', $kelas);
                 $this->db->bind('mata_pelajaran', $mata_pelajaran);
@@ -317,8 +329,7 @@ class Mabsen
         return true;
     }
 
-
-    //--IZIN MENGAJAR VERSI 2 
+    //--IZIN MENGAJAR VERSI 2
     public function isi_izin($data, $kelas, $ruang, $jam, $tgl)
     {
         $sql = "INSERT into absen_izin (id_izin, nik_izin, tgl_izin, kelas_izin, ruang_izin, jam_izin, mata_pelajaran_pendek, mata_pelajaran, jenis_izin, alasan_izin, acc) values (:id_izin, :nik_izin, :tgl_izin, :kelas_izin, :ruang_izin, :jam_izin, :mata_pelajaran_pendek, :mata_pelajaran, :jenis_izin, :alasan_izin, :acc)";
@@ -349,7 +360,7 @@ class Mabsen
             if ($data['materi_pelajaran'][$key] != $row->materi_pelajaran) {
                 $updates[] = array(
                     'id_absen_kelas' => $id_absen_kelas,
-                    'materi_pelajaran' => $data['materi_pelajaran'][$key]
+                    'materi_pelajaran' => $data['materi_pelajaran'][$key],
                 );
             }
         }
@@ -362,16 +373,6 @@ class Mabsen
         }
         return true;
     }
-
-
-
-
-
-
-
-
-
-
 
     public function ambil_nomor_guru($id)
     {

@@ -1,1 +1,78 @@
 543241200 nis Siswa dengan RFID
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // === Langkah 1: Kirim data guru ke API ===
+    public function masukkan_data_guru()
+    {
+        $db = new Database();
+        $db->query("SELECT nik FROM pegawai");
+        $pegawais = $db->resultSet();
+
+        if (!$pegawais) {
+            die("Tidak ada data pegawai ditemukan.");
+        }
+
+        foreach ($pegawais as $pegawai) {
+            $this->kirimGuruKeAPI($pegawai->nik);
+        }
+
+        echo "<h4>Proses selesai. Semua guru telah dikirim ke API.</h4>";
+        echo "<p><a href='" . URLROOT . "/jadwal_otomatis'>Kembali ke Menu</a></p>";
+    }
+
+    // === Fungsi bantu untuk POST ke API guru ===
+    private function kirimGuruKeAPI($nik)
+    {
+        $ch = curl_init($this->apiUrl);
+
+        $data = [
+            'nama' => $nik,
+        ];
+
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => http_build_query($data),
+            CURLOPT_HTTPHEADER => [
+                "Authorization: Bearer " . $this->token,
+                "Accept: application/json",
+            ],
+        ]);
+
+        $response = curl_exec($ch);
+        $error = curl_error($ch);
+        curl_close($ch);
+
+        if ($error) {
+            echo "<p>❌ Error saat kirim NIK {$nik}: {$error}</p>";
+            return;
+        }
+
+        $result = json_decode($response, true);
+
+        if (isset($result['nama'])) {
+            echo "<p>✅ Guru {$result['nama']} berhasil ditambahkan.</p>";
+        } else {
+            echo "<p>⚠️ Gagal kirim guru NIK {$nik}. Respon: " . htmlspecialchars($response) . "</p>";
+        }
+    }
+
+    // === Langkah 2: Masukkan data hari (placeholder dulu) ===
+    public function masukkan_data_hari()
+    {
+        echo "<h3>Langkah berikutnya: Masukkan data hari</h3>";
+        echo "<p>Belum diimplementasikan.</p>";
+        echo "<p><a href='" . URLROOT . "/jadwal_otomatis'>Kembali ke Menu</a></p>";
+    }

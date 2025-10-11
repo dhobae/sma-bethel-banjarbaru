@@ -510,6 +510,68 @@ CREATE TABLE `users` (
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- tambahan dari AI
+ALTER TABLE `absen_harian_siswa` 
+   ADD COLUMN `jam_pulang_ahs` TIME NULL AFTER `jam_masuk_ahs`;
+
+CREATE TABLE `kelompok_tugas` (
+  `id_kelompok_tugas` int NOT NULL AUTO_INCREMENT,
+  `kode_tugas` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `id_pelajaran` int DEFAULT NULL,
+  `mata_pelajaran` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `singkatan` varchar(15) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nik_guru` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nama_guru` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `kelas` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `ruang` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `prodi` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `id_jadwal_setting` int DEFAULT NULL,
+  `jumlah_jam_perminggu` int DEFAULT NULL COMMENT 'Jumlah jam per minggu untuk mapel ini',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_kelompok_tugas`),
+  UNIQUE KEY `kode_tugas` (`kode_tugas`),
+  KEY `id_jadwal_setting` (`id_jadwal_setting`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `kelompok_waktu` (
+  `id_kelompok_waktu` int NOT NULL AUTO_INCREMENT,
+  `kode_waktu` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `hari` varchar(10) COLLATE utf8mb4_general_ci NOT NULL,
+  `urutan_hari` int NOT NULL COMMENT '1=Senin, 2=Selasa, dst',
+  `jam_ke` int NOT NULL,
+  `jam_mulai` time NOT NULL,
+  `jam_selesai` time NOT NULL,
+  `rentang_waktu` varchar(30) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `id_jadwal_setting` int DEFAULT NULL,
+  `aktif` tinyint DEFAULT 1 COMMENT '1=aktif, 0=tidak aktif (libur/istirahat)',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_kelompok_waktu`),
+  UNIQUE KEY `kode_waktu` (`kode_waktu`),
+  KEY `id_jadwal_setting` (`id_jadwal_setting`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `jadwal_generate_log` (
+  `id_log` int NOT NULL AUTO_INCREMENT,
+  `id_jadwal_setting` int DEFAULT NULL,
+  `tanggal_generate` datetime DEFAULT CURRENT_TIMESTAMP,
+  `jumlah_generasi` int DEFAULT NULL,
+  `jumlah_populasi` int DEFAULT NULL,
+  `probabilitas_crossover` decimal(3,2) DEFAULT NULL,
+  `probabilitas_mutasi` decimal(3,2) DEFAULT NULL,
+  `fitness_terbaik` decimal(5,4) DEFAULT NULL,
+  `jumlah_konflik_guru` int DEFAULT NULL,
+  `jumlah_konflik_kelas` int DEFAULT NULL,
+  `waktu_komputasi` int DEFAULT NULL COMMENT 'Dalam detik',
+  `status` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Sukses, Gagal, Proses',
+  `keterangan` text COLLATE utf8mb4_general_ci,
+  `user_generate` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_log`),
+  KEY `id_jadwal_setting` (`id_jadwal_setting`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 ALTER TABLE `absen`
   ADD PRIMARY KEY (`id`);
 
@@ -734,3 +796,5 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+

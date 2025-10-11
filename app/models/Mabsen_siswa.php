@@ -7,76 +7,144 @@ class Mabsen_siswa
     }
 
     // KHUSUS RFID SISWA -----------------
+
+    /**
+     * Ambil data siswa berdasarkan RFID
+     */
     public function ambil_siswa_by_rfid($rfid)
     {
-        $sql = "SELECT * from siswa where rfid=:rfid";
+        $sql = "SELECT * FROM siswa WHERE rfid = :rfid";
         $this->db->query($sql);
         $this->db->bind('rfid', $rfid);
         return $this->db->single();
     }
 
-    public function hadir_rfid_siswa($data)
-    {
-        $nis = $_SESSION['nik'];
-        $tanggal = date("Y-m-d");
-
-        $sudah_absen = "SELECT * from absen_harian_siswa where nis_ahs=:nis and tgl_ahs=:tanggal";
-        $this->db->query($sudah_absen);
-        $this->db->bind('nis', $nis);
-        $this->db->bind('tanggal', $tanggal);
-        $result3 = $this->db->resultSet();
-        if ($result3) {
-            return true;
-        }
-
-        $queryupdate = "INSERT INTO absen_harian_siswa (nis_ahs, tgl_ahs, status_ahs, jam_masuk_ahs) values (:nis_ahs, :tgl_ahs, :status_ahs, :jam_masuk_ahs)";
-        $this->db->query($queryupdate);
-        $this->db->bind('nis_ahs', $nis);
-        $this->db->bind('tgl_ahs', $tanggal);
-        $this->db->bind('status_ahs', 'Hadir');
-        $this->db->bind('jam_masuk_ahs', date('H:i:s'));
-        $this->db->execute();
-
-        return true;
-    }
-
-    public function isi_absen_by_rfid($data)
-    {
-        $rfid = $data['isi'];
-        $cari1 = "SELECT nis from siswa where rfid=:rfid";
-        $this->db->query($cari1);
-        $this->db->bind('rfid', $rfid);
-        $result_cari1 = $this->db->single();
-
-        $nis = $result_cari1->nis;
-        $tanggal = date("Y-m-d");
-
-        $sudah_absen = "SELECT * from absen_harian_siswa where nis_ahs=:nis and tgl_ahs=:tanggal";
-        $this->db->query($sudah_absen);
-        $this->db->bind('nis', $nis);
-        $this->db->bind('tanggal', $tanggal);
-        $result3 = $this->db->resultSet();
-        if ($result3) {
-            return true;
-        }
-
-        $queryupdate = "INSERT INTO absen_harian_siswa (nis_ahs, tgl_ahs, status_ahs, jam_masuk_ahs) values (:nis_ahs, :tgl_ahs, :status_ahs, :jam_masuk_ahs)";
-        $this->db->query($queryupdate);
-        $this->db->bind('nis_ahs', $nis);
-        $this->db->bind('tgl_ahs', $tanggal);
-        $this->db->bind('status_ahs', 'Hadir');
-        $this->db->bind('jam_masuk_ahs', date('H:i:s'));
-        $this->db->execute();
-
-        return true;
-    }
-
+    /**
+     * Cek apakah siswa sudah absen hari ini
+     */
     public function cek_absen_rfid($nis)
     {
-        $sql = "SELECT * from absen_harian_siswa where nis_ahs=:nis and tgl_ahs=:tanggal";
+        $sql = "SELECT * FROM absen_harian_siswa
+                WHERE nis_ahs = :nis
+                AND tgl_ahs = :tanggal";
         $this->db->query($sql);
         $this->db->bind('nis', $nis);
         $this->db->bind('tanggal', date('Y-m-d'));
         return $this->db->single();
+    }
+
+    /**
+     * Absen masuk siswa (INSERT)
+     */
+    public function hadir_rfid_siswa($data)
+    {
+        // Ambil data siswa dari RFID
+        $rfid = $data['isi'];
+        $siswa = $this->ambil_siswa_by_rfid($rfid);
+
+        if (!$siswa) {
+            return false;
+        }
+
+        $nis = $siswa->nis;
+        $tanggal = date("Y-m-d");
+
+        // Cek apakah sudah absen hari ini
+        $cek = $this->cek_absen_rfid($nis);
+        if ($cek) {
+            // Sudah absen, return true tapi tidak insert lagi
+            return true;
+        }
+
+        // Insert absen masuk
+        $query = "INSERT INTO absen_harian_siswa
+                  (nis_ahs, tgl_ahs, status_ahs, jam_masuk_ahs)
+                  VALUES (:nis_ahs, :tgl_ahs, :status_ahs, :jam_masuk_ahs)";
+
+        $this->db->query($query);
+        $this->db->bind('nis_ahs', $nis);
+        $this->db->bind('tgl_ahs', $tanggal);
+        $this->db->bind('status_ahs', 'Hadir');
+        $this->db->bind('jam_masuk_ahs', date('H:i:s'));
+
+        return $this->db->execute();
+    }
+
+    /**
+     * Absen pulang siswa (UPDATE)
+     */
+    public function pulang_rfid_siswa($data)
+    {
+        // Ambil data siswa dari RFID
+        $rfid = $data['isi'];
+        $siswa = $this->ambil_siswa_by_rfid($rfid);
+
+        if (!$siswa) {
+            return false;
+        }
+
+        $nis = $siswa->nis;
+        $tanggal = date("Y-m-d");
+
+        // Cek apakah sudah absen masuk hari ini
+        $cek = $this->cek_absen_rfid($nis);
+        if (!$cek) {
+            // Belum absen masuk, tidak bisa absen pulang
+            return false;
+        }
+
+        // Cek apakah sudah absen pulang
+        if (!empty($cek->jam_pulang_ahs)) {
+            // Sudah absen pulang
+            return true;
+        }
+
+        // Update jam pulang
+        $query = "UPDATE absen_harian_siswa
+                  SET jam_pulang_ahs = :jam_pulang_ahs
+                  WHERE nis_ahs = :nis_ahs
+                  AND tgl_ahs = :tgl_ahs";
+
+        $this->db->query($query);
+        $this->db->bind('jam_pulang_ahs', date('H:i:s'));
+        $this->db->bind('nis_ahs', $nis);
+        $this->db->bind('tgl_ahs', $tanggal);
+
+        return $this->db->execute();
+    }
+
+    /**
+     * Method lama - bisa dihapus jika tidak digunakan
+     */
+    public function isi_absen_by_rfid($data)
+    {
+        $rfid = $data['isi'];
+        $siswa = $this->ambil_siswa_by_rfid($rfid);
+
+        if (!$siswa) {
+            return false;
+        }
+
+        $nis = $siswa->nis;
+        $tanggal = date("Y-m-d");
+
+        // Cek apakah sudah absen hari ini
+        $cek = $this->cek_absen_rfid($nis);
+        if ($cek) {
+            return true;
+        }
+
+        // Insert absen masuk
+        $query = "INSERT INTO absen_harian_siswa
+                  (nis_ahs, tgl_ahs, status_ahs, jam_masuk_ahs)
+                  VALUES (:nis_ahs, :tgl_ahs, :status_ahs, :jam_masuk_ahs)";
+
+        $this->db->query($query);
+        $this->db->bind('nis_ahs', $nis);
+        $this->db->bind('tgl_ahs', $tanggal);
+        $this->db->bind('status_ahs', 'Hadir');
+        $this->db->bind('jam_masuk_ahs', date('H:i:s'));
+
+        return $this->db->execute();
     }
 }

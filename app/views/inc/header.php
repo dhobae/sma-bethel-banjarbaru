@@ -2,13 +2,14 @@
 <html>
 
 <head lang="en">
-    <title>Presensi SMK Telkom Banjarbaru</title>
+    <title>Presensi SMA Bethel Banjarbaru</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="KRS Online yang digunakan untuk mengatur kartu rencana studi mahasiswa">
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="<?= URLROOT ?>/dist/plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="<?= URLROOT ?>/dist/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
 
@@ -52,13 +53,16 @@
                 <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
             </li>
             <li class="nav-item d-none d-sm-inline-block">
-                <a href="https://www.smktelkom-bjb.sch.id/web/" class="nav-link" target=_blank title="Ke Web Skatel Bjb">SMK Telkom Banjarbaru</a>
+                <a href="https://www.smktelkom-bjb.sch.id/web/" class="nav-link" target=_blank
+                    title="Ke Web Skatel Bjb">SMK Telkom Banjarbaru</a>
             </li>
             <li class="nav-item d-none d-sm-inline-block">
-                <a href="https://igracias.telkomschools.sch.id/ts/login/" class="nav-link" target=_blank title="Ke Elearning IGRACIAS">IGRACIAS</a>
+                <a href="https://igracias.telkomschools.sch.id/ts/login/" class="nav-link" target=_blank
+                    title="Ke Elearning IGRACIAS">IGRACIAS</a>
             </li>
             <li class="nav-item d-none d-sm-inline-block">
-                <a href="http://ppdb.smktelkom-bjb.sch.id/" class="nav-link" target=_blank title="Ke PPDB Skatel Bjb">PPDB</a>
+                <a href="http://ppdb.smktelkom-bjb.sch.id/" class="nav-link" target=_blank
+                    title="Ke PPDB Skatel Bjb">PPDB</a>
             </li>
         </ul>
 
@@ -68,11 +72,11 @@
         <!-- Right navbar links -->
         <ul class="navbar-nav ml-auto">
             <?php if (($_SESSION['role'] != 'admin') && ($_SESSION['role'] != 'siswa')) { ?>
-                <li class="nav-item">
-                    <a type="button" data-toggle="modal" data-target="#wa" class="nav-link" href="#">
-                        <b>Nomor WhatsApp</b>
-                    </a>
-                </li>
+            <li class="nav-item">
+                <a type="button" data-toggle="modal" data-target="#wa" class="nav-link" href="#">
+                    <b>Nomor WhatsApp</b>
+                </a>
+            </li>
             <?php } ?>
             <li class="nav-item">
                 <a class="nav-link" href="<?= URLROOT ?>/logout">
@@ -86,17 +90,18 @@
 
 
     <style>
-        .coba {
-            color: red !important;
-            background-color: white !important;
-        }
+    .coba {
+        color: red !important;
+        background-color: white !important;
+    }
     </style>
 
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo -->
         <a href="<?= URLROOT ?>" class="brand-link">
-            <img src="<?= URLROOT; ?>/skatel/img/ts_icon1.png" alt="AdminLTE Logo" class="brand-image" style="opacity: 1">
+            <img src="<?= URLROOT; ?>/skatel/img/ts_icon1.png" alt="AdminLTE Logo" class="brand-image"
+                style="opacity: 1">
             <span class="brand-text" style="color:#6a1212; font-weight:bold">SMK Telkom BJB</span>
         </a>
 
@@ -106,9 +111,10 @@
                 <div class="image">
 
                     <?php if ($_SESSION['avatar']) { ?>
-                        <img src="<?= URLROOT ?>/skatel/avatar/<?= $_SESSION['avatar'] ?>" class="img-circle elevation-1" alt="User Image" style="height:37px !important">
+                    <img src="<?= URLROOT ?>/skatel/avatar/<?= $_SESSION['avatar'] ?>" class="img-circle elevation-1"
+                        alt="User Image" style="height:37px !important">
                     <?php } else { ?>
-                        <img src="<?= URLROOT ?>/dist/img/userumum.jpg" class="img-circle elevation-2" alt="User Image">
+                    <img src="<?= URLROOT ?>/dist/img/userumum.jpg" class="img-circle elevation-2" alt="User Image">
                     <?php } ?>
 
                 </div>
@@ -120,7 +126,8 @@
 
             <nav class="mt-2">
                 <!-- <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">  -->
-                <ul class="nav nav-compact nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <ul class="nav nav-compact nav-sidebar flex-column" data-widget="treeview" role="menu"
+                    data-accordion="false">
 
 
                     <?php
@@ -136,15 +143,15 @@
 
 
     <script>
-        var url = window.location;
-        const allLinks = document.querySelectorAll('.nav-item a');
-        const currentLink = [...allLinks].filter(e => {
-            return e.href == url;
-        });
+    var url = window.location;
+    const allLinks = document.querySelectorAll('.nav-item a');
+    const currentLink = [...allLinks].filter(e => {
+        return e.href == url;
+    });
 
-        currentLink[0].classList.add("active")
-        currentLink[0].closest(".nav-treeview").style.display = "block";
-        currentLink[0].closest(".has-treeview").classList.add("active");
+    currentLink[0].classList.add("active")
+    currentLink[0].closest(".nav-treeview").style.display = "block";
+    currentLink[0].closest(".has-treeview").classList.add("active");
     </script>
 
 
@@ -175,13 +182,17 @@
 
                         <input type="hidden" name="nik" value="<?= $_SESSION['nik'] ?>">
                         <label>Nomor WhatsApp :</label>
-                        <input type="text" name="nomor_hp" value="<?= $no_hp->nomor_hp ?>" class="form-control text1" required>
+                        <input type="text" name="nomor_hp" value="<?= $no_hp->nomor_hp ?>" class="form-control text1"
+                            required>
                         <small><i>*tuliskan nomor HP tanpa spasi dan dimulai dengan 0 (nol)</i></small>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-warning btn-sm" data-dismiss="modal"><i class="fa fa-undo"></i> &nbsp;Close</button>
-                        <button type="submit" name="proses" value="simpan" class="btn btn-danger btn-sm"><i class="fa fa-save"></i> &nbsp;Simpan</button>
-                        <button type="submit" name="proses" value="tes_wa" class="btn btn-success btn-sm"><i class="fa fa-paper-plane"></i> &nbsp;Tes WA</button>
+                        <button type="button" class="btn btn-warning btn-sm" data-dismiss="modal"><i
+                                class="fa fa-undo"></i> &nbsp;Close</button>
+                        <button type="submit" name="proses" value="simpan" class="btn btn-danger btn-sm"><i
+                                class="fa fa-save"></i> &nbsp;Simpan</button>
+                        <button type="submit" name="proses" value="tes_wa" class="btn btn-success btn-sm"><i
+                                class="fa fa-paper-plane"></i> &nbsp;Tes WA</button>
                     </div>
                 </form>
             </div>
