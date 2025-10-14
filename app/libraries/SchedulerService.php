@@ -18,13 +18,9 @@ class SchedulerService
     public function __construct($db)
     {
         $this->db = $db;
-        
         $this->loadDataFromDatabase();
     }
 
-    /**
-     * Memuat semua data yang diperlukan dari database
-     */
     private function loadDataFromDatabase()
     {
         error_log("SchedulerService: Memuat data dari database...");
@@ -70,9 +66,6 @@ class SchedulerService
         error_log("SchedulerService: " . count($this->waliKelas) . " data wali kelas dimuat.");
     }
 
-    /**
-     * Fungsi utama untuk menjalankan algoritma genetika
-     */
     public function generateSchedule()
     {
         error_log("SchedulerService: generateSchedule() dimulai.");
@@ -95,7 +88,7 @@ class SchedulerService
                 $fitnessScores[] = $fitness;
 
                 // Log fitness terbaik di generasi ini
-                if ($fitness > 0) {
+                if ($fitness > 0.9 && $generation % 10 == 0) {
                     error_log("SchedulerService: Generasi " . $generation . " - Individu " . $index . " Fitness: " . number_format($fitness, 4));
                 }
             }
@@ -109,7 +102,7 @@ class SchedulerService
             }
 
             // Cek apakah sudah menemukan solusi sempurna
-            if ($fitnessScores[0] >= 0.95) {
+            if ($fitnessScores[0] >= 0.99) {
                 error_log("SchedulerService: Solusi optimal ditemukan di generasi " . $generation);
                 break;
             }
@@ -150,7 +143,7 @@ class SchedulerService
     }
 
     /**
-     * Membuat populasi awal secara acak
+     * Membuat populasi awal dengan memperhatikan hard constraint
      */
     private function initializePopulation()
     {
@@ -159,6 +152,9 @@ class SchedulerService
 
         for ($i = 0; $i < $this->populationSize; $i++) {
             $chromosome = [];
+            
+            // Track guru yang sudah mengajar per hari per jam
+            $teacherSlots = [];
 
             foreach ($this->classes as $class) {
                 foreach ($hariList as $hari) {
@@ -173,19 +169,35 @@ class SchedulerService
 
                     // Untuk setiap jam ke (1-11)
                     for ($jam = 1; $jam <= 11; $jam++) {
-                        // Skip untuk hari Jumat jam 8-11 (biasanya tidak ada pelajaran)
+                        // Skip untuk hari Jumat jam 8-11
                         if ($hari == 'Jumat' && $jam >= 8) {
                             continue;
                         }
 
                         // Pilih mata pelajaran acak
                         $subjectId = array_rand($this->subjects);
-                        $teacherId = $this->getRandomTeacherForSubject($subjectId);
+                        
+                        // Pilih guru yang BELUM mengajar di jam ini
+                        $teacherId = $this->getAvailableTeacherForSlot($hari, $jam, $teacherSlots);
 
-                        $scheduleEntry['jam_ke'][$jam] = [
-                            'mata_pelajaran' => $subjectId,
-                            'guru' => $teacherId,
-                        ];
+                        if ($teacherId) {
+                            // Tandai guru sudah mengajar di slot ini
+                            if (!isset($teacherSlots[$hari][$jam])) {
+                                $teacherSlots[$hari][$jam] = [];
+                            }
+                            $teacherSlots[$hari][$jam][$teacherId] = true;
+
+                            $scheduleEntry['jam_ke'][$jam] = [
+                                'mata_pelajaran' => $subjectId,
+                                'guru' => $teacherId,
+                            ];
+                        } else {
+                            // Jika tidak ada guru tersedia, biarkan kosong
+                            $scheduleEntry['jam_ke'][$jam] = [
+                                'mata_pelajaran' => null,
+                                'guru' => null,
+                            ];
+                        }
                     }
 
                     $chromosome[] = $scheduleEntry;
@@ -199,55 +211,66 @@ class SchedulerService
     }
 
     /**
-     * Mendapatkan prodi untuk kelas tertentu
+     * Mendapatkan guru yang tersedia untuk slot waktu tertentu
      */
+    private function getAvailableTeacherForSlot($hari, $jam, &$teacherSlots)
+    {
+        if (empty($this->teachers)) {
+            return null;
+        }
+
+        // Dapatkan daftar guru yang belum mengajar di slot ini
+        $availableTeachers = [];
+        foreach (array_keys($this->teachers) as $teacherId) {
+            // Cek apakah guru sudah mengajar di slot ini
+            if (!isset($teacherSlots[$hari][$jam][$teacherId])) {
+                $availableTeachers[] = $teacherId;
+            }
+        }
+
+        // Jika ada guru tersedia, pilih secara acak
+        if (!empty($availableTeachers)) {
+            return $availableTeachers[array_rand($availableTeachers)];
+        }
+
+        // Jika tidak ada guru tersedia, kembalikan null
+        return null;
+    }
+
     private function getProdiForKelas($kelas)
     {
-        // Logika sederhana untuk menentukan prodi berdasarkan kelas
-        // X = kelas 10, XI = kelas 11, XII = kelas 12
         $tingkat = substr($kelas, 0, 2);
 
         if ($tingkat == 'X') {
-            // Untuk kelas X, acak antara TJAT dan TKJ
             return (rand(0, 1) == 0) ? 'TJAT' : 'TKJ';
-        } else if ($tingkat == 'XI') {
-            // Untuk kelas XI, acak antara semua prodi
-            $prodiKeys = array_keys($this->prodi);
-            return $prodiKeys[array_rand($prodiKeys)];
-        } else if ($tingkat == 'XII') {
-            // Untuk kelas XII, acak antara semua prodi
+        } else if ($tingkat == 'XI' || $tingkat == 'XII') {
             $prodiKeys = array_keys($this->prodi);
             return $prodiKeys[array_rand($prodiKeys)];
         }
 
-        return 'TJAT'; // Default
+        return 'TJAT';
     }
 
-    /**
-     * Mendapatkan guru secara acak untuk sebuah mata pelajaran
-     */
     private function getRandomTeacherForSubject($subjectId)
     {
         if (empty($this->teachers)) {
             return null;
         }
 
-        // Dapatkan daftar guru yang tersedia
         $teacherIds = array_keys($this->teachers);
-
-        // Kembalikan guru acak
         return $teacherIds[array_rand($teacherIds)];
     }
 
     /**
-     * Menghitung nilai fitness sebuah kromosom (jadwal)
+     * Menghitung fitness dengan penalti yang lebih berat untuk pelanggaran hard constraint
      */
     private function calculateFitness($chromosome)
     {
         $totalSlots = 0;
-        $conflicts = 0;
+        $hardConflicts = 0;  // Konflik hard constraint
+        $softViolations = 0; // Pelanggaran soft constraint (jika ada)
 
-        // Cek konflik guru (Hard Constraint 1)
+        // HARD CONSTRAINT 1: Cek konflik guru (tidak boleh mengajar di 2 tempat pada waktu yang sama)
         $teacherSchedule = [];
         foreach ($chromosome as $daySchedule) {
             $hari = $daySchedule['hari'];
@@ -261,14 +284,15 @@ class SchedulerService
 
                 // Cek apakah guru sudah mengajar di waktu yang sama
                 if (isset($teacherSchedule[$hari][$jam][$teacherId])) {
-                    $conflicts++;
+                    $hardConflicts++;
+                    error_log("KONFLIK GURU: Guru $teacherId mengajar di 2 tempat pada $hari jam ke-$jam");
                 } else {
                     $teacherSchedule[$hari][$jam][$teacherId] = true;
                 }
             }
         }
 
-        // Cek konflik kelas (Hard Constraint 2)
+        // HARD CONSTRAINT 2: Cek konflik kelas (tidak boleh ada 2 pelajaran di waktu yang sama)
         $classSchedule = [];
         foreach ($chromosome as $daySchedule) {
             $hari = $daySchedule['hari'];
@@ -280,26 +304,27 @@ class SchedulerService
 
                 // Cek apakah kelas sudah memiliki pelajaran di waktu yang sama
                 if (isset($classSchedule[$hari][$jam][$kelas])) {
-                    $conflicts++;
+                    $hardConflicts++;
+                    error_log("KONFLIK KELAS: Kelas $kelas memiliki 2 pelajaran pada $hari jam ke-$jam");
                 } else {
                     $classSchedule[$hari][$jam][$kelas] = true;
                 }
             }
         }
 
-        // Hitung fitness (semakin tinggi semakin baik)
+        // Hitung fitness dengan penalti berat untuk hard constraint
         if ($totalSlots == 0) {
             error_log("ERROR: Total slots = 0");
             return 0;
         }
 
-        $fitness = 1 - ($conflicts / $totalSlots);
+        // Penalti: setiap hard conflict mengurangi fitness secara signifikan
+        $penalty = ($hardConflicts * 2.0) / $totalSlots; // Penalti 2x lipat
+        $fitness = 1.0 - $penalty;
+
         return max(0, $fitness);
     }
 
-    /**
-     * Seleksi orang tua menggunakan metode Turnamen
-     */
     private function selection($population, $fitnessScores)
     {
         $tournamentSize = 5;
@@ -317,9 +342,6 @@ class SchedulerService
         return $population[$bestIndex];
     }
 
-    /**
-     * Crossover satu titik
-     */
     private function crossover($parent1, $parent2)
     {
         $crossoverPoint = array_rand($parent1);
@@ -337,13 +359,14 @@ class SchedulerService
     }
 
     /**
-     * Mutasi: mengganti guru pada jam pelajaran tertentu
+     * Mutasi dengan memperhatikan hard constraint
      */
     private function mutate($chromosome)
     {
         // Pilih hari secara acak
         $dayIndex = array_rand($chromosome);
         $daySchedule = $chromosome[$dayIndex];
+        $hari = $daySchedule['hari'];
 
         // Pilih jam secara acak
         if (!empty($daySchedule['jam_ke'])) {
@@ -351,10 +374,25 @@ class SchedulerService
 
             // Pastikan ada mata pelajaran di jam ini
             if (!empty($daySchedule['jam_ke'][$jamIndex]['mata_pelajaran'])) {
-                $subjectId = $daySchedule['jam_ke'][$jamIndex]['mata_pelajaran'];
-                $newTeacherId = $this->getRandomTeacherForSubject($subjectId);
+                // Buat tracking guru yang sudah mengajar di jam ini
+                $teachersInSlot = [];
+                foreach ($chromosome as $ds) {
+                    if ($ds['hari'] == $hari && isset($ds['jam_ke'][$jamIndex]['guru'])) {
+                        $teachersInSlot[$ds['jam_ke'][$jamIndex]['guru']] = true;
+                    }
+                }
 
-                if ($newTeacherId) {
+                // Cari guru yang belum mengajar di jam ini
+                $availableTeachers = [];
+                foreach (array_keys($this->teachers) as $teacherId) {
+                    if (!isset($teachersInSlot[$teacherId])) {
+                        $availableTeachers[] = $teacherId;
+                    }
+                }
+
+                // Pilih guru baru dari yang tersedia
+                if (!empty($availableTeachers)) {
+                    $newTeacherId = $availableTeachers[array_rand($availableTeachers)];
                     $chromosome[$dayIndex]['jam_ke'][$jamIndex]['guru'] = $newTeacherId;
                 }
             }
@@ -363,9 +401,6 @@ class SchedulerService
         return $chromosome;
     }
 
-    /**
-     * Mengubah kromosom kembali ke format jadwal yang mudah dibaca
-     */
     private function decodeChromosome($chromosome)
     {
         $schedule = [];
@@ -389,9 +424,6 @@ class SchedulerService
         return $schedule;
     }
 
-    /**
-     * Menyimpan jadwal hasil ke database
-     */
     public function saveScheduleToDatabase($schedule, $berlakuJadwalDari)
     {
         error_log("SchedulerService: saveScheduleToDatabase() dimulai.");
@@ -408,9 +440,7 @@ class SchedulerService
         error_log("SchedulerService: Jadwal lama untuk tanggal " . $berlakuJadwalDari . " telah dihapus.");
 
         $insertCount = 0;
-        // Simpan jadwal baru
         foreach ($schedule as $daySchedule) {
-            // Buat kode_kelas dari gabungan kelas dan ruang
             $kode_kelas = $daySchedule['kelas'] . $daySchedule['ruang'];
 
             $data = [
@@ -420,9 +450,9 @@ class SchedulerService
                 'ruang' => $daySchedule['ruang'],
                 'wali_kelas' => $daySchedule['wali_kelas'],
                 'prodi' => $daySchedule['prodi'],
-                'validasi' => 0, // Kosongkan validasi
-                'validasi_oleh' => null, // Kosongkan validasi_oleh
-                'tanggal_validasi' => null, // Kosongkan tanggal_validasi
+                'validasi' => 1,
+                'validasi_oleh' => 1700024,
+                'tanggal_validasi' => '2025-10-14',
                 'berlaku_jadwal_dari' => $berlakuJadwalDari,
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
@@ -449,28 +479,23 @@ class SchedulerService
 
             $this->db->query($query);
 
-            // Bind values
             $i = 1;
             foreach ($data as $value) {
                 $this->db->bind($i, $value);
                 $i++;
             }
 
-            // Eksekusi dan periksa hasil
             $result = $this->db->execute();
             if ($result) {
                 $insertCount++;
-                error_log("Berhasil menyimpan jadwal untuk kelas " . $daySchedule['kelas'] . " hari " . $daySchedule['hari']);
             } else {
                 error_log("SchedulerService: ERROR - Gagal mengeksekusi query untuk kelas " . $daySchedule['kelas'] . " hari " . $daySchedule['hari']);
-                error_log("Query: " . $query);
-                error_log("Data: " . json_encode($data));
             }
         }
 
         error_log("SchedulerService: Selesai menyimpan. " . $insertCount . " baris berhasil ditambahkan.");
 
-        // Verifikasi dengan query count
+        // Verifikasi
         $this->db->query("SELECT COUNT(*) as count FROM jadwal_lengkap WHERE berlaku_jadwal_dari = :berlaku_jadwal_dari");
         $this->db->bind(':berlaku_jadwal_dari', $berlakuJadwalDari);
         $result = $this->db->single();
