@@ -9,90 +9,50 @@
 <div class="row">
    <div class="col-lg-7">
       <div class="text-center">
-         <b>Rekap Siswa Perprogram studi</b>
+         <b>Rekap Siswa SMA Bethel</b>
       </div>
       <div class="table-responsive">
          <table class="tabel3 table khusus">
             <tr>
-               <td style="width:9%; background-color:aquamarine" rowspan="2">KELAS</td>
-               <td style="width:16%; background-color:bisque" colspan="2">TJAT</td>
-               <td style="width:16%; background-color:beige" colspan="2">TKJ</td>
-               <td style="width:16%; background-color:bisque" colspan="2">RPL</td>
-               <td style="width:16%; background-color:beige" colspan="2">DKV</td>
-               <td style="width:16%; background-color:bisque" colspan="2">ANI</td>
-               <td style="background-color:aquamarine;" rowspan="2">TOTAL</td>
+               <td style="width:20%; background-color:aquamarine" rowspan="2">KELAS</td>
+               <td style="width:60%; background-color:bisque" colspan="2">SMA BETHEL</td>
+               <td style="width:20%; background-color:aquamarine;" rowspan="2">TOTAL</td>
             </tr>
             <tr>
-               <td style="background-color:azure; width:8%">L</td>
-               <td style="background-color:azure; width:8%">P</td>
-               <td style="background-color:azure; width:8%">L</td>
-               <td style="background-color:azure; width:8%">P</td>
-               <td style="background-color:azure; width:8%">L</td>
-               <td style="background-color:azure; width:8%">P</td>
-               <td style="background-color:azure; width:8%">L</td>
-               <td style="background-color:azure; width:8%">P</td>
-               <td style="background-color:azure; width:8%">L</td>
-               <td style="background-color:azure; width:8%">P</td>
+               <td style="background-color:azure; width:30%">L</td>
+               <td style="background-color:azure; width:30%">P</td>
             </tr>
             <tr>
                <td style="color:blue">X</td>
-               <td><?= $data['rekap']->TJAT_X_L ?></td>
-               <td><?= $data['rekap']->TJAT_X_P ?></td>
-               <td><?= $data['rekap']->TKJ_X_L ?></td>
-               <td><?= $data['rekap']->TKJ_X_P ?></td>
-               <td><?= $data['rekap']->RPL_X_L ?></td>
-               <td><?= $data['rekap']->RPL_X_P ?></td>
-               <td><?= $data['rekap']->DKV_X_L ?></td>
-               <td><?= $data['rekap']->DKV_X_P ?></td>
-               <td><?= $data['rekap']->ANI_X_L ?></td>
-               <td><?= $data['rekap']->ANI_X_P ?></td>
+               <td><?= $data['rekap']->SMABETHEL_X_L ?? 0 ?></td>
+               <td><?= $data['rekap']->SMABETHEL_X_P ?? 0 ?></td>
                <td style="background-color:azure">
-                  <?= $data['rekap']->TJKT_X + $data['rekap']->TJAT_X + $data['rekap']->TKJ_X + $data['rekap']->RPL_X + $data['rekap']->DKV_X + $data['rekap']->ANI_X ?>
+                  <?= $data['rekap']->SMABETHEL_X ?? 0 ?>
                </td>
             </tr>
             <tr>
                <td style="color:red">XI</td>
-               <td><?= $data['rekap']->TJAT_XI_L ?></td>
-               <td><?= $data['rekap']->TJAT_XI_P ?></td>
-               <td><?= $data['rekap']->TKJ_XI_L ?></td>
-               <td><?= $data['rekap']->TKJ_XI_P ?></td>
-               <td><?= $data['rekap']->RPL_XI_L ?></td>
-               <td><?= $data['rekap']->RPL_XI_P ?></td>
-               <td><?= $data['rekap']->DKV_XI_L ?></td>
-               <td><?= $data['rekap']->DKV_XI_P ?></td>
-               <td><?= $data['rekap']->ANI_XI_L ?></td>
-               <td><?= $data['rekap']->ANI_XI_P ?></td>
+               <td><?= $data['rekap']->SMABETHEL_XI_L ?? 0 ?></td>
+               <td><?= $data['rekap']->SMABETHEL_XI_P ?? 0 ?></td>
                <td style="background-color:azure">
-                  <?= $data['rekap']->TJKT_XI + $data['rekap']->TJAT_XI + $data['rekap']->TKJ_XI + $data['rekap']->RPL_XI + $data['rekap']->DKV_XI + $data['rekap']->ANI_XI ?>
+                  <?= $data['rekap']->SMABETHEL_XI ?? 0 ?>
                </td>
             </tr>
             <tr>
                <td style="color:green">XII</td>
-               <td><?= $data['rekap']->TJAT_XII_L ?></td>
-               <td><?= $data['rekap']->TJAT_XII_P ?></td>
-               <td><?= $data['rekap']->TKJ_XII_L ?></td>
-               <td><?= $data['rekap']->TKJ_XII_P ?></td>
-               <td><?= $data['rekap']->RPL_XII_L ?></td>
-               <td><?= $data['rekap']->RPL_XII_P ?></td>
-               <td><?= $data['rekap']->DKV_XII_L ?></td>
-               <td><?= $data['rekap']->DKV_XII_P ?></td>
-               <td><?= $data['rekap']->ANI_XII_L ?></td>
-               <td><?= $data['rekap']->ANI_XII_P ?></td>
+               <td><?= $data['rekap']->SMABETHEL_XII_L ?? 0 ?></td>
+               <td><?= $data['rekap']->SMABETHEL_XII_P ?? 0 ?></td>
                <td style="background-color:azure">
-                  <?= $data['rekap']->TJKT_XII + $data['rekap']->TJAT_XII + $data['rekap']->TKJ_XII + $data['rekap']->RPL_XII + $data['rekap']->DKV_XII + $data['rekap']->ANI_XII ?>
+                  <?= $data['rekap']->SMABETHEL_XII ?? 0 ?>
                </td>
             </tr>
-            <tr">
+            <tr>
                <td style="background-color: aquamarine;">TOTAL</td>
-               <td colspan="2" style="background-color: beige;"><?= $data['rekap']->TJAT_X + $data['rekap']->TJAT_XI + $data['rekap']->TJAT_XII ?></td>
-               <td colspan="2" style="background-color:bisque;"><?= $data['rekap']->TKJ_X + $data['rekap']->TKJ_XI + $data['rekap']->TKJ_XII ?></td>
-               <td colspan="2" style="background-color: beige;"><?= $data['rekap']->RPL_X + $data['rekap']->RPL_XI + $data['rekap']->RPL_XII ?></td>
-               <td colspan="2" style="background-color:bisque;"><?= $data['rekap']->DKV_X + $data['rekap']->DKV_XI + $data['rekap']->DKV_XII ?></td>
-               <td colspan="2" style="background-color: beige;"><?= $data['rekap']->ANI_X + $data['rekap']->ANI_XI + $data['rekap']->ANI_XII ?></td>
+               <td colspan="2" style="background-color: beige;"><?= ($data['rekap']->SMABETHEL_X ?? 0) + ($data['rekap']->SMABETHEL_XI ?? 0) + ($data['rekap']->SMABETHEL_XII ?? 0) ?></td>
                <td style="background-color:aquamarine">
-                  <?= $data['rekap']->TJKT_X + $data['rekap']->TJAT_X + $data['rekap']->TKJ_X + $data['rekap']->RPL_X + $data['rekap']->DKV_X + $data['rekap']->ANI_X + $data['rekap']->TJKT_XI + $data['rekap']->TJAT_XI + $data['rekap']->TKJ_XI + $data['rekap']->RPL_XI + $data['rekap']->DKV_XI + $data['rekap']->ANI_XI + $data['rekap']->TJKT_XII + $data['rekap']->TJAT_XII + $data['rekap']->TKJ_XII + $data['rekap']->RPL_XII + $data['rekap']->DKV_XII + $data['rekap']->ANI_XII ?>
+                  <?= ($data['rekap']->SMABETHEL_X ?? 0) + ($data['rekap']->SMABETHEL_XI ?? 0) + ($data['rekap']->SMABETHEL_XII ?? 0) ?>
                </td>
-               </tr>
+            </tr>
          </table>
       </div>
    </div>
@@ -134,8 +94,16 @@
             foreach ($columns as $col) {
                $kelasnya = $k . $col;
                $ambil_prodi = $this->Msiswa->ambil_prodi($kelasnya);
+               
                echo '<td style="line-height:19px; padding-top:12px !important; padding-bottom:13px !important">' . $data[$col] . '<br/>';
-               echo "<span style='font-size:11px; font-weight:normal'>" . $ambil_prodi->kode_prodi . "</span>";
+               
+               // Pengecekan apakah prodi ada
+               if ($ambil_prodi && isset($ambil_prodi->kode_prodi)) {
+                  echo "<span style='font-size:11px; font-weight:normal'>" . $ambil_prodi->kode_prodi . "</span>";
+               } else {
+                  echo "<span style='font-size:11px; font-weight:normal'>-</span>";
+               }
+               
                echo '</td>';
             }
             echo '</tr>';
@@ -144,7 +112,6 @@
       </table>
    </div>
 
-</div>
 </div>
 
 <style>

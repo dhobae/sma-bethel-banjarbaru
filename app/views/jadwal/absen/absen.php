@@ -111,7 +111,7 @@ if ($tgl > date('Y-m-d')) {
                      <th style="width:10%; font-size:1.1em" class="text-nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jam Ke 8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
                      <th style="width:10%; font-size:1.1em" class="text-nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jam Ke 9&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
                      <th style="width:10%; font-size:1.1em" class="text-nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jam Ke 10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                     <th style="width:10%; font-size:1.1em" class="text-nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jam Ke 11&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                     <!-- <th style="width:10%; font-size:1.1em" class="text-nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jam Ke 11&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th> -->
                   </tr>
                </thead>
                <tbody>
@@ -122,7 +122,7 @@ if ($tgl > date('Y-m-d')) {
                      <tr>
                         <td style="background-color:<?= $back ?>; color:<?= $warna2 ?>; font-weight:bold;font-size:20px"><?= $d['kode_kelas'] ?></td>
 
-                        <?php for ($i = 1; $i <= 11; $i++) : ?>
+                        <?php for ($i = 1; $i <= 10; $i++) : ?>
 
                            <?php
                            $cek_absen = $this->Mjadwal->cek_absen($tgl, $d['kelas'], $d['ruang'], $i);

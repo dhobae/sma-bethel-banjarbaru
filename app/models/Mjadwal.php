@@ -27,7 +27,6 @@ class Mjadwal
       pegawai8.nama as nama8,
       pegawai9.nama as nama9,
       pegawai10.nama as nama10,
-      pegawai11.nama as nama11,
       m_pelajaran1.mata_pelajaran as mata_pelajaran1, m_pelajaran1.singkatan as singkatan1,
       m_pelajaran2.mata_pelajaran as mata_pelajaran2, m_pelajaran2.singkatan as singkatan2,
       m_pelajaran3.mata_pelajaran as mata_pelajaran3, m_pelajaran3.singkatan as singkatan3,
@@ -37,8 +36,7 @@ class Mjadwal
       m_pelajaran7.mata_pelajaran as mata_pelajaran7, m_pelajaran7.singkatan as singkatan7,
       m_pelajaran8.mata_pelajaran as mata_pelajaran8, m_pelajaran8.singkatan as singkatan8,
       m_pelajaran9.mata_pelajaran as mata_pelajaran9, m_pelajaran9.singkatan as singkatan9,
-      m_pelajaran10.mata_pelajaran as mata_pelajaran10, m_pelajaran10.singkatan as singkatan10,
-      m_pelajaran11.mata_pelajaran as mata_pelajaran11, m_pelajaran11.singkatan as singkatan11
+      m_pelajaran10.mata_pelajaran as mata_pelajaran10, m_pelajaran10.singkatan as singkatan10
       from jadwal_lengkap
       left join pegawai as pegawai1 on jadwal_lengkap.guru1 = pegawai1.nik
       left join pegawai as pegawai2 on jadwal_lengkap.guru2 = pegawai2.nik
@@ -50,7 +48,6 @@ class Mjadwal
       left join pegawai as pegawai8 on jadwal_lengkap.guru8 = pegawai8.nik
       left join pegawai as pegawai9 on jadwal_lengkap.guru9 = pegawai9.nik
       left join pegawai as pegawai10 on jadwal_lengkap.guru10 = pegawai10.nik
-      left join pegawai as pegawai11 on jadwal_lengkap.guru11 = pegawai11.nik
       left join m_pelajaran as m_pelajaran1 on jadwal_lengkap.mp1 = m_pelajaran1.id_pelajaran
       left join m_pelajaran as m_pelajaran2 on jadwal_lengkap.mp2 = m_pelajaran2.id_pelajaran
       left join m_pelajaran as m_pelajaran3 on jadwal_lengkap.mp3 = m_pelajaran3.id_pelajaran
@@ -61,7 +58,6 @@ class Mjadwal
       left join m_pelajaran as m_pelajaran8 on jadwal_lengkap.mp8 = m_pelajaran8.id_pelajaran
       left join m_pelajaran as m_pelajaran9 on jadwal_lengkap.mp9 = m_pelajaran9.id_pelajaran
       left join m_pelajaran as m_pelajaran10 on jadwal_lengkap.mp10 = m_pelajaran10.id_pelajaran
-      left join m_pelajaran as m_pelajaran11 on jadwal_lengkap.mp11 = m_pelajaran11.id_pelajaran
       where kode_kelas=:kode_kelas order by id_jadwal_lengkap";
         $this->db->query($sql);
         $this->db->bind('kode_kelas', $kelas);
@@ -125,10 +121,10 @@ class Mjadwal
 
     public function simpan_edit_jadwal($data)
     {
-        $sql = "UPDATE jadwal_lengkap set mp1=:mp1, guru1=:guru1, mp2=:mp2, guru2=:guru2, mp3=:mp3, guru3=:guru3, mp4=:mp4, guru4=:guru4, mp5=:mp5, guru5=:guru5, mp6=:mp6, guru6=:guru6, mp7=:mp7, guru7=:guru7, mp8=:mp8, guru8=:guru8, mp9=:mp9, guru9=:guru9, mp10=:mp10, guru10=:guru10, mp11=:mp11, guru11=:guru11 where id_jadwal_lengkap=:id";
+        $sql = "UPDATE jadwal_lengkap set mp1=:mp1, guru1=:guru1, mp2=:mp2, guru2=:guru2, mp3=:mp3, guru3=:guru3, mp4=:mp4, guru4=:guru4, mp5=:mp5, guru5=:guru5, mp6=:mp6, guru6=:guru6, mp7=:mp7, guru7=:guru7, mp8=:mp8, guru8=:guru8, mp9=:mp9, guru9=:guru9, mp10=:mp10, guru10=:guru10 where id_jadwal_lengkap=:id";
         $this->db->query($sql);
         $this->db->bind('id', $data['id_jadwal_lengkap']);
-        for ($i = 1; $i <= 11; $i++) {
+        for ($i = 1; $i <= 10; $i++) {
 
             if ($data['guru' . $i]) {
                 $guru[$i] = implode(',', $data['guru' . $i]);
@@ -240,7 +236,6 @@ class Mjadwal
       pegawai8.nama as nama8, pegawai8.kode as kode_pegawai8,
       pegawai9.nama as nama9, pegawai9.kode as kode_pegawai9,
       pegawai10.nama as nama10,  pegawai10.kode as kode_pegawai10,
-      pegawai11.nama as nama11,  pegawai11.kode as kode_pegawai11,
       m_pelajaran1.mata_pelajaran as mata_pelajaran1, m_pelajaran1.singkatan as singkatan1,
       m_pelajaran2.mata_pelajaran as mata_pelajaran2, m_pelajaran2.singkatan as singkatan2,
       m_pelajaran3.mata_pelajaran as mata_pelajaran3, m_pelajaran3.singkatan as singkatan3,
@@ -251,7 +246,6 @@ class Mjadwal
       m_pelajaran8.mata_pelajaran as mata_pelajaran8, m_pelajaran8.singkatan as singkatan8,
       m_pelajaran9.mata_pelajaran as mata_pelajaran9, m_pelajaran9.singkatan as singkatan9,
       m_pelajaran10.mata_pelajaran as mata_pelajaran10, m_pelajaran10.singkatan as singkatan10,
-      m_pelajaran11.mata_pelajaran as mata_pelajaran11, m_pelajaran11.singkatan as singkatan11,
       m_pelajaran1.id_pelajaran as id_pelajaran1,
       m_pelajaran2.id_pelajaran as id_pelajaran2,
       m_pelajaran3.id_pelajaran as id_pelajaran3,
@@ -261,8 +255,7 @@ class Mjadwal
       m_pelajaran7.id_pelajaran as id_pelajaran7,
       m_pelajaran8.id_pelajaran as id_pelajaran8,
       m_pelajaran9.id_pelajaran as id_pelajaran9,
-      m_pelajaran10.id_pelajaran as id_pelajaran10,
-      m_pelajaran11.id_pelajaran as id_pelajaran11
+      m_pelajaran10.id_pelajaran as id_pelajaran10
       from jadwal_lengkap
       left join pegawai as pegawai1 on jadwal_lengkap.guru1 = pegawai1.nik
       left join pegawai as pegawai2 on jadwal_lengkap.guru2 = pegawai2.nik
@@ -274,7 +267,6 @@ class Mjadwal
       left join pegawai as pegawai8 on jadwal_lengkap.guru8 = pegawai8.nik
       left join pegawai as pegawai9 on jadwal_lengkap.guru9 = pegawai9.nik
       left join pegawai as pegawai10 on jadwal_lengkap.guru10 = pegawai10.nik
-      left join pegawai as pegawai11 on jadwal_lengkap.guru11 = pegawai11.nik
       left join m_pelajaran as m_pelajaran1 on jadwal_lengkap.mp1 = m_pelajaran1.id_pelajaran
       left join m_pelajaran as m_pelajaran2 on jadwal_lengkap.mp2 = m_pelajaran2.id_pelajaran
       left join m_pelajaran as m_pelajaran3 on jadwal_lengkap.mp3 = m_pelajaran3.id_pelajaran
@@ -285,7 +277,6 @@ class Mjadwal
       left join m_pelajaran as m_pelajaran8 on jadwal_lengkap.mp8 = m_pelajaran8.id_pelajaran
       left join m_pelajaran as m_pelajaran9 on jadwal_lengkap.mp9 = m_pelajaran9.id_pelajaran
       left join m_pelajaran as m_pelajaran10 on jadwal_lengkap.mp10 = m_pelajaran10.id_pelajaran
-      left join m_pelajaran as m_pelajaran11 on jadwal_lengkap.mp11 = m_pelajaran11.id_pelajaran
       where hari=:hari order by id_jadwal_lengkap";
         $this->db->query($sql);
         $this->db->bind('hari', $hari);

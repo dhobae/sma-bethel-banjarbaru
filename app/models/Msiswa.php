@@ -37,6 +37,93 @@ class Msiswa
       return $this->db->single();
    }
 
+   // public function rekap_perkelas()
+   // {
+   //    $sql_drop_temp = "DROP TEMPORARY TABLE IF EXISTS temp_rekap;";
+   //    $this->db->query($sql_drop_temp);
+   //    $this->db->execute();
+
+   //    $sql_temp = "CREATE TEMPORARY TABLE temp_rekap AS SELECT 
+   //          CASE
+   //             WHEN kelas_siswa LIKE 'X%' AND kelas_siswa NOT LIKE 'XI%' AND kelas_siswa NOT LIKE 'XII%' THEN 'X'
+   //             WHEN kelas_siswa LIKE 'XI%' AND kelas_siswa NOT LIKE 'XII%' THEN 'XI'
+   //             WHEN kelas_siswa LIKE 'XII%' THEN 'XII'
+   //          END as kelas,
+   //          prodi as prodi,
+   //          jenis_kelamin as jk,
+   //          COUNT(*) as jumlah_siswa
+   //       FROM siswa
+   //       WHERE status_siswa = :status
+   //       GROUP BY kelas, prodi, jk;";
+
+   //    $this->db->query($sql_temp);
+   //    $this->db->bind('status', 'Aktif');
+   //    $this->db->execute();
+
+   //    $sql = "SELECT 
+   //          SUM(CASE WHEN kelas = 'X' AND prodi = '1' THEN jumlah_siswa ELSE 0 END) as TJKT_X,
+   //          SUM(CASE WHEN kelas = 'X' AND prodi = '6' THEN jumlah_siswa ELSE 0 END) as TJAT_X,
+   //          SUM(CASE WHEN kelas = 'X' AND prodi = '7' THEN jumlah_siswa ELSE 0 END) as TKJ_X,
+   //          SUM(CASE WHEN kelas = 'X' AND prodi = '2' THEN jumlah_siswa ELSE 0 END) as RPL_X,
+   //          SUM(CASE WHEN kelas = 'X' AND prodi = '3' THEN jumlah_siswa ELSE 0 END) as DKV_X,
+   //          SUM(CASE WHEN kelas = 'X' AND prodi = '4' THEN jumlah_siswa ELSE 0 END) as ANI_X,
+   //          SUM(CASE WHEN kelas = 'XI' AND prodi = '1' THEN jumlah_siswa ELSE 0 END) as TJKT_XI,
+   //          SUM(CASE WHEN kelas = 'XI' AND prodi = '6' THEN jumlah_siswa ELSE 0 END) as TJAT_XI,
+   //          SUM(CASE WHEN kelas = 'XI' AND prodi = '7' THEN jumlah_siswa ELSE 0 END) as TKJ_XI,
+   //          SUM(CASE WHEN kelas = 'XI' AND prodi = '2' THEN jumlah_siswa ELSE 0 END) as RPL_XI,
+   //          SUM(CASE WHEN kelas = 'XI' AND prodi = '3' THEN jumlah_siswa ELSE 0 END) as DKV_XI,
+   //          SUM(CASE WHEN kelas = 'XI' AND prodi = '4' THEN jumlah_siswa ELSE 0 END) as ANI_XI,
+   //          SUM(CASE WHEN kelas = 'XII' AND prodi = '1' THEN jumlah_siswa ELSE 0 END) as TJKT_XII,
+   //          SUM(CASE WHEN kelas = 'XII' AND prodi = '6' THEN jumlah_siswa ELSE 0 END) as TJAT_XII,
+   //          SUM(CASE WHEN kelas = 'XII' AND prodi = '7' THEN jumlah_siswa ELSE 0 END) as TKJ_XII,
+   //          SUM(CASE WHEN kelas = 'XII' AND prodi = '2' THEN jumlah_siswa ELSE 0 END) as RPL_XII,
+   //          SUM(CASE WHEN kelas = 'XII' AND prodi = '3' THEN jumlah_siswa ELSE 0 END) as DKV_XII,
+   //          SUM(CASE WHEN kelas = 'XII' AND prodi = '4' THEN jumlah_siswa ELSE 0 END) as ANI_XII,
+
+   //          SUM(CASE WHEN kelas = 'X' AND prodi = '6' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as TJAT_X_L,
+   //          SUM(CASE WHEN kelas = 'X' AND prodi = '6' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as TJAT_X_P,
+   //          SUM(CASE WHEN kelas = 'XI' AND prodi = '6' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as TJAT_XI_L,
+   //          SUM(CASE WHEN kelas = 'XI' AND prodi = '6' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as TJAT_XI_P,
+   //          SUM(CASE WHEN kelas = 'XII' AND prodi = '6' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as TJAT_XII_L,
+   //          SUM(CASE WHEN kelas = 'XII' AND prodi = '6' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as TJAT_XII_P,
+
+   //          SUM(CASE WHEN kelas = 'X' AND prodi = '7' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as TKJ_X_L,
+   //          SUM(CASE WHEN kelas = 'X' AND prodi = '7' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as TKJ_X_P,
+   //          SUM(CASE WHEN kelas = 'XI' AND prodi = '7' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as TKJ_XI_L,
+   //          SUM(CASE WHEN kelas = 'XI' AND prodi = '7' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as TKJ_XI_P,
+   //          SUM(CASE WHEN kelas = 'XII' AND prodi = '7' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as TKJ_XII_L,
+   //          SUM(CASE WHEN kelas = 'XII' AND prodi = '7' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as TKJ_XII_P,
+
+   //          SUM(CASE WHEN kelas = 'X' AND prodi = '2' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as RPL_X_L,
+   //          SUM(CASE WHEN kelas = 'X' AND prodi = '2' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as RPL_X_P,
+   //          SUM(CASE WHEN kelas = 'XI' AND prodi = '2' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as RPL_XI_L,
+   //          SUM(CASE WHEN kelas = 'XI' AND prodi = '2' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as RPL_XI_P,
+   //          SUM(CASE WHEN kelas = 'XII' AND prodi = '2' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as RPL_XII_L,
+   //          SUM(CASE WHEN kelas = 'XII' AND prodi = '2' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as RPL_XII_P,
+
+   //          SUM(CASE WHEN kelas = 'X' AND prodi = '3' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as DKV_X_L,
+   //          SUM(CASE WHEN kelas = 'X' AND prodi = '3' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as DKV_X_P,
+   //          SUM(CASE WHEN kelas = 'XI' AND prodi = '3' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as DKV_XI_L,
+   //          SUM(CASE WHEN kelas = 'XI' AND prodi = '3' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as DKV_XI_P,
+   //          SUM(CASE WHEN kelas = 'XII' AND prodi = '3' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as DKV_XII_L,
+   //          SUM(CASE WHEN kelas = 'XII' AND prodi = '3' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as DKV_XII_P,
+
+   //          SUM(CASE WHEN kelas = 'X' AND prodi = '4' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as ANI_X_L,
+   //          SUM(CASE WHEN kelas = 'X' AND prodi = '4' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as ANI_X_P,
+   //          SUM(CASE WHEN kelas = 'XI' AND prodi = '4' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as ANI_XI_L,
+   //          SUM(CASE WHEN kelas = 'XI' AND prodi = '4' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as ANI_XI_P,
+   //          SUM(CASE WHEN kelas = 'XII' AND prodi = '4' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as ANI_XII_L,
+   //          SUM(CASE WHEN kelas = 'XII' AND prodi = '4' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as ANI_XII_P,
+
+
+   //          SUM(jumlah_siswa) as total_jumlah_siswa
+
+   //          FROM temp_rekap;";
+   //    $this->db->query($sql);
+   //    $result = $this->db->single();
+   //    return $result;
+   // }
+
    public function rekap_perkelas()
    {
       $sql_drop_temp = "DROP TEMPORARY TABLE IF EXISTS temp_rekap;";
@@ -53,7 +140,7 @@ class Msiswa
             jenis_kelamin as jk,
             COUNT(*) as jumlah_siswa
          FROM siswa
-         WHERE status_siswa = :status
+         WHERE status_siswa = :status AND prodi = '1'
          GROUP BY kelas, prodi, jk;";
 
       $this->db->query($sql_temp);
@@ -61,60 +148,16 @@ class Msiswa
       $this->db->execute();
 
       $sql = "SELECT 
-            SUM(CASE WHEN kelas = 'X' AND prodi = '1' THEN jumlah_siswa ELSE 0 END) as TJKT_X,
-            SUM(CASE WHEN kelas = 'X' AND prodi = '6' THEN jumlah_siswa ELSE 0 END) as TJAT_X,
-            SUM(CASE WHEN kelas = 'X' AND prodi = '7' THEN jumlah_siswa ELSE 0 END) as TKJ_X,
-            SUM(CASE WHEN kelas = 'X' AND prodi = '2' THEN jumlah_siswa ELSE 0 END) as RPL_X,
-            SUM(CASE WHEN kelas = 'X' AND prodi = '3' THEN jumlah_siswa ELSE 0 END) as DKV_X,
-            SUM(CASE WHEN kelas = 'X' AND prodi = '4' THEN jumlah_siswa ELSE 0 END) as ANI_X,
-            SUM(CASE WHEN kelas = 'XI' AND prodi = '1' THEN jumlah_siswa ELSE 0 END) as TJKT_XI,
-            SUM(CASE WHEN kelas = 'XI' AND prodi = '6' THEN jumlah_siswa ELSE 0 END) as TJAT_XI,
-            SUM(CASE WHEN kelas = 'XI' AND prodi = '7' THEN jumlah_siswa ELSE 0 END) as TKJ_XI,
-            SUM(CASE WHEN kelas = 'XI' AND prodi = '2' THEN jumlah_siswa ELSE 0 END) as RPL_XI,
-            SUM(CASE WHEN kelas = 'XI' AND prodi = '3' THEN jumlah_siswa ELSE 0 END) as DKV_XI,
-            SUM(CASE WHEN kelas = 'XI' AND prodi = '4' THEN jumlah_siswa ELSE 0 END) as ANI_XI,
-            SUM(CASE WHEN kelas = 'XII' AND prodi = '1' THEN jumlah_siswa ELSE 0 END) as TJKT_XII,
-            SUM(CASE WHEN kelas = 'XII' AND prodi = '6' THEN jumlah_siswa ELSE 0 END) as TJAT_XII,
-            SUM(CASE WHEN kelas = 'XII' AND prodi = '7' THEN jumlah_siswa ELSE 0 END) as TKJ_XII,
-            SUM(CASE WHEN kelas = 'XII' AND prodi = '2' THEN jumlah_siswa ELSE 0 END) as RPL_XII,
-            SUM(CASE WHEN kelas = 'XII' AND prodi = '3' THEN jumlah_siswa ELSE 0 END) as DKV_XII,
-            SUM(CASE WHEN kelas = 'XII' AND prodi = '4' THEN jumlah_siswa ELSE 0 END) as ANI_XII,
+            SUM(CASE WHEN kelas = 'X' AND prodi = '1' THEN jumlah_siswa ELSE 0 END) as SMABETHEL_X,
+            SUM(CASE WHEN kelas = 'XI' AND prodi = '1' THEN jumlah_siswa ELSE 0 END) as SMABETHEL_XI,
+            SUM(CASE WHEN kelas = 'XII' AND prodi = '1' THEN jumlah_siswa ELSE 0 END) as SMABETHEL_XII,
 
-            SUM(CASE WHEN kelas = 'X' AND prodi = '6' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as TJAT_X_L,
-            SUM(CASE WHEN kelas = 'X' AND prodi = '6' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as TJAT_X_P,
-            SUM(CASE WHEN kelas = 'XI' AND prodi = '6' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as TJAT_XI_L,
-            SUM(CASE WHEN kelas = 'XI' AND prodi = '6' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as TJAT_XI_P,
-            SUM(CASE WHEN kelas = 'XII' AND prodi = '6' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as TJAT_XII_L,
-            SUM(CASE WHEN kelas = 'XII' AND prodi = '6' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as TJAT_XII_P,
-
-            SUM(CASE WHEN kelas = 'X' AND prodi = '7' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as TKJ_X_L,
-            SUM(CASE WHEN kelas = 'X' AND prodi = '7' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as TKJ_X_P,
-            SUM(CASE WHEN kelas = 'XI' AND prodi = '7' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as TKJ_XI_L,
-            SUM(CASE WHEN kelas = 'XI' AND prodi = '7' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as TKJ_XI_P,
-            SUM(CASE WHEN kelas = 'XII' AND prodi = '7' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as TKJ_XII_L,
-            SUM(CASE WHEN kelas = 'XII' AND prodi = '7' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as TKJ_XII_P,
-
-            SUM(CASE WHEN kelas = 'X' AND prodi = '2' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as RPL_X_L,
-            SUM(CASE WHEN kelas = 'X' AND prodi = '2' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as RPL_X_P,
-            SUM(CASE WHEN kelas = 'XI' AND prodi = '2' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as RPL_XI_L,
-            SUM(CASE WHEN kelas = 'XI' AND prodi = '2' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as RPL_XI_P,
-            SUM(CASE WHEN kelas = 'XII' AND prodi = '2' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as RPL_XII_L,
-            SUM(CASE WHEN kelas = 'XII' AND prodi = '2' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as RPL_XII_P,
-
-            SUM(CASE WHEN kelas = 'X' AND prodi = '3' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as DKV_X_L,
-            SUM(CASE WHEN kelas = 'X' AND prodi = '3' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as DKV_X_P,
-            SUM(CASE WHEN kelas = 'XI' AND prodi = '3' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as DKV_XI_L,
-            SUM(CASE WHEN kelas = 'XI' AND prodi = '3' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as DKV_XI_P,
-            SUM(CASE WHEN kelas = 'XII' AND prodi = '3' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as DKV_XII_L,
-            SUM(CASE WHEN kelas = 'XII' AND prodi = '3' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as DKV_XII_P,
-
-            SUM(CASE WHEN kelas = 'X' AND prodi = '4' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as ANI_X_L,
-            SUM(CASE WHEN kelas = 'X' AND prodi = '4' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as ANI_X_P,
-            SUM(CASE WHEN kelas = 'XI' AND prodi = '4' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as ANI_XI_L,
-            SUM(CASE WHEN kelas = 'XI' AND prodi = '4' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as ANI_XI_P,
-            SUM(CASE WHEN kelas = 'XII' AND prodi = '4' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as ANI_XII_L,
-            SUM(CASE WHEN kelas = 'XII' AND prodi = '4' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as ANI_XII_P,
-
+            SUM(CASE WHEN kelas = 'X' AND prodi = '1' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as SMABETHEL_X_L,
+            SUM(CASE WHEN kelas = 'X' AND prodi = '1' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as SMABETHEL_X_P,
+            SUM(CASE WHEN kelas = 'XI' AND prodi = '1' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as SMABETHEL_XI_L,
+            SUM(CASE WHEN kelas = 'XI' AND prodi = '1' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as SMABETHEL_XI_P,
+            SUM(CASE WHEN kelas = 'XII' AND prodi = '1' AND jk = 'Laki-laki' THEN jumlah_siswa ELSE 0 END) as SMABETHEL_XII_L,
+            SUM(CASE WHEN kelas = 'XII' AND prodi = '1' AND jk = 'Perempuan' THEN jumlah_siswa ELSE 0 END) as SMABETHEL_XII_P,
 
             SUM(jumlah_siswa) as total_jumlah_siswa
 
@@ -123,6 +166,7 @@ class Msiswa
       $result = $this->db->single();
       return $result;
    }
+   
 
    public function siswa_aktif_kelas($kelas)
    {

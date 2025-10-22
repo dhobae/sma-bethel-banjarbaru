@@ -85,7 +85,7 @@
                <thead class="text-center">
                   <tr>
                      <th rowspan="2">&nbsp;&nbsp;&nbsp;&nbsp;Hari&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                     <th colspan="11">Jam Ke</th>
+                     <th colspan="10">Jam Ke</th>
                   </tr>
                   <tr>
                      <th style="width:9%">1</th>
@@ -98,7 +98,6 @@
                      <th style="width:9%">8</th>
                      <th style="width:9%">9</th>
                      <th style="width:9%">10</th>
-                     <th style="width:9%">11</th>
                   </tr>
                </thead>
                <tbody>
@@ -318,26 +317,7 @@
                               ?>
                            </span>
                         </td>
-                        <td class="text-center" style="white-space: nowrap;">
-                           <span style="font-weight:bold; font-size:18px"><?= $d->singkatan11 ?></span>
-                           <br />
-                           <span style="font-size:13px; color:orangered">
-                              <?php
-                              if (strpos($d->guru11, ',') !== false) {
-                                 $nama_array11 = explode(",", $d->guru11);
-                                 foreach ($nama_array11 as $nm11) {
-                                    $nama11 = $this->Mjadwal->ambil_nama($nm11);
-                                    echo substr($nama11->nama, 0, 5);
-                                    if ($nm11 !== end($nama_array11)) {
-                                       echo " | ";
-                                    }
-                                 }
-                              } else {
-                                 echo substr($d->nama11, 0, 12) . "..";
-                              }
-                              ?>
-                           </span>
-                        </td>
+                      
                      </tr>
                   <?php
                   endforeach;

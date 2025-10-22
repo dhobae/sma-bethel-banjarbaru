@@ -10,7 +10,7 @@ define('URLROOT', $protocol . $_SERVER['HTTP_HOST'] . '/' . $name_server[1]);
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
-define('DB_NAME', 'skatel');
+define('DB_NAME', 'smabethel');
 
 // App Root
 define('APPROOT', dirname(dirname(__FILE__)));

@@ -173,34 +173,80 @@ class Jadwal extends Controller
       $data['ip'] = $this->Mdashboard->ip();
 
       $kelas_data = array();
+      // foreach ($data['absen'] as $d) {
+      //    $kelas = $d->kelas;
+      //    if (!isset($kelas_data[$kelas])) {
+      //       $kelas_data[$kelas] = array();
+      //    }
+      //    $kelas_data[$kelas][] = array(
+      //       'kode_kelas' => $d->kode_kelas,
+      //       'nama1'  => $d->nama1, 'nama2'  => $d->nama2, 'nama3'  => $d->nama3, 'nama4'  => $d->nama4, 'nama5'  => $d->nama5, 'nama6'  => $d->nama6, 'nama7'  => $d->nama7, 'nama8'  => $d->nama8, 'nama9'  => $d->nama9, 'nama10'  => $d->nama10, 'nama11'  => $d->nama11,
+
+      //       'singkatan1' => $d->singkatan1, 'singkatan2' => $d->singkatan2, 'singkatan3' => $d->singkatan3, 'singkatan4' => $d->singkatan4, 'singkatan5' => $d->singkatan5, 'singkatan6' => $d->singkatan6, 'singkatan7' => $d->singkatan7, 'singkatan8' => $d->singkatan8, 'singkatan9' => $d->singkatan9, 'singkatan10' => $d->singkatan10, 'singkatan11' => $d->singkatan11,
+
+      //       'id_pelajaran1' => $d->id_pelajaran1, 'id_pelajaran2' => $d->id_pelajaran2, 'id_pelajaran3' => $d->id_pelajaran3, 'id_pelajaran4' => $d->id_pelajaran4, 'id_pelajaran5' => $d->id_pelajaran5, 'id_pelajaran6' => $d->id_pelajaran6, 'id_pelajaran7' => $d->id_pelajaran7, 'id_pelajaran8' => $d->id_pelajaran8, 'id_pelajaran9' => $d->id_pelajaran9, 'id_pelajaran10' => $d->id_pelajaran10, 'id_pelajaran11' => $d->id_pelajaran11,
+
+      //       'guru1' => $d->guru1, 'guru2' => $d->guru2, 'guru3' => $d->guru3, 'guru4' => $d->guru4, 'guru5' => $d->guru5, 'guru6' => $d->guru6, 'guru7' => $d->guru7, 'guru8' => $d->guru8, 'guru9' => $d->guru9, 'guru10' => $d->guru10, 'guru11' => $d->guru11,
+
+      //       'kode_pegawai1' => $d->kode_pegawai1, 'kode_pegawai2' => $d->kode_pegawai2, 'kode_pegawai3' => $d->kode_pegawai3, 'kode_pegawai4' => $d->kode_pegawai4, 'kode_pegawai5' => $d->kode_pegawai5, 'kode_pegawai6' => $d->kode_pegawai6, 'kode_pegawai7' => $d->kode_pegawai7, 'kode_pegawai8' => $d->kode_pegawai8, 'kode_pegawai9' => $d->kode_pegawai9, 'kode_pegawai10' => $d->kode_pegawai10, 'kode_pegawai11' => $d->kode_pegawai11,
+
+      //       'mata_pelajaran1' => $d->mata_pelajaran1, 'mata_pelajaran2' => $d->mata_pelajaran2, 'mata_pelajaran3' => $d->mata_pelajaran3, 'mata_pelajaran4' => $d->mata_pelajaran4, 'mata_pelajaran5' => $d->mata_pelajaran5, 'mata_pelajaran6' => $d->mata_pelajaran6, 'mata_pelajaran7' => $d->mata_pelajaran7, 'mata_pelajaran8' => $d->mata_pelajaran8, 'mata_pelajaran9' => $d->mata_pelajaran9, 'mata_pelajaran10' => $d->mata_pelajaran10, 'mata_pelajaran11' => $d->mata_pelajaran11,
+
+      //       'kelas' => $d->kelas,
+      //       'ruang' => $d->ruang,
+      //       'hari' => $d->hari,
+      //       'validasi' => $d->validasi,
+      //       'wali_kelas' => $d->wali_kelas,
+      //       'tanggal_validasi' => $d->tanggal_validasi,
+      //       'berlaku_jadwal_dari' => $d->berlaku_jadwal_dari
+      //    );
+      // }
+
       foreach ($data['absen'] as $d) {
          $kelas = $d->kelas;
          if (!isset($kelas_data[$kelas])) {
-            $kelas_data[$kelas] = array();
+             $kelas_data[$kelas] = array();
          }
          $kelas_data[$kelas][] = array(
-            'kode_kelas' => $d->kode_kelas,
-            'nama1'  => $d->nama1, 'nama2'  => $d->nama2, 'nama3'  => $d->nama3, 'nama4'  => $d->nama4, 'nama5'  => $d->nama5, 'nama6'  => $d->nama6, 'nama7'  => $d->nama7, 'nama8'  => $d->nama8, 'nama9'  => $d->nama9, 'nama10'  => $d->nama10, 'nama11'  => $d->nama11,
-
-            'singkatan1' => $d->singkatan1, 'singkatan2' => $d->singkatan2, 'singkatan3' => $d->singkatan3, 'singkatan4' => $d->singkatan4, 'singkatan5' => $d->singkatan5, 'singkatan6' => $d->singkatan6, 'singkatan7' => $d->singkatan7, 'singkatan8' => $d->singkatan8, 'singkatan9' => $d->singkatan9, 'singkatan10' => $d->singkatan10, 'singkatan11' => $d->singkatan11,
-
-            'id_pelajaran1' => $d->id_pelajaran1, 'id_pelajaran2' => $d->id_pelajaran2, 'id_pelajaran3' => $d->id_pelajaran3, 'id_pelajaran4' => $d->id_pelajaran4, 'id_pelajaran5' => $d->id_pelajaran5, 'id_pelajaran6' => $d->id_pelajaran6, 'id_pelajaran7' => $d->id_pelajaran7, 'id_pelajaran8' => $d->id_pelajaran8, 'id_pelajaran9' => $d->id_pelajaran9, 'id_pelajaran10' => $d->id_pelajaran10, 'id_pelajaran11' => $d->id_pelajaran11,
-
-            'guru1' => $d->guru1, 'guru2' => $d->guru2, 'guru3' => $d->guru3, 'guru4' => $d->guru4, 'guru5' => $d->guru5, 'guru6' => $d->guru6, 'guru7' => $d->guru7, 'guru8' => $d->guru8, 'guru9' => $d->guru9, 'guru10' => $d->guru10, 'guru11' => $d->guru11,
-
-            'kode_pegawai1' => $d->kode_pegawai1, 'kode_pegawai2' => $d->kode_pegawai2, 'kode_pegawai3' => $d->kode_pegawai3, 'kode_pegawai4' => $d->kode_pegawai4, 'kode_pegawai5' => $d->kode_pegawai5, 'kode_pegawai6' => $d->kode_pegawai6, 'kode_pegawai7' => $d->kode_pegawai7, 'kode_pegawai8' => $d->kode_pegawai8, 'kode_pegawai9' => $d->kode_pegawai9, 'kode_pegawai10' => $d->kode_pegawai10, 'kode_pegawai11' => $d->kode_pegawai11,
-
-            'mata_pelajaran1' => $d->mata_pelajaran1, 'mata_pelajaran2' => $d->mata_pelajaran2, 'mata_pelajaran3' => $d->mata_pelajaran3, 'mata_pelajaran4' => $d->mata_pelajaran4, 'mata_pelajaran5' => $d->mata_pelajaran5, 'mata_pelajaran6' => $d->mata_pelajaran6, 'mata_pelajaran7' => $d->mata_pelajaran7, 'mata_pelajaran8' => $d->mata_pelajaran8, 'mata_pelajaran9' => $d->mata_pelajaran9, 'mata_pelajaran10' => $d->mata_pelajaran10, 'mata_pelajaran11' => $d->mata_pelajaran11,
-
-            'kelas' => $d->kelas,
-            'ruang' => $d->ruang,
-            'hari' => $d->hari,
-            'validasi' => $d->validasi,
-            'wali_kelas' => $d->wali_kelas,
-            'tanggal_validasi' => $d->tanggal_validasi,
-            'berlaku_jadwal_dari' => $d->berlaku_jadwal_dari
+             'kode_kelas' => $d->kode_kelas,
+             'nama1'  => $d->nama1, 'nama2'  => $d->nama2, 'nama3'  => $d->nama3, 'nama4'  => $d->nama4,
+             'nama5'  => $d->nama5, 'nama6'  => $d->nama6, 'nama7'  => $d->nama7, 'nama8'  => $d->nama8,
+             'nama9'  => $d->nama9, 'nama10' => $d->nama10,
+     
+             'singkatan1' => $d->singkatan1, 'singkatan2' => $d->singkatan2, 'singkatan3' => $d->singkatan3,
+             'singkatan4' => $d->singkatan4, 'singkatan5' => $d->singkatan5, 'singkatan6' => $d->singkatan6,
+             'singkatan7' => $d->singkatan7, 'singkatan8' => $d->singkatan8, 'singkatan9' => $d->singkatan9,
+             'singkatan10' => $d->singkatan10,
+     
+             'id_pelajaran1' => $d->id_pelajaran1, 'id_pelajaran2' => $d->id_pelajaran2, 'id_pelajaran3' => $d->id_pelajaran3,
+             'id_pelajaran4' => $d->id_pelajaran4, 'id_pelajaran5' => $d->id_pelajaran5, 'id_pelajaran6' => $d->id_pelajaran6,
+             'id_pelajaran7' => $d->id_pelajaran7, 'id_pelajaran8' => $d->id_pelajaran8, 'id_pelajaran9' => $d->id_pelajaran9,
+             'id_pelajaran10' => $d->id_pelajaran10,
+     
+             'guru1' => $d->guru1, 'guru2' => $d->guru2, 'guru3' => $d->guru3, 'guru4' => $d->guru4,
+             'guru5' => $d->guru5, 'guru6' => $d->guru6, 'guru7' => $d->guru7, 'guru8' => $d->guru8,
+             'guru9' => $d->guru9, 'guru10' => $d->guru10,
+     
+             'kode_pegawai1' => $d->kode_pegawai1, 'kode_pegawai2' => $d->kode_pegawai2, 'kode_pegawai3' => $d->kode_pegawai3,
+             'kode_pegawai4' => $d->kode_pegawai4, 'kode_pegawai5' => $d->kode_pegawai5, 'kode_pegawai6' => $d->kode_pegawai6,
+             'kode_pegawai7' => $d->kode_pegawai7, 'kode_pegawai8' => $d->kode_pegawai8, 'kode_pegawai9' => $d->kode_pegawai9,
+             'kode_pegawai10' => $d->kode_pegawai10,
+     
+             'mata_pelajaran1' => $d->mata_pelajaran1, 'mata_pelajaran2' => $d->mata_pelajaran2, 'mata_pelajaran3' => $d->mata_pelajaran3,
+             'mata_pelajaran4' => $d->mata_pelajaran4, 'mata_pelajaran5' => $d->mata_pelajaran5, 'mata_pelajaran6' => $d->mata_pelajaran6,
+             'mata_pelajaran7' => $d->mata_pelajaran7, 'mata_pelajaran8' => $d->mata_pelajaran8, 'mata_pelajaran9' => $d->mata_pelajaran9,
+             'mata_pelajaran10' => $d->mata_pelajaran10,
+     
+             'kelas' => $d->kelas,
+             'ruang' => $d->ruang,
+             'hari' => $d->hari,
+             'validasi' => $d->validasi,
+             'wali_kelas' => $d->wali_kelas,
+             'tanggal_validasi' => $d->tanggal_validasi,
+             'berlaku_jadwal_dari' => $d->berlaku_jadwal_dari
          );
-      }
+     }
+     
       $data['kelas_data'] = $kelas_data;
       require APPROOT . '/views/inc/header.php';
       $this->view('jadwal/absen/absen', $data);

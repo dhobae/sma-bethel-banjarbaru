@@ -62,7 +62,7 @@
          <?php if (($kelas <> 'all') and ($kelas <> 'tanpa_kelas')) { ?>
             <div class="text-center mb-1" style="font-size:0.95em">
                <b>Wali Kelas &nbsp;:&nbsp;
-                  <?php if ($data['wali_kelas']->wali_kelas) {
+                  <?php if (isset($data['wali_kelas']) && is_object($data['wali_kelas']) && !empty($data['wali_kelas']->wali_kelas)) {
                      echo $data['wali_kelas']->nama;
                   } else {
                      echo "<span style='color:red'>~Wali kelas belum dipilih~</span>";
