@@ -10,7 +10,7 @@
             <div class="mb-2" style="font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; font-size:0.9em; font-weight:bold">
                Tanggal : <input type="date" id="tanggal" onchange="submitForm()" value="<?= $data['tanggal'] ?>">
 
-               <a href="<?= URLROOT ?>/siswa/kelas_saya" class="btn btn-primary btn-sm tombol2" title="Kembali ke hari ini">
+               <a href="<?= URLROOT ?>/siswa/absen_kelas" class="btn btn-primary btn-sm tombol2" title="Kembali ke hari ini">
                   <i class="fa fa-undo" aria-hidden="true"></i> &nbsp;Hari ini
                </a>
                <button onclick="changeDate(-1)" class="btn btn-primary btn-sm tombol2" title="Mundur 1 hari">
@@ -41,7 +41,7 @@
                         <th style="width:4%">8</th>
                         <th style="width:4%">9</th>
                         <th style="width:4%">10</th>
-                        <th style="width:4%">11</th>
+                        <!-- <th style="width:4%">11</th> -->
                      </tr>
                   </thead>
                   <tbody>
@@ -61,7 +61,6 @@
                            <td class="text-center <?= $d->absen_jam8 == 'A' ? 'alpa' : ($d->absen_jam8 == 'S' || $d->absen_jam8 == 'I' ? 'izin' : 'hadir') ?>"><?= $d->absen_jam8 ?></td>
                            <td class="text-center <?= $d->absen_jam9 == 'A' ? 'alpa' : ($d->absen_jam9 == 'S' || $d->absen_jam9 == 'I' ? 'izin' : 'hadir') ?>"><?= $d->absen_jam9 ?></td>
                            <td class="text-center <?= $d->absen_jam10 == 'A' ? 'alpa' : ($d->absen_jam10 == 'S' || $d->absen_jam10 == 'I' ? 'izin' : 'hadir') ?>"><?= $d->absen_jam10 ?></td>
-                           <td class="text-center <?= $d->absen_jam11 == 'A' ? 'alpa' : ($d->absen_jam11 == 'S' || $d->absen_jam11 == 'I' ? 'izin' : 'hadir') ?>"><?= $d->absen_jam11 ?></td>
                         </tr>
                      <?php $no++;
                      } ?>

@@ -267,7 +267,7 @@ $npk_usernya = $_SESSION['nik'];
 
          <?php } ?>
 
-
+<!-- 
          <div class="col-lg-3 col-6">
             <div class="small-box bg-danger" style="opacity:0.8;">
                <div class="inner" style="height:150px;">
@@ -282,7 +282,7 @@ $npk_usernya = $_SESSION['nik'];
                   <i class="fas fa-arrow-circle-right"></i> <b>Tekan disini... </b>
                </a>
             </div>
-         </div>
+         </div> -->
 
          <?php
       //--- JIKA SUDAH MELAKUKAN PRESENSI --------------------------------------------	

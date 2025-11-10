@@ -8,7 +8,7 @@
 	<meta name="Description" content="igracias, telkom university, academic information system, universitas telkom">
 	<title>
 		Presensi SMK Telkom Banjarbaru</title>
-	<link rel="shortcut icon" href="<?= URLROOT; ?>/skatel/img/ts_icon1.png">
+	<link rel="shortcut icon" href="<?= URLROOT; ?>/smabethel/img/icon.png">
 
 	<style>
 		.full-page-wrapper.wrapper {
@@ -64,11 +64,11 @@
 				<div class="login-box center-block">
 
 					<div class="text-center" style="margin-bottom:15px">
-						<a href="index.html"><img src="<?= URLROOT; ?>/skatel/img/ts.png" alt="Skatel" style="width: 150px;height: auto;" /></a>
+						<a href="index.html"><img src="<?= URLROOT; ?>/smabethel/img/icon.png" alt="Smabethel" style="width: 150px;height: auto;" /></a>
 					</div>
 
 					<div class="text-center" style="font-family: 'calibri'; font-size:18px; line-height:20px; margin-bottom:10px">
-						<b>~ Presensi Pegawai ~<br />SMK Telkom Banjarbaru</b>
+						<b>~ Presensi Pegawai & Siswa ~<br />SMA Bethel Banjarbaru</b>
 					</div>
 
 					<form class="form-horizontal" role="form" method="post" action="<?= URLROOT; ?>/auth/login" id="pahdi">

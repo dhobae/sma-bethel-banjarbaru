@@ -19,8 +19,9 @@ $hari_indonesia = array(
 <div class="card card-primary card-outline" style="margin-top:10px;">
    <div class="card-body box-profile">
 
-      <div class="mb-2">
-         <img src="<?= URLROOT ?>/skatel/img/ts.png" width="160px"><br />
+      <div class="mb-2 d-flex align-items-center">
+         <img src="<?= URLROOT ?>/smabethel/img/icon.png" width="80px">
+         <div class="ml-3 pt-3 mb-0" style="font-family:calibri; font-size: 1.2rem; font-weight:bold;">SMA Bethel Banjarbaru</div>
       </div>
 
       <div class="mb-3">

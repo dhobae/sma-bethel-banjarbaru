@@ -65,26 +65,78 @@
             </div>
          </div>
 
+
          <div class="card card-outline card-success">
-            <div class="card-body" style="padding:15px; font-size:0.9em;">
-               <div>
-                  <b>Siswa Izin Hari ini :</b>
-               </div>
+   <div class="card-body" style="padding:15px; font-size:0.9em;">
+      <div>
+         <b>Siswa Izin Hari ini :</b>
+      </div>
 
-               <?php if (!$data['cek_izin']) { ?>
-                  <div class="text-center mt-2 mb-3">
-                     <span class="blink" style="color:green; font-weight:bold; font-size:1.2em">Tidak ada siswa izin</span>
-                  </div>
-               <?php } else { ?>
-                  <ol style="margin-top:10px">
-                     <?php foreach ($data['cek_izin'] as $c) : ?>
-                        <li><b><?= $c->nama_siswa ?></b> &nbsp;|&nbsp; <?= $c->jenis_izin ?></li>
-                     <?php endforeach; ?>
-                  </ol>
-               <?php } ?>
-
-            </div>
+      <?php if (!$data['cek_izin']) { ?>
+         <div class="text-center mt-2 mb-3">
+            <span class="blink" style="color:green; font-weight:bold; font-size:1.2em">Tidak ada siswa izin</span>
          </div>
+      <?php } else { ?>
+         <ol style="margin-top:10px">
+            <?php foreach ($data['cek_izin'] as $c) : ?>
+               <li>
+                  <b><?= $c->nama_siswa ?></b> &nbsp;|&nbsp; <?= $c->jenis_izin ?>
+                  <?php if (!empty($c->file_izin)) : ?>
+                     &nbsp;|&nbsp;
+                     <?php
+                     $ext = strtolower(pathinfo($c->file_izin, PATHINFO_EXTENSION));
+                     $isPdf = ($ext === 'pdf');
+                     ?>
+                     <?php if ($isPdf) : ?>
+                        <a href="<?= URLROOT ?>/smabethel/file_izin/<?= $c->file_izin ?>" target="_blank" class="btn btn-sm btn-info">
+                           <i class="fas fa-file-pdf"></i> Lihat Bukti
+                        </a>
+                     <?php else : ?>
+                        <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#modalBukti<?= $c->nis_izin ?>">
+                           <i class="fas fa-image"></i> Lihat Bukti
+                        </button>
+                     <?php endif; ?>
+                  <?php endif; ?>
+               </li>
+            <?php endforeach; ?>
+         </ol>
+      <?php } ?>
+
+   </div>
+</div>
+
+<!-- Modal untuk menampilkan gambar -->
+<?php if ($data['cek_izin']) : ?>
+   <?php foreach ($data['cek_izin'] as $c) : ?>
+      <?php if (!empty($c->file_izin)) : ?>
+         <?php
+         $ext = strtolower(pathinfo($c->file_izin, PATHINFO_EXTENSION));
+         $isPdf = ($ext === 'pdf');
+         ?>
+         <?php if (!$isPdf) : ?>
+            <div class="modal fade" id="modalBukti<?= $c->nis_izin ?>" tabindex="-1" role="dialog" aria-labelledby="modalBuktiLabel<?= $c->nis_izin ?>" aria-hidden="true">
+               <div class="modal-dialog modal-lg" role="document">
+                  <div class="modal-content">
+                     <div class="modal-header">
+                        <h5 class="modal-title" id="modalBuktiLabel<?= $c->nis_izin ?>">Bukti Izin - <?= $c->nama_siswa ?></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                           <span aria-hidden="true">&times;</span>
+                        </button>
+                     </div>
+                     <div class="modal-body text-center">
+                        <img src="<?= URLROOT ?>/smabethel/file_izin/<?= $c->file_izin ?>" class="img-fluid" alt="Bukti Izin" style="max-height:500px;">
+                     </div>
+                     <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         <?php endif; ?>
+      <?php endif; ?>
+   <?php endforeach; ?>
+<?php endif; ?>
+
 
          <div class="card card-outline card-danger">
             <div class="card-body" style="padding:15px">
@@ -113,30 +165,63 @@
                         </tr>
                      </thead>
                      <tbody>
-                        <?php $no = 1;
+                     <?php 
+                        $no = 1;
                         $a = 0;
-                        foreach ($data['isi_kelas'] as $d) : ?>
+                        foreach ($data['isi_kelas'] as $d) :
+
+                           // Default status absen = 'H'
+                           $status_absen = 'H';
+
+                           // Cek apakah siswa ini ada di daftar izin
+                           if (!empty($data['cek_izin'])) {
+                              foreach ($data['cek_izin'] as $izin) {
+                                 if ($izin->nis_izin == $d->nis) {
+                                    // Jika jenis izin = Izin → I
+                                    if ($izin->jenis_izin == 'Izin') {
+                                       $status_absen = 'I';
+                                    }
+                                    // Jika jenis izin = Sakit → S
+                                    elseif ($izin->jenis_izin == 'Sakit') {
+                                       $status_absen = 'S';
+                                    }
+                                 }
+                              }
+                           }
+                        ?>
                            <input type="hidden" name="nis[<?= $a ?>]" value="<?= $d->nis ?>">
                            <tr>
                               <td class="text-center"><?= $no ?></td>
                               <td class="text-center"><?= $d->nis ?></td>
                               <td><?= $d->nama_siswa ?></td>
+
                               <td class="text-center">
-                                 <input type="radio" id="absen-<?= $d->nis ?>-h" name="absen[<?= $a ?>]" value="H" checked>
+                                 <input type="radio" id="absen-<?= $d->nis ?>-h" 
+                                       name="absen[<?= $a ?>]" value="H"
+                                       <?= $status_absen == 'H' ? 'checked' : '' ?>>
                               </td>
                               <td class="text-center">
-                                 <input type="radio" id="absen-<?= $d->nis ?>-a" name="absen[<?= $a ?>]" value="A">
+                                 <input type="radio" id="absen-<?= $d->nis ?>-a" 
+                                       name="absen[<?= $a ?>]" value="A"
+                                       <?= $status_absen == 'A' ? 'checked' : '' ?>>
                               </td>
                               <td class="text-center">
-                                 <input type="radio" id="absen-<?= $d->nis ?>-i" name="absen[<?= $a ?>]" value="I">
+                                 <input type="radio" id="absen-<?= $d->nis ?>-i" 
+                                       name="absen[<?= $a ?>]" value="I"
+                                       <?= $status_absen == 'I' ? 'checked' : '' ?>>
                               </td>
                               <td class="text-center">
-                                 <input type="radio" id="absen-<?= $d->nis ?>-s" name="absen[<?= $a ?>]" value="S">
+                                 <input type="radio" id="absen-<?= $d->nis ?>-s" 
+                                       name="absen[<?= $a ?>]" value="S"
+                                       <?= $status_absen == 'S' ? 'checked' : '' ?>>
                               </td>
                            </tr>
-                        <?php $no++;
+                        <?php 
+                           $no++;
                            $a++;
-                        endforeach; ?>
+                        endforeach; 
+                        ?>
+
                      </tbody>
                   </table>
                </div>

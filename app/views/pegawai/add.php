@@ -40,6 +40,18 @@
          <div class="card card-primary card-outline" style="margin-top:10px;">
             <div class="card-body box-profile">
                <div class="form-group">
+                  <label class="label2">Nomor RFID <small><i>*[masukkan dengan menempelkan kartu RFID]</i></small></label>
+                  <input type="text" name="rfid" class="form-control text1" id="label2" required 
+                        autocomplete="off"
+                        autofocus
+                        onkeydown="return event.key !== 'Enter'">
+               </div>
+            </div>
+         </div>
+
+         <div class="card card-primary card-outline" style="margin-top:10px;">
+            <div class="card-body box-profile">
+               <div class="form-group">
                   <label class="label1">Username <span style="color:red">*</span></label>
                   <input type="text" name="username" class="form-control text1" style="width:100%" readonly value="Sama dengan NIK">
                </div>

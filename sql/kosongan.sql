@@ -798,3 +798,12 @@ COMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
 
+-- tambahan dari AI
+ALTER TABLE `absen_harian_siswa` 
+   ADD COLUMN `jam_pulang_ahs` TIME NULL AFTER `jam_masuk_ahs`;
+
+-- keperluan absen null dulu jam pulang
+ALTER TABLE `absen` CHANGE `jam_pulang` `jam_pulang` TIME NULL;
+ALTER TABLE `absen` CHANGE `status_pulang` `status_pulang` VARCHAR(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL;
+ALTER TABLE `absen` CHANGE `from_pulang` `from_pulang` VARCHAR(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL;
+

@@ -1,9 +1,11 @@
 543241200 nis Siswa dengan RFID
 
 
+    debug data
 
-
-
+      // echo "<pre>";
+      // echo json_encode($data, JSON_PRETTY_PRINT);
+      // echo "</pre>";
 
 
 
@@ -76,3 +78,382 @@
         echo "<p>Belum diimplementasikan.</p>";
         echo "<p><a href='" . URLROOT . "/jadwal_otomatis'>Kembali ke Menu</a></p>";
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<?php sflash() ?>
+
+<div class="container-fluid mt-3">
+   <!-- Filter Section -->
+   <div class="card card-primary card-outline shadow-sm mb-3">
+      <div class="card-header bg-primary text-white">
+         <h5 class="mb-0"><i class="fas fa-filter"></i> Filter Periode Nilai</h5>
+      </div>
+      <div class="card-body">
+         <form method="GET" action="<?= URLROOT ?>/siswa/nilai_pelajaran">
+            <div class="row">
+               <div class="col-md-6">
+                  <label class="form-label fw-bold">Pilih Tahun Ajaran & Semester:</label>
+                  <select name="jadwal" class="form-control text1" onchange="this.form.submit()">
+                     <!-- <option value="">-- Pilih Periode --</option> -->
+                     <?php foreach($data['jadwal_list'] as $jadwal): ?>
+                        <option value="<?= $jadwal->id_jadwal_setting ?>" 
+                           <?= ($data['id_jadwal_setting'] == $jadwal->id_jadwal_setting) ? 'selected' : '' ?>>
+                           <?= $jadwal->tahun_ajaran ?> - Semester <?= $jadwal->semester ?> - Blok <?= $jadwal->blok ?>
+                           <?= $jadwal->status == 1 ? '(Aktif)' : '' ?>
+                        </option>
+                     <?php endforeach; ?>
+                  </select>
+               </div>
+            </div>
+         </form>
+      </div>
+   </div>
+
+   <?php if($data['id_jadwal_setting']): ?>
+      <!-- Tabel Nilai Siswa -->
+      <div class="card card-primary card-outline shadow-sm">
+         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="fas fa-clipboard-list"></i> Data Nilai Siswa</h5>
+            <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#modalTambahNilai">
+               <i class="fas fa-plus"></i> Tambah Nilai
+            </button>
+         </div>
+
+         <div class="card-body">
+            <div class="table-responsive">
+               <table class="table table-bordered table-striped table-hover align-middle" id="tableNilai">
+                  <thead class="table-primary">
+                     <tr>
+                        <th class="text-center" style="width: 5%">No</th>
+                        <th class="text-center" style="width: 10%">NIS</th>
+                        <th style="width: 20%">Nama Siswa</th>
+                        <th class="text-center" style="width: 8%">Kelas</th>
+                        <th style="width: 17%">Mata Pelajaran</th>
+                        <th class="text-center" style="width: 10%">Tugas</th>
+                        <th class="text-center" style="width: 10%">UTS</th>
+                        <th class="text-center" style="width: 10%">UAS</th>
+                        <th class="text-center" style="width: 10%">Akhir</th>
+                        <th class="text-center" style="width: 10%">Aksi</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <?php 
+                     $no = 1;
+                     // Group nilai by siswa untuk tampilan yang rapi
+                     $grouped = [];
+                     foreach($data['nilai'] as $n) {
+                        $grouped[$n->nis][] = $n;
+                     }
+                     
+                     if(empty($grouped)): ?>
+                        <tr>
+                           <td colspan="10" class="text-center text-muted py-4">
+                              <i class="fas fa-info-circle"></i> Belum ada data nilai. Klik tombol "Tambah Nilai" untuk mulai input.
+                           </td>
+                        </tr>
+                     <?php else:
+                        foreach($grouped as $nis => $nilai_list):
+                           $first = true;
+                           foreach($nilai_list as $nilai):
+                     ?>
+                              <tr>
+                                 <?php if($first): ?>
+                                    <td class="text-center" rowspan="<?= count($nilai_list) ?>"><?= $no++ ?></td>
+                                    <td class="text-center" rowspan="<?= count($nilai_list) ?>"><?= htmlspecialchars($nilai->nis) ?></td>
+                                    <td rowspan="<?= count($nilai_list) ?>"><?= htmlspecialchars($nilai->nama_siswa) ?></td>
+                                    <td class="text-center" rowspan="<?= count($nilai_list) ?>">
+                                       <?= htmlspecialchars($nilai->kelas) ?><?= htmlspecialchars($nilai->ruang) ?>
+                                    </td>
+                                    <?php $first = false; ?>
+                                 <?php endif; ?>
+                                 
+                                 <td><?= htmlspecialchars($nilai->singkatan) ?></td>
+                                 <td class="text-center">
+                                    <span class="badge bg-info"><?= $nilai->nilai_tugas ? number_format($nilai->nilai_tugas, 1) : '-' ?></span>
+                                 </td>
+                                 <td class="text-center">
+                                    <span class="badge bg-warning"><?= $nilai->nilai_uts ? number_format($nilai->nilai_uts, 1) : '-' ?></span>
+                                 </td>
+                                 <td class="text-center">
+                                    <span class="badge bg-success"><?= $nilai->nilai_uas ? number_format($nilai->nilai_uas, 1) : '-' ?></span>
+                                 </td>
+                                 <td class="text-center">
+                                    <span class="badge bg-primary fs-6"><?= number_format($nilai->nilai_akhir, 2) ?></span>
+                                 </td>
+                                 <td class="text-center">
+                                    <button class="btn btn-sm btn-warning" onclick="editNilai(<?= htmlspecialchars(json_encode($nilai)) ?>)">
+                                       <i class="fas fa-edit"></i>
+                                    </button>
+                                 </td>
+                              </tr>
+                     <?php 
+                           endforeach;
+                        endforeach;
+                     endif; ?>
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </div>
+   <?php else: ?>
+      <div class="alert alert-info">
+         <i class="fas fa-info-circle"></i> Silakan pilih periode terlebih dahulu.
+      </div>
+   <?php endif; ?>
+</div>
+
+<!-- Modal Tambah Nilai -->
+<div class="modal fade" id="modalTambahNilai" tabindex="-1">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <form method="POST" action="<?= URLROOT ?>/siswa/simpan_nilai">
+            <div class="modal-header bg-primary text-white">
+               <h5 class="modal-title"><i class="fas fa-plus-circle"></i> Tambah Nilai Siswa</h5>
+               <!-- <button type="button" class="btn-close btn-close-white" data-dismiss="modal"></button> -->
+            </div>
+            <div class="modal-body">
+               <input type="hidden" name="id_jadwal_setting" value="<?= $data['id_jadwal_setting'] ?>">
+               
+               <div class="mb-3">
+                  <label class="form-label fw-bold">Siswa <span class="text-danger">*</span></label>
+                  <select name="nis" class="form-select" required onchange="updateKelasRuang(this)">
+                     <option value="">-- Pilih Siswa --</option>
+                     <?php foreach($data['siswa'] as $s): ?>
+                        <option value="<?= $s->nis ?>" data-kelas="<?= $s->kelas ?>" data-ruang="<?= $s->ruang ?>">
+                           <?= $s->nis ?> - <?= $s->nama_siswa ?> (<?= $s->kelas_siswa ?><?= $s->ruang_siswa ?>)
+                        </option>
+                     <?php endforeach; ?>
+                  </select>
+               </div>
+
+               <input type="hidden" name="kelas" id="kelas_input">
+               <input type="hidden" name="ruang" id="ruang_input">
+
+               <div class="mb-3">
+                  <label class="form-label fw-bold">Mata Pelajaran <span class="text-danger">*</span></label>
+                  <select name="id_pelajaran" class="form-select" required>
+                     <option value="">-- Pilih Mata Pelajaran --</option>
+                     <?php foreach($data['mata_pelajaran'] as $mp): ?>
+                        <option value="<?= $mp->id_pelajaran ?>">
+                           <?= $mp->singkatan ?> - <?= $mp->mata_pelajaran ?>
+                        </option>
+                     <?php endforeach; ?>
+                  </select>
+               </div>
+
+               <div class="row">
+                  <div class="col-md-4 mb-3">
+                     <label class="form-label fw-bold">Nilai Tugas (30%)</label>
+                     <input type="number" name="nilai_tugas" class="form-control" step="0.01" min="0" max="100" placeholder="0-100">
+                  </div>
+                  <div class="col-md-4 mb-3">
+                     <label class="form-label fw-bold">Nilai UTS (30%)</label>
+                     <input type="number" name="nilai_uts" class="form-control" step="0.01" min="0" max="100" placeholder="0-100">
+                  </div>
+                  <div class="col-md-4 mb-3">
+                     <label class="form-label fw-bold">Nilai UAS (40%)</label>
+                     <input type="number" name="nilai_uas" class="form-control" step="0.01" min="0" max="100" placeholder="0-100">
+                  </div>
+               </div>
+
+               <div class="alert alert-info mb-0">
+                  <small><i class="fas fa-info-circle"></i> Nilai Akhir = (Tugas × 30%) + (UTS × 30%) + (UAS × 40%)</small>
+               </div>
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+               <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
+            </div>
+         </form>
+      </div>
+   </div>
+</div>
+
+<!-- Modal Edit Nilai -->
+<div class="modal fade" id="modalEditNilai" tabindex="-1">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <form method="POST" action="<?= URLROOT ?>/siswa/update_nilai">
+            <div class="modal-header bg-warning text-dark">
+               <h5 class="modal-title"><i class="fas fa-edit"></i> Edit Nilai Siswa</h5>
+               <!-- <button type="button" class="btn-close" data-dismiss="modal"></button> -->
+            </div>
+            <div class="modal-body">
+               <input type="hidden" name="id_nilai" id="edit_id_nilai">
+               <input type="hidden" name="id_jadwal_setting" value="<?= $data['id_jadwal_setting'] ?>">
+               
+               <div class="mb-3">
+                  <label class="form-label fw-bold">Siswa</label>
+                  <input type="text" class="form-control" id="edit_nama_siswa" readonly>
+               </div>
+
+               <div class="mb-3">
+                  <label class="form-label fw-bold">Mata Pelajaran</label>
+                  <input type="text" class="form-control" id="edit_mata_pelajaran" readonly>
+               </div>
+
+               <div class="row">
+                  <div class="col-md-4 mb-3">
+                     <label class="form-label fw-bold">Nilai Tugas (30%)</label>
+                     <input type="number" name="nilai_tugas" id="edit_nilai_tugas" class="form-control" step="0.01" min="0" max="100">
+                  </div>
+                  <div class="col-md-4 mb-3">
+                     <label class="form-label fw-bold">Nilai UTS (30%)</label>
+                     <input type="number" name="nilai_uts" id="edit_nilai_uts" class="form-control" step="0.01" min="0" max="100">
+                  </div>
+                  <div class="col-md-4 mb-3">
+                     <label class="form-label fw-bold">Nilai UAS (40%)</label>
+                     <input type="number" name="nilai_uas" id="edit_nilai_uas" class="form-control" step="0.01" min="0" max="100">
+                  </div>
+               </div>
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+               <button type="submit" class="btn btn-warning"><i class="fas fa-save"></i> Update</button>
+            </div>
+         </form>
+      </div>
+   </div>
+</div>
+
+<script>
+// Update kelas dan ruang saat memilih siswa
+function updateKelasRuang(select) {
+   const option = select.options[select.selectedIndex];
+   document.getElementById('kelas_input').value = option.getAttribute('data-kelas');
+   document.getElementById('ruang_input').value = option.getAttribute('data-ruang');
+}
+
+// Edit nilai
+function editNilai(data) {
+   document.getElementById('edit_id_nilai').value = data.id_nilai;
+   document.getElementById('edit_nama_siswa').value = data.nama_siswa;
+   document.getElementById('edit_mata_pelajaran').value = data.mata_pelajaran;
+   document.getElementById('edit_nilai_tugas').value = data.nilai_tugas || '';
+   document.getElementById('edit_nilai_uts').value = data.nilai_uts || '';
+   document.getElementById('edit_nilai_uas').value = data.nilai_uas || '';
+   
+   const modal = new bootstrap.Modal(document.getElementById('modalEditNilai'));
+   modal.show();
+}
+
+// DataTable
+<?php if(!empty($data['nilai'])): ?>
+$(document).ready(function() {
+   $('#tableNilai').DataTable({
+      "pageLength": 25,
+      "order": [[1, 'asc']]
+   });
+});
+<?php endif; ?>
+</script>
+
+
+
+
+<style>
+.table th {
+    vertical-align: middle !important;
+    font-size: 0.9rem;
+}
+.table td {
+    vertical-align: middle !important;
+}
+.badge {
+    font-size: 0.85rem;
+    padding: 5px 10px;
+}
+.modal-header {
+    border-bottom: 2px solid #dee2e6;
+}
+.form-label {
+    margin-bottom: 0.3rem;
+}
+.card-header h5 {
+    font-weight: 600;
+}
+</style>
+
+
+
+
+
+
+
+
+
+
+
+// public function simpan_nilai()
+   // {
+   //    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+   //       $data = [
+   //          'id_jadwal_setting' => trim($_POST['id_jadwal_setting']),
+   //          'nis' => trim($_POST['nis']),
+   //          'kelas' => trim($_POST['kelas']),
+   //          'ruang' => trim($_POST['ruang']),
+   //          'id_pelajaran' => trim($_POST['id_pelajaran']),
+   //          'nik_wali_kelas' => $_SESSION['nik'],
+   //          'nilai_tugas' => !empty($_POST['nilai_tugas']) ? trim($_POST['nilai_tugas']) : null,
+   //          'nilai_uts' => !empty($_POST['nilai_uts']) ? trim($_POST['nilai_uts']) : null,
+   //          'nilai_uas' => !empty($_POST['nilai_uas']) ? trim($_POST['nilai_uas']) : null
+   //       ];
+
+   //       // Hitung nilai akhir (30% Tugas + 30% UTS + 40% UAS)
+   //       $tugas = $data['nilai_tugas'] ?? 0;
+   //       $uts = $data['nilai_uts'] ?? 0;
+   //       $uas = $data['nilai_uas'] ?? 0;
+   //       $data['nilai_akhir'] = ($tugas * 0.3) + ($uts * 0.3) + ($uas * 0.4);
+
+   //       if ($this->Mrapor->tambah_nilai($data)) {
+   //          flash('success', 'Nilai berhasil disimpan');
+   //       } else {
+   //          flash('error', 'Gagal menyimpan nilai');
+   //       }
+         
+   //       return redirect('siswa/nilai_pelajaran?jadwal=' . $data['id_jadwal_setting']);
+   //    }
+   // }
+
+   // public function update_nilai()
+   // {
+   //    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+   //       $data = [
+   //          'id_nilai' => trim($_POST['id_nilai']),
+   //          'nilai_tugas' => !empty($_POST['nilai_tugas']) ? trim($_POST['nilai_tugas']) : null,
+   //          'nilai_uts' => !empty($_POST['nilai_uts']) ? trim($_POST['nilai_uts']) : null,
+   //          'nilai_uas' => !empty($_POST['nilai_uas']) ? trim($_POST['nilai_uas']) : null
+   //       ];
+
+   //       // Hitung nilai akhir
+   //       $tugas = $data['nilai_tugas'] ?? 0;
+   //       $uts = $data['nilai_uts'] ?? 0;
+   //       $uas = $data['nilai_uas'] ?? 0;
+   //       $data['nilai_akhir'] = ($tugas * 0.3) + ($uts * 0.3) + ($uas * 0.4);
+
+   //       if ($this->Mrapor->update_nilai($data)) {
+   //          flash('success', 'Nilai berhasil diupdate');
+   //       } else {
+   //          flash('error', 'Gagal mengupdate nilai');
+   //       }
+         
+   //       $id_jadwal = trim($_POST['id_jadwal_setting']);
+   //       return redirect('siswa/nilai_pelajaran?jadwal=' . $id_jadwal);
+   //    }
+   // }

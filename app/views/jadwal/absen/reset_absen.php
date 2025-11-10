@@ -64,25 +64,76 @@
          </div>
 
          <div class="card card-outline card-success">
-            <div class="card-body" style="padding:15px; font-size:0.9em;">
-               <div>
-                  <b>Siswa Izin Hari ini :</b>
-               </div>
+   <div class="card-body" style="padding:15px; font-size:0.9em;">
+      <div>
+         <b>Siswa Izin Hari ini :</b>
+      </div>
 
-               <?php if (!$data['cek_izin']) { ?>
-                  <div class="text-center mt-2 mb-3">
-                     <span class="blink" style="color:green; font-weight:bold; font-size:1.2em">Tidak ada siswa izin</span>
-                  </div>
-               <?php } else { ?>
-                  <ol style="margin-top:10px">
-                     <?php foreach ($data['cek_izin'] as $c) : ?>
-                        <li><b><?= $c->nama_siswa ?></b> &nbsp;|&nbsp; <?= $c->jenis_izin ?></li>
-                     <?php endforeach; ?>
-                  </ol>
-               <?php } ?>
-
-            </div>
+      <?php if (!$data['cek_izin']) { ?>
+         <div class="text-center mt-2 mb-3">
+            <span class="blink" style="color:green; font-weight:bold; font-size:1.2em">Tidak ada siswa izin</span>
          </div>
+      <?php } else { ?>
+         <ol style="margin-top:10px">
+            <?php foreach ($data['cek_izin'] as $c) : ?>
+               <li>
+                  <b><?= $c->nama_siswa ?></b> &nbsp;|&nbsp; <?= $c->jenis_izin ?>
+                  <?php if (!empty($c->file_izin)) : ?>
+                     &nbsp;|&nbsp;
+                     <?php
+                     $ext = strtolower(pathinfo($c->file_izin, PATHINFO_EXTENSION));
+                     $isPdf = ($ext === 'pdf');
+                     ?>
+                     <?php if ($isPdf) : ?>
+                        <a href="<?= URLROOT ?>/smabethel/file_izin/<?= $c->file_izin ?>" target="_blank" class="btn btn-sm btn-info">
+                           <i class="fas fa-file-pdf"></i> Lihat Bukti
+                        </a>
+                     <?php else : ?>
+                        <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#modalBukti<?= $c->nis_izin ?>">
+                           <i class="fas fa-image"></i> Lihat Bukti
+                        </button>
+                     <?php endif; ?>
+                  <?php endif; ?>
+               </li>
+            <?php endforeach; ?>
+         </ol>
+      <?php } ?>
+
+   </div>
+</div>
+
+<!-- Modal untuk menampilkan gambar -->
+<?php if ($data['cek_izin']) : ?>
+   <?php foreach ($data['cek_izin'] as $c) : ?>
+      <?php if (!empty($c->file_izin)) : ?>
+         <?php
+         $ext = strtolower(pathinfo($c->file_izin, PATHINFO_EXTENSION));
+         $isPdf = ($ext === 'pdf');
+         ?>
+         <?php if (!$isPdf) : ?>
+            <div class="modal fade" id="modalBukti<?= $c->nis_izin ?>" tabindex="-1" role="dialog" aria-labelledby="modalBuktiLabel<?= $c->nis_izin ?>" aria-hidden="true">
+               <div class="modal-dialog modal-lg" role="document">
+                  <div class="modal-content">
+                     <div class="modal-header">
+                        <h5 class="modal-title" id="modalBuktiLabel<?= $c->nis_izin ?>">Bukti Izin - <?= $c->nama_siswa ?></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                           <span aria-hidden="true">&times;</span>
+                        </button>
+                     </div>
+                     <div class="modal-body text-center">
+                        <img src="<?= URLROOT ?>/smabethel/file_izin/<?= $c->file_izin ?>" class="img-fluid" alt="Bukti Izin" style="max-height:500px;">
+                     </div>
+                     <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         <?php endif; ?>
+      <?php endif; ?>
+   <?php endforeach; ?>
+<?php endif; ?>
+
 
          <div class="card">
             <div class="card-body" style="padding:15px">

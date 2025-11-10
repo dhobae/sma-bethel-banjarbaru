@@ -26,7 +26,7 @@
                                     <th class="text-center">Guru Pengajar</th>
                                 </tr>
                             </thead>
-                            <?php for ($i = 1; $i <= 11; $i++) { ?>
+                            <?php for ($i = 1; $i <= 10; $i++) { ?>
                             <tr>
                                 <input type="hidden" name="id_jadwal_lengkap"
                                     value="<?= $data['jadwal']->id_jadwal_lengkap ?>">

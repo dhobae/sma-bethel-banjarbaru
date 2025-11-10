@@ -15,7 +15,7 @@ define('DB_NAME', 'smabethel');
 // App Root
 define('APPROOT', dirname(dirname(__FILE__)));
 // Site Name
-define('SITENAME', 'STMIK BANJARBARU');
+define('SITENAME', 'SMA BETHEL BANJARBARU');
 // App Version
 define('APPVERSION', '1.2.0');
 // API Key Whatsapp Sender Device

@@ -6,14 +6,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="KRS Online yang digunakan untuk mengatur kartu rencana studi mahasiswa">
+    <meta name="description" content="Sistem Presensi SMA Bethel Banjarbaru">
 
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="<?= URLROOT ?>/dist/plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="<?= URLROOT ?>/dist/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
 
-    <link rel="shortcut icon" href="<?= URLROOT; ?>/skatel/img/ts_icon1.png">
+    <link rel="shortcut icon" href="<?= URLROOT; ?>/smabethel/img/icon.png">
 
     <link rel="stylesheet" href="<?= URLROOT ?>/dist/lib/pahdi.css">
     <link rel="stylesheet" href="<?= URLROOT ?>/dist/lib/tabelpahdi.css">
@@ -52,17 +52,17 @@
             <li class="nav-item">
                 <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
             </li>
-            <li class="nav-item d-none d-sm-inline-block">
+            <!-- <li class="nav-item d-none d-sm-inline-block">
                 <a href="https://www.smktelkom-bjb.sch.id/web/" class="nav-link" target=_blank
                     title="Ke Web Skatel Bjb">SMK Telkom Banjarbaru</a>
-            </li>
-            <li class="nav-item d-none d-sm-inline-block">
+            </li> -->
+            <!-- <li class="nav-item d-none d-sm-inline-block">
                 <a href="https://igracias.telkomschools.sch.id/ts/login/" class="nav-link" target=_blank
                     title="Ke Elearning IGRACIAS">IGRACIAS</a>
-            </li>
+            </li> -->
             <li class="nav-item d-none d-sm-inline-block">
-                <a href="http://ppdb.smktelkom-bjb.sch.id/" class="nav-link" target=_blank
-                    title="Ke PPDB Skatel Bjb">PPDB</a>
+                <a href="https://wiki.stekom.ac.id/sekolah/informasi-ppdb-sma-bethel-banjar-baru-2025/?q=INFORMASI+PPDB+SMA+BETHEL+BANJAR+BARU+2025#gsc.tab=0&gsc.q=INFORMASI%20PPDB%20SMA%20BETHEL%20BANJAR%20BARU%202025&gsc.page=1" class="nav-link" target=_blank
+                    title="Ke PPDB SMA Bethel BJB">PPDB</a>
             </li>
         </ul>
 
@@ -100,9 +100,9 @@
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo -->
         <a href="<?= URLROOT ?>" class="brand-link">
-            <img src="<?= URLROOT; ?>/skatel/img/ts_icon1.png" alt="AdminLTE Logo" class="brand-image"
+            <img src="<?= URLROOT; ?>/smabethel/img/icon.png" alt="AdminLTE Logo" class="brand-image"
                 style="opacity: 1">
-            <span class="brand-text" style="color:#6a1212; font-weight:bold">SMK Telkom BJB</span>
+            <span class="brand-text" style="color:#6a1212; font-weight:bold">SMA BETHEL BJB</span>
         </a>
 
         <!-- Sidebar -->

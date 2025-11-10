@@ -9,6 +9,8 @@
 <!-- jQuery -->
 <!-- <script src="<?= $_url ?>plugins/jquery/jquery.min.js"></script> -->
 <!-- <script src="https://code.jquery.com/jquery-3.1.0.js"></script> -->
+<!-- jQuery ini yang baru-->
+<script src="<?= URLROOT ?>/dist/plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
 <script src="<?= URLROOT ?>/dist/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
@@ -18,8 +20,7 @@
 
 
 
-<!-- jQuery ini yang baru-->
-<script src="<?= URLROOT ?>/dist/plugins/jquery/jquery.min.js"></script>
+
 <script src="<?= URLROOT ?>/dist/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="<?= URLROOT ?>/dist/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 <script src="<?= URLROOT ?>/dist/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>

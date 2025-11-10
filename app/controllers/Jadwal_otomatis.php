@@ -13,7 +13,6 @@ class Jadwal_otomatis extends Controller
             redirect('');
         }
 
-        // Inisialisasi database
         $this->db = new Database();
     }
 
@@ -39,9 +38,15 @@ class Jadwal_otomatis extends Controller
         error_reporting(E_ALL);
         ini_set('display_errors', 1);
 
-        error_log("CONTROLLER: Proses generate jadwal dimulai.");
+        $this->db->query("SELECT berlaku_dari FROM `jadwal_setting` WHERE status = 1");
+        $jadwalBerlaku = $this->db->single();
+        $berlakuJadwalDari = $jadwalBerlaku->berlaku_dari;
 
-        $berlakuJadwalDari = $_POST['berlaku_jadwal_dari'] ?? date('Y-m-d');
+        // exit();
+
+        // error_log("CONTROLLER: Proses generate jadwal dimulai.");
+
+        // $berlakuJadwalDari = $_POST['berlaku_jadwal_dari'] ?? date('Y-m-d');
 
         if (empty($berlakuJadwalDari)) {
             error_log("CONTROLLER: ERROR - Tanggal berlaku jadwal kosong.");
@@ -58,7 +63,6 @@ class Jadwal_otomatis extends Controller
             error_log("CONTROLLER: Tabel jadwal_lengkap berhasil dikosongkan");
 
             // die(); //  Stop semua eksekusi di sini
-
             error_log("CONTROLLER: Menginisialisasi SchedulerService...");
             $scheduler = new SchedulerService($this->db);
 

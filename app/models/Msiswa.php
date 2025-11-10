@@ -604,26 +604,63 @@ class Msiswa
       return $this->db->resultSet();
    }
 
-   public function simpan_izin_siswa($data)
+   public function simpan_izin_siswa($data, $files)
    {
+      // Cek izin ganda
       $cek = $this->cek_double_izin($_SESSION['nik'], $data['mulai_izin'], $data['sampai_izin']);
       if ($cek) {
          return false;
       }
 
-      $ambil = "SELECT kelas_siswa from siswa where nis=:nis";
+      // Ambil kelas siswa
+      $ambil = "SELECT kelas_siswa FROM siswa WHERE nis = :nis";
       $this->db->query($ambil);
       $this->db->bind('nis', $_SESSION['nik']);
       $ambil1 = $this->db->single();
       $kelas = $ambil1->kelas_siswa;
 
-      $wakel = "SELECT wali_kelas from jadwal_lengkap where kode_kelas=:kode_kelas";
+      // Ambil wali kelas
+      $wakel = "SELECT wali_kelas FROM jadwal_lengkap WHERE kode_kelas = :kode_kelas";
       $this->db->query($wakel);
       $this->db->bind('kode_kelas', $kelas);
       $wakel1 = $this->db->single();
       $wali_kelas = $wakel1->wali_kelas;
 
-      $sql = "INSERT INTO izin_siswa (nis_izin, kelas_izin, wali_kelas_izin, jenis_izin, mulai_izin, sampai_izin, tgl_dibuat_izin, alasan_izin, status_izin) values (:nis_izin, :kelas_izin, :wali_kelas_izin, :jenis_izin, :mulai_izin, :sampai_izin, :tgl_dibuat_izin, :alasan_izin, :status_izin)";
+      // --- Proses upload file ---
+      $file_izin = null;
+
+      if ($files['file_izin']['size'] > 0) {
+         $file_name = $files['file_izin']['name'];
+         $file_tmp  = $files['file_izin']['tmp_name'];
+         $file_ext  = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+
+         $upload_dir = "../public/smabethel/file_izin/";
+         $newfile_izinName = uniqid('izin_', true) . '.' . $file_ext;
+
+         // Jika sebelumnya ada file izin, hapus dulu
+         if (!empty($_SESSION['file_izin'])) {
+               $oldFile = $upload_dir . $_SESSION['file_izin'];
+               if (file_exists($oldFile)) {
+                  unlink($oldFile);
+               }
+         }
+
+         // Pindahkan file ke folder tujuan
+         if (move_uploaded_file($file_tmp, $upload_dir . $newfile_izinName)) {
+               $file_izin = $newfile_izinName;
+               $_SESSION['file_izin'] = $newfile_izinName;
+         } else {
+               setFlash('Gagal mengupload file.', 'error');
+               return false;
+         }
+      }
+
+      // --- Simpan data ke database ---
+      $sql = "INSERT INTO izin_siswa 
+            (nis_izin, kelas_izin, wali_kelas_izin, jenis_izin, mulai_izin, sampai_izin, tgl_dibuat_izin, alasan_izin, status_izin, file_izin)
+            VALUES 
+            (:nis_izin, :kelas_izin, :wali_kelas_izin, :jenis_izin, :mulai_izin, :sampai_izin, :tgl_dibuat_izin, :alasan_izin, :status_izin, :file_izin)";
+
       $this->db->query($sql);
       $this->db->bind('nis_izin', $_SESSION['nik']);
       $this->db->bind('kelas_izin', $kelas);
@@ -634,31 +671,153 @@ class Msiswa
       $this->db->bind('tgl_dibuat_izin', date('Y-m-d'));
       $this->db->bind('alasan_izin', $data['keterangan']);
       $this->db->bind('status_izin', 'Menunggu ACC');
+      $this->db->bind('file_izin', $file_izin);
       $this->db->execute();
+
       return true;
    }
 
-   public function simpan_edit_izin_siswa($data)
+      public function simpan_edit_izin_siswa($data, $files = null)
    {
-      $sql = "UPDATE izin_siswa set jenis_izin=:jenis_izin, mulai_izin=:mulai_izin, sampai_izin=:sampai_izin, alasan_izin=:alasan_izin where id_izin=:id";
+      // Ambil data file lama terlebih dahulu
+      $sql_get = "SELECT file_izin FROM izin_siswa WHERE id_izin = :id";
+      $this->db->query($sql_get);
+      $this->db->bind('id', $data['id_izin']);
+      $old_data = $this->db->single();
+      $old_file = $old_data->file_izin ?? null;
+
+      $file_izin = $old_file; // Default tetap gunakan file lama
+
+      // Proses upload file baru jika ada
+      if ($files !== null && isset($files['file_izin']) && $files['file_izin']['size'] > 0) {
+         $file_name = $files['file_izin']['name'];
+         $file_tmp  = $files['file_izin']['tmp_name'];
+         $file_ext  = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+
+         $upload_dir = "../public/smabethel/file_izin/";
+         $new_file_name = uniqid('izin_', true) . '.' . $file_ext;
+
+         // Hapus file lama jika ada
+         if (!empty($old_file)) {
+            $old_file_path = $upload_dir . $old_file;
+            if (file_exists($old_file_path)) {
+               unlink($old_file_path);
+            }
+         }
+
+         // Upload file baru
+         if (move_uploaded_file($file_tmp, $upload_dir . $new_file_name)) {
+            $file_izin = $new_file_name;
+         } else {
+            setFlash('Gagal mengupload file.', 'error');
+            return false;
+         }
+      }
+
+      // Update data ke database
+      $sql = "UPDATE izin_siswa 
+            SET jenis_izin = :jenis_izin, 
+                  mulai_izin = :mulai_izin, 
+                  sampai_izin = :sampai_izin, 
+                  alasan_izin = :alasan_izin,
+                  file_izin = :file_izin 
+            WHERE id_izin = :id";
+      
       $this->db->query($sql);
       $this->db->bind('id', $data['id_izin']);
       $this->db->bind('jenis_izin', $data['jenis_izin']);
       $this->db->bind('mulai_izin', $data['mulai_izin']);
       $this->db->bind('sampai_izin', $data['sampai_izin']);
       $this->db->bind('alasan_izin', $data['keterangan']);
+      $this->db->bind('file_izin', $file_izin);
       $this->db->execute();
+      
       return true;
    }
 
-   public function hapus_pengajuan_izin($id)
+
+      public function hapus_pengajuan_izin($id)
    {
-      $sql = "DELETE from izin_siswa where id_izin=:id";
+      // Ambil data file terlebih dahulu sebelum dihapus
+      $sql_get = "SELECT file_izin FROM izin_siswa WHERE id_izin = :id";
+      $this->db->query($sql_get);
+      $this->db->bind('id', $id);
+      $data = $this->db->single();
+
+      // Hapus file jika ada
+      if (!empty($data->file_izin)) {
+         $file_path = "../public/smabethel/file_izin/" . $data->file_izin;
+         if (file_exists($file_path)) {
+            unlink($file_path);
+         }
+      }
+
+      // Hapus data dari database
+      $sql = "DELETE FROM izin_siswa WHERE id_izin = :id";
       $this->db->query($sql);
       $this->db->bind('id', $id);
       $this->db->execute();
+      
       return true;
    }
+
+   // old without file
+   // public function simpan_izin_siswa($data)
+   // {
+   //    $cek = $this->cek_double_izin($_SESSION['nik'], $data['mulai_izin'], $data['sampai_izin']);
+   //    if ($cek) {
+   //       return false;
+   //    }
+
+   //    $ambil = "SELECT kelas_siswa from siswa where nis=:nis";
+   //    $this->db->query($ambil);
+   //    $this->db->bind('nis', $_SESSION['nik']);
+   //    $ambil1 = $this->db->single();
+   //    $kelas = $ambil1->kelas_siswa;
+
+   //    $wakel = "SELECT wali_kelas from jadwal_lengkap where kode_kelas=:kode_kelas";
+   //    $this->db->query($wakel);
+   //    $this->db->bind('kode_kelas', $kelas);
+   //    $wakel1 = $this->db->single();
+   //    $wali_kelas = $wakel1->wali_kelas;
+
+   //    $sql = "INSERT INTO izin_siswa (nis_izin, kelas_izin, wali_kelas_izin, jenis_izin, mulai_izin, sampai_izin, tgl_dibuat_izin, alasan_izin, status_izin) values (:nis_izin, :kelas_izin, :wali_kelas_izin, :jenis_izin, :mulai_izin, :sampai_izin, :tgl_dibuat_izin, :alasan_izin, :status_izin)";
+   //    $this->db->query($sql);
+   //    $this->db->bind('nis_izin', $_SESSION['nik']);
+   //    $this->db->bind('kelas_izin', $kelas);
+   //    $this->db->bind('wali_kelas_izin', $wali_kelas);
+   //    $this->db->bind('jenis_izin', $data['jenis_izin']);
+   //    $this->db->bind('mulai_izin', $data['mulai_izin']);
+   //    $this->db->bind('sampai_izin', $data['sampai_izin']);
+   //    $this->db->bind('tgl_dibuat_izin', date('Y-m-d'));
+   //    $this->db->bind('alasan_izin', $data['keterangan']);
+   //    $this->db->bind('status_izin', 'Menunggu ACC');
+   //    $this->db->execute();
+   //    return true;
+   // }
+
+   // public function simpan_edit_izin_siswa($data)
+   // {
+   //    $sql = "UPDATE izin_siswa set jenis_izin=:jenis_izin, mulai_izin=:mulai_izin, sampai_izin=:sampai_izin, alasan_izin=:alasan_izin where id_izin=:id";
+   //    $this->db->query($sql);
+   //    $this->db->bind('id', $data['id_izin']);
+   //    $this->db->bind('jenis_izin', $data['jenis_izin']);
+   //    $this->db->bind('mulai_izin', $data['mulai_izin']);
+   //    $this->db->bind('sampai_izin', $data['sampai_izin']);
+   //    $this->db->bind('alasan_izin', $data['keterangan']);
+   //    $this->db->execute();
+   //    return true;
+   // }
+
+   // public function hapus_pengajuan_izin($id)
+   // {
+   //    $sql = "DELETE from izin_siswa where id_izin=:id";
+   //    $this->db->query($sql);
+   //    $this->db->bind('id', $id);
+   //    $this->db->execute();
+   //    return true;
+   // }
+   // old without file
 
    //--IZIN SISWA ------------------
    public function izin_siswa($status)
@@ -891,5 +1050,37 @@ class Msiswa
       $this->db->bind('tahun', $tahun);
       $this->db->bind('nis', $nis);
       return $this->db->single();
+   }
+
+   public function ambil_siswa_berdasarkan_wali_kelas($nik_wali_kelas) {
+
+      $sql = "SELECT DISTINCT
+      siswa.nis,
+      siswa.nama_siswa,
+      siswa.kelas_siswa,
+      siswa.ruang_siswa,
+      jadwal_lengkap.wali_kelas,
+      nilai_siswa.nilai_tugas,
+      nilai_siswa.nilai_uts,
+      nilai_siswa.nilai_uas,
+      nilai_siswa.nilai_akhir
+      FROM siswa
+      JOIN jadwal_lengkap 
+         ON siswa.kelas_siswa = jadwal_lengkap.kode_kelas
+      LEFT JOIN nilai_siswa 
+         ON nilai_siswa.nis = siswa.nis 
+         AND nilai_siswa.nik_wali_kelas = jadwal_lengkap.wali_kelas
+      WHERE jadwal_lengkap.wali_kelas = :nik_wali_kelas
+      AND siswa.status_siswa = 'Aktif'
+      AND jadwal_lengkap.validasi = 1
+      GROUP BY siswa.nis
+      ORDER BY siswa.nama_siswa;";
+
+
+      $this->db->query($sql);
+      $this->db->bind('nik_wali_kelas', $nik_wali_kelas);
+
+      return $this->db->resultSet();
+   
    }
 }

@@ -40,7 +40,7 @@
                      <th style="width:4%">8</th>
                      <th style="width:4%">9</th>
                      <th style="width:4%">10</th>
-                     <th style="width:4%">11</th>
+                     <!-- <th style="width:4%">11</th> -->
                   </tr>
                </thead>
                <tbody>
@@ -62,7 +62,6 @@
                            <td class="text-center <?= $d->absen_jam8 == 'A' ? 'alpa' : ($d->absen_jam8 == 'S' || $d->absen_jam8 == 'I' ? 'izin' : 'hadir') ?>"><?= $d->absen_jam8 ?></td>
                            <td class="text-center <?= $d->absen_jam9 == 'A' ? 'alpa' : ($d->absen_jam9 == 'S' || $d->absen_jam9 == 'I' ? 'izin' : 'hadir') ?>"><?= $d->absen_jam9 ?></td>
                            <td class="text-center <?= $d->absen_jam10 == 'A' ? 'alpa' : ($d->absen_jam10 == 'S' || $d->absen_jam10 == 'I' ? 'izin' : 'hadir') ?>"><?= $d->absen_jam10 ?></td>
-                           <td class="text-center <?= $d->absen_jam11 == 'A' ? 'alpa' : ($d->absen_jam11 == 'S' || $d->absen_jam11 == 'I' ? 'izin' : 'hadir') ?>"><?= $d->absen_jam11 ?></td>
 
                         </tr>
                      <?php $no++;

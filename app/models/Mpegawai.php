@@ -59,7 +59,7 @@ class Mpegawai
 
    public function simpan($data, $files)
    {
-      $sql = "INSERT into pegawai (id_pegawai, nik, username, nama, kode, jabatan, full_time, jk, agama, nomor_hp, notif_wa, tempat_lahir, tgl_lahir, alamat, pendidikan, email, absen, mengajar) values (:id_pegawai, :nik, :username, :nama, :kode, :jabatan, :full_time, :jk, :agama, :nomor_hp, :notif_wa, :tempat_lahir, :tgl_lahir, :alamat, :pendidikan, :email, :absen, :mengajar)";
+      $sql = "INSERT into pegawai (id_pegawai, rfid, nik, username, nama, kode, jabatan, full_time, jk, agama, nomor_hp, notif_wa, tempat_lahir, tgl_lahir, alamat, pendidikan, email, absen, mengajar) values (:id_pegawai, :rfid, :nik, :username, :nama, :kode, :jabatan, :full_time, :jk, :agama, :nomor_hp, :notif_wa, :tempat_lahir, :tgl_lahir, :alamat, :pendidikan, :email, :absen, :mengajar)";
       $this->db->query($sql);
       $this->db->bind('id_pegawai', NULL);
       $this->db->bind('nik', $data['nik']);
@@ -79,6 +79,7 @@ class Mpegawai
       $this->db->bind('pendidikan', $data['pendidikan']);
       $this->db->bind('email', $data['email']);
       $this->db->bind('absen', $data['absen']);
+      $this->db->bind('rfid', $data['rfid']);
       $this->db->execute();
 
       $sql2 = "INSERT INTO users (id_user, nik_user, username, nama_user, password, role) values (:id_user, :nik_user, :username, :nama_user, :password, :role)";
@@ -151,7 +152,7 @@ class Mpegawai
 
    public function simpan_edit($data)
    {
-      $sql = "UPDATE pegawai set nik=:nik, username=:username, nama=:nama, kode=:kode, jabatan=:jabatan, full_time=:full_time, jk=:jk, agama=:agama, nomor_hp=:nomor_hp, tempat_lahir=:tempat_lahir, tgl_lahir=:tgl_lahir, alamat=:alamat, pendidikan=:pendidikan, email=:email, absen=:absen, mengajar=:mengajar, notif_wa=:notif_wa where id_pegawai=:id";
+      $sql = "UPDATE pegawai set rfid=:rfid, nik=:nik, username=:username, nama=:nama, kode=:kode, jabatan=:jabatan, full_time=:full_time, jk=:jk, agama=:agama, nomor_hp=:nomor_hp, tempat_lahir=:tempat_lahir, tgl_lahir=:tgl_lahir, alamat=:alamat, pendidikan=:pendidikan, email=:email, absen=:absen, mengajar=:mengajar, notif_wa=:notif_wa where id_pegawai=:id";
       $this->db->query($sql);
       $this->db->bind('id', $data['id_pegawai']);
       $this->db->bind('nik', $data['nik']);
@@ -171,6 +172,7 @@ class Mpegawai
       $this->db->bind('email', $data['email']);
       $this->db->bind('absen', $data['absen']);
       $this->db->bind('notif_wa', $data['notif_wa']);
+      $this->db->bind('rfid', $data['rfid']);
       $this->db->execute();
 
       //$password = MD5($data['password']);

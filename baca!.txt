@@ -1,0 +1,4 @@
+tambah rfid input di pegawai belum ada, aku hndk guring huluuu (sudah)
+pada image.png izin belum ada bukti file, nanti tambah (CRUD IZIN di siswa upload file sudah!), proses pada siswa buat pengajuan izin sudah bisa upload file btw.. tinggal lanjut.. di edit simpan file baru hapus file lama sama fitur hapus tambahin hapus file..
+move file avatar profile masih ke skatel perlu dirubah..!
+e raport masih anomali http://192.168.1.6/smabethel/siswa/nilai_pelajaran wali kelas input tapi e raport gimana desain nya? (blm)
