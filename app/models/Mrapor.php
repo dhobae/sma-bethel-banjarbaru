@@ -324,51 +324,110 @@ class Mrapor {
     }
 
     // --- Cek kelengkapan data rapor siswa ---
-    public function cek_kelengkapan_rapor($id_jadwal, $id_siswa)
-    {
-        $data = [
+  // --- Cek kelengkapan data rapor siswa (REVISI) ---
+public function cek_kelengkapan_rapor($id_jadwal, $id_siswa)
+{
+    // Ambil data siswa untuk mendapatkan kelasnya
+    $this->db->query("SELECT kelas_siswa FROM siswa WHERE id_siswa = :ids");
+    $this->db->bind('ids', $id_siswa);
+    $siswa = $this->db->single();
+    
+    if (!$siswa) {
+        return [
             'nilai_sikap' => false,
             'jumlah_nilai_mapel' => 0,
+            'total_mapel' => 0,
+            'persen_mapel' => 0,
             'jumlah_ekskul' => 0,
             'jumlah_prestasi' => 0,
-            'catatan' => false
+            'catatan' => false,
+            'persentase_total' => 0,
+            'status' => 'belum'
         ];
-
-        // Cek nilai sikap
-        $this->db->query("SELECT id_nilai_sikap FROM nilai_sikap WHERE id_jadwal_setting = :idj AND id_siswa = :ids");
-        $this->db->bind('idj', $id_jadwal);
-        $this->db->bind('ids', $id_siswa);
-        $data['nilai_sikap'] = ($this->db->single() !== false);
-
-        // Hitung nilai mapel
-        $this->db->query("SELECT COUNT(*) as jml FROM nilai_pelajaran WHERE id_jadwal_setting = :idj AND id_siswa = :ids");
-        $this->db->bind('idj', $id_jadwal);
-        $this->db->bind('ids', $id_siswa);
-        $result = $this->db->single();
-        $data['jumlah_nilai_mapel'] = $result ? $result->jml : 0;
-
-        // Hitung ekskul
-        $this->db->query("SELECT COUNT(*) as jml FROM ekstrakurikuler WHERE id_jadwal_setting = :idj AND id_siswa = :ids");
-        $this->db->bind('idj', $id_jadwal);
-        $this->db->bind('ids', $id_siswa);
-        $result = $this->db->single();
-        $data['jumlah_ekskul'] = $result ? $result->jml : 0;
-
-        // Hitung prestasi
-        $this->db->query("SELECT COUNT(*) as jml FROM prestasi WHERE id_jadwal_setting = :idj AND id_siswa = :ids");
-        $this->db->bind('idj', $id_jadwal);
-        $this->db->bind('ids', $id_siswa);
-        $result = $this->db->single();
-        $data['jumlah_prestasi'] = $result ? $result->jml : 0;
-
-        // Cek catatan
-        $this->db->query("SELECT id_catatan FROM catatan_wali_kelas WHERE id_jadwal_setting = :idj AND id_siswa = :ids");
-        $this->db->bind('idj', $id_jadwal);
-        $this->db->bind('ids', $id_siswa);
-        $data['catatan'] = ($this->db->single() !== false);
-
-        return $data;
     }
+    
+    // Ambil semua mata pelajaran untuk kelas siswa
+    $this->db->query("SELECT COUNT(*) as total FROM m_pelajaran");
+    $this->db->execute();
+    $result = $this->db->single();
+    $total_mapel = $result ? $result->total : 0;
+    
+    // Cek nilai sikap
+    $this->db->query("SELECT id_nilai_sikap FROM nilai_sikap WHERE id_jadwal_setting = :idj AND id_siswa = :ids");
+    $this->db->bind('idj', $id_jadwal);
+    $this->db->bind('ids', $id_siswa);
+    $nilai_sikap = ($this->db->single() !== false);
+
+    // Hitung nilai mapel
+    $this->db->query("SELECT COUNT(*) as jml FROM nilai_pelajaran WHERE id_jadwal_setting = :idj AND id_siswa = :ids");
+    $this->db->bind('idj', $id_jadwal);
+    $this->db->bind('ids', $id_siswa);
+    $result = $this->db->single();
+    $jumlah_nilai_mapel = $result ? $result->jml : 0;
+    
+    // Hitung persentase kelengkapan nilai mapel
+    $persen_mapel = ($total_mapel > 0) ? ($jumlah_nilai_mapel / $total_mapel) * 100 : 0;
+
+    // Hitung ekskul
+    $this->db->query("SELECT COUNT(*) as jml FROM ekstrakurikuler WHERE id_jadwal_setting = :idj AND id_siswa = :ids");
+    $this->db->bind('idj', $id_jadwal);
+    $this->db->bind('ids', $id_siswa);
+    $result = $this->db->single();
+    $jumlah_ekskul = $result ? $result->jml : 0;
+
+    // Hitung prestasi
+    $this->db->query("SELECT COUNT(*) as jml FROM prestasi WHERE id_jadwal_setting = :idj AND id_siswa = :ids");
+    $this->db->bind('idj', $id_jadwal);
+    $this->db->bind('ids', $id_siswa);
+    $result = $this->db->single();
+    $jumlah_prestasi = $result ? $result->jml : 0;
+
+    // Cek catatan
+    $this->db->query("SELECT id_catatan FROM catatan_wali_kelas WHERE id_jadwal_setting = :idj AND id_siswa = :ids");
+    $this->db->bind('idj', $id_jadwal);
+    $this->db->bind('ids', $id_siswa);
+    $catatan = ($this->db->single() !== false);
+    
+    // Hitung persentase total dengan bobot yang ditentukan
+    $persentase_total = 0;
+    
+    // Nilai Mata Pelajaran 20%
+    $persentase_total += ($persen_mapel / 100) * 20;
+    
+    // Penilaian Sikap 20%
+    $persentase_total += $nilai_sikap ? 20 : 0;
+    
+    // Ekstrakurikuler 20%
+    $persentase_total += ($jumlah_ekskul > 0) ? 20 : 0;
+    
+    // Prestasi 20%
+    $persentase_total += ($jumlah_prestasi > 0) ? 20 : 0;
+    
+    // Catatan Wali Kelas 20%
+    $persentase_total += $catatan ? 20 : 0;
+    
+    // Tentukan status kelengkapan
+    $status = 'belum';
+    if ($persentase_total >= 80) {
+        $status = 'lengkap';
+    } elseif ($persentase_total >= 40) {
+        $status = 'sebagian';
+    } else {
+        $status = 'minim';
+    }
+
+    return [
+        'nilai_sikap' => $nilai_sikap,
+        'jumlah_nilai_mapel' => $jumlah_nilai_mapel,
+        'total_mapel' => $total_mapel,
+        'persen_mapel' => round($persen_mapel),
+        'jumlah_ekskul' => $jumlah_ekskul,
+        'jumlah_prestasi' => $jumlah_prestasi,
+        'catatan' => $catatan,
+        'persentase_total' => round($persentase_total),
+        'status' => $status
+    ];
+}
 
 
 

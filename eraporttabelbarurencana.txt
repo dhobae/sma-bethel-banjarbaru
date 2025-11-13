@@ -11,3 +11,11 @@ ketidak hadiran bisa di tabel absen cek berdasarkan nis
 
 
 kurikulum yang berhak mindah siswa ke kelas berapanya sama nilainya
+
+
+
+
+
+
+// masih ada anomali harusnya guru wali kelas bisa masuk akan nilai semester yang dulu jua soalnya di siswa ada mengecek nilai sebelumnya (Done) tapi..
+// masih anomali kan persemester tuh beda beda nilai pelajarannya harusnya gimana bagusnya ini..

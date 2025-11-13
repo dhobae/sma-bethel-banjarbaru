@@ -560,137 +560,204 @@ class Siswa extends Controller
 
 
    // wali kelas
- public function rapor()
- {
-    if (Middleware::admin('wali_kelas')) {
-       $nik_wali_kelas = $_SESSION['nik'];
-       $data['siswa'] = [];
-       $data['kelas'] = [];
-       
-       if ($nik_wali_kelas) {
-          $data['siswa'] = $this->Mrapor->ambil_siswa_berdasarkan_wali_kelas($nik_wali_kelas);
-          $data['kelas'] = $this->Mrapor->ambil_kelas_wali_kelas($nik_wali_kelas);
-          $data['jadwal_aktif'] = $this->Mrapor->ambil_jadwal_aktif();
-          
-          // Tambahkan info kelengkapan rapor untuk setiap siswa
-          if ($data['jadwal_aktif']) {
-             foreach ($data['siswa'] as &$siswa) {
-                $siswa->kelengkapan = $this->Mrapor->cek_kelengkapan_rapor(
-                   $data['jadwal_aktif']->id_jadwal_setting, 
-                   $siswa->id_siswa
-                );
-             }
-          }
-       }
- 
-       require APPROOT . '/views/inc/header.php';
-       $this->view('siswa/rapor', $data);
-       require APPROOT . '/views/inc/footer.php';
-    } else {
-       return redirect('siswa');
-       exit;
-    }
- }
-
- // Halaman detail input rapor siswa
- public function rapor_detail($id = null)
- {
-     if (!Middleware::admin('wali_kelas')) {
-         setFlash('Akses ditolak! Hanya wali kelas yang bisa mengakses halaman ini.' , 'error');
-         return redirect('siswa/rapor');
-     }
-
-     if (!$id) {
-         setFlash('ID siswa tidak valid' , 'error');
-         return redirect('siswa/rapor');
-     }
-
-     // Ambil jadwal aktif
-     $jadwal_aktif = $this->Mrapor->ambil_jadwal_aktif();
-     
-     if (!$jadwal_aktif) {
-         setFlash('Tidak ada jadwal/semester yang aktif. Hubungi administrator.' , 'error');
-         return redirect('siswa/rapor');
-     }
-
-     // Ambil data siswa
-     $siswa = $this->Mrapor->ambil_siswa_by_id($id);
-     
-     if (!$siswa) {
-         setFlash('Data siswa tidak ditemukan', 'error');
-         return redirect('siswa/rapor');
-     }
-
-     // Verifikasi apakah siswa ini memang di kelas wali kelas yang login
-     $siswa_wali = $this->Mrapor->ambil_siswa_berdasarkan_wali_kelas($_SESSION['nik']);
-     $found = false;
-     foreach ($siswa_wali as $s) {
-         if ($s->id_siswa == $id) {
-             $found = true;
-             break;
+// Halaman daftar siswa untuk wali kelas (dengan filter semester)
+public function rapor()
+{
+   if (Middleware::admin('wali_kelas')) {
+      $nik_wali_kelas = $_SESSION['nik'];
+      $data['siswa'] = [];
+      $data['kelas'] = [];
+      
+      if ($nik_wali_kelas) {
+         // Ambil semua jadwal setting untuk dropdown
+         $data['semua_jadwal'] = $this->Mrapor->ambil_semua_jadwal_setting();
+         
+         // Ambil jadwal aktif sebagai default
+         $data['jadwal_aktif'] = $this->Mrapor->ambil_jadwal_aktif();
+         
+         // Cek apakah ada parameter semester dari GET
+         $id_jadwal_pilihan = isset($_GET['semester']) ? (int)$_GET['semester'] : null;
+         
+         // Tentukan semester yang akan digunakan
+         if ($id_jadwal_pilihan) {
+            // Validasi apakah jadwal setting ada
+            $jadwal_dipilih = null;
+            foreach ($data['semua_jadwal'] as $js) {
+               if ($js->id_jadwal_setting == $id_jadwal_pilihan) {
+                  $jadwal_dipilih = $js;
+                  break;
+               }
+            }
+            
+            if ($jadwal_dipilih) {
+               $data['semester_dipilih'] = $id_jadwal_pilihan;
+               $data['jadwal_terpilih'] = $jadwal_dipilih;
+            } else {
+               // Jadwal tidak valid, gunakan yang aktif
+               $data['semester_dipilih'] = $data['jadwal_aktif'] ? $data['jadwal_aktif']->id_jadwal_setting : null;
+               $data['jadwal_terpilih'] = $data['jadwal_aktif'];
+            }
+         } else {
+            // Gunakan jadwal aktif
+            $data['semester_dipilih'] = $data['jadwal_aktif'] ? $data['jadwal_aktif']->id_jadwal_setting : null;
+            $data['jadwal_terpilih'] = $data['jadwal_aktif'];
          }
-     }
+         
+         // Ambil data siswa dan kelas
+         $data['siswa'] = $this->Mrapor->ambil_siswa_berdasarkan_wali_kelas($nik_wali_kelas);
+         $data['kelas'] = $this->Mrapor->ambil_kelas_wali_kelas($nik_wali_kelas);
+         
+         // Tambahkan info kelengkapan rapor untuk setiap siswa berdasarkan semester terpilih
+         if ($data['semester_dipilih']) {
+            foreach ($data['siswa'] as &$siswa) {
+               $siswa->kelengkapan = $this->Mrapor->cek_kelengkapan_rapor(
+                  $data['semester_dipilih'], 
+                  $siswa->id_siswa
+               );
+            }
+         }
+      }
 
-     if (!$found) {
-         setFlash('Anda tidak berhak mengakses data siswa ini' , 'error');
-         return redirect('siswa/rapor');
-     }
+      require APPROOT . '/views/inc/header.php';
+      $this->view('siswa/rapor', $data);
+      require APPROOT . '/views/inc/footer.php';
+   } else {
+      return redirect('siswa');
+      exit;
+   }
+}
 
-     // Ambil mata pelajaran berdasarkan kelas siswa
-     $data['pelajaran'] = $this->Mrapor->ambil_mata_pelajaran_kelas($siswa->kelas_siswa);
-     
-   //   echo "<pre>";
-   //   var_dump($data['pelajaran']);
-   //   echo "</pre>";
+// Halaman detail input rapor siswa (dengan parameter semester)
+public function rapor_detail($id = null)
+{
+    if (!Middleware::admin('wali_kelas')) {
+        setFlash('error', 'Akses ditolak! Hanya wali kelas yang bisa mengakses halaman ini.');
+        return redirect('siswa/rapor');
+    }
 
-   //   exit;
-     // Ambil data rapor yang sudah ada
-     $data['siswa'] = $siswa;
-     $data['jadwal'] = $jadwal_aktif;
-     $data['nilai_pelajaran'] = $this->Mrapor->ambil_nilai_pelajaran($jadwal_aktif->id_jadwal_setting, $id);
-     $data['nilai_sikap'] = $this->Mrapor->ambil_nilai_sikap($jadwal_aktif->id_jadwal_setting, $id);
-     $data['ekskul'] = $this->Mrapor->ambil_ekstrakurikuler($jadwal_aktif->id_jadwal_setting, $id);
-     $data['prestasi'] = $this->Mrapor->ambil_prestasi($jadwal_aktif->id_jadwal_setting, $id);
-     $data['catatan'] = $this->Mrapor->ambil_catatan_wali($jadwal_aktif->id_jadwal_setting, $id);
- 
-     require APPROOT . '/views/inc/header.php';
-     $this->view('siswa/rapor_detail', $data);
-     require APPROOT . '/views/inc/footer.php';
- }
+    if (!$id) {
+        setFlash('error', 'ID siswa tidak valid');
+        return redirect('siswa/rapor');
+    }
+
+    // Ambil data siswa
+    $siswa = $this->Mrapor->ambil_siswa_by_id($id);
+    
+    if (!$siswa) {
+        setFlash('error', 'Data siswa tidak ditemukan');
+        return redirect('siswa/rapor');
+    }
+
+    // Verifikasi apakah siswa ini memang di kelas wali kelas yang login
+    $siswa_wali = $this->Mrapor->ambil_siswa_berdasarkan_wali_kelas($_SESSION['nik']);
+    $found = false;
+    foreach ($siswa_wali as $s) {
+        if ($s->id_siswa == $id) {
+            $found = true;
+            break;
+        }
+    }
+
+    if (!$found) {
+        setFlash('error', 'Anda tidak berhak mengakses data siswa ini');
+        return redirect('siswa/rapor');
+    }
+
+    // Ambil semua jadwal setting untuk dropdown
+    $data['semua_jadwal'] = $this->Mrapor->ambil_semua_jadwal_setting();
+    
+    // Ambil jadwal aktif
+    $data['jadwal_aktif'] = $this->Mrapor->ambil_jadwal_aktif();
+    
+    // Cek apakah ada parameter semester dari GET
+    $id_jadwal_pilihan = isset($_GET['semester']) ? (int)$_GET['semester'] : null;
+    
+    // Tentukan semester yang akan digunakan
+    if ($id_jadwal_pilihan) {
+        // Validasi apakah jadwal setting ada
+        $jadwal_dipilih = null;
+        foreach ($data['semua_jadwal'] as $js) {
+            if ($js->id_jadwal_setting == $id_jadwal_pilihan) {
+                $jadwal_dipilih = $js;
+                break;
+            }
+        }
+        
+        if ($jadwal_dipilih) {
+            $jadwal = $jadwal_dipilih;
+            $data['semester_dipilih'] = $id_jadwal_pilihan;
+        } else {
+            // Jadwal tidak valid, gunakan yang aktif
+            $jadwal = $data['jadwal_aktif'];
+            $data['semester_dipilih'] = $data['jadwal_aktif'] ? $data['jadwal_aktif']->id_jadwal_setting : null;
+        }
+    } else {
+        // Gunakan jadwal aktif
+        $jadwal = $data['jadwal_aktif'];
+        $data['semester_dipilih'] = $data['jadwal_aktif'] ? $data['jadwal_aktif']->id_jadwal_setting : null;
+    }
+
+    if (!$jadwal) {
+        setFlash('error', 'Tidak ada jadwal/semester yang tersedia. Hubungi administrator.');
+        return redirect('siswa/rapor');
+    }
+
+    // Ambil mata pelajaran berdasarkan kelas siswa
+    $data['pelajaran'] = $this->Mrapor->ambil_mata_pelajaran_kelas($siswa->kelas_siswa);
+    
+    // Ambil data rapor yang sudah ada untuk semester terpilih
+    $data['siswa'] = $siswa;
+    $data['jadwal'] = $jadwal;
+    $data['nilai_pelajaran'] = $this->Mrapor->ambil_nilai_pelajaran($jadwal->id_jadwal_setting, $id);
+    $data['nilai_sikap'] = $this->Mrapor->ambil_nilai_sikap($jadwal->id_jadwal_setting, $id);
+    $data['ekskul'] = $this->Mrapor->ambil_ekstrakurikuler($jadwal->id_jadwal_setting, $id);
+    $data['prestasi'] = $this->Mrapor->ambil_prestasi($jadwal->id_jadwal_setting, $id);
+    $data['catatan'] = $this->Mrapor->ambil_catatan_wali($jadwal->id_jadwal_setting, $id);
+
+    require APPROOT . '/views/inc/header.php';
+    $this->view('siswa/rapor_detail', $data);
+    require APPROOT . '/views/inc/footer.php';
+}
  
  // Simpan data rapor
- public function simpan_rapor()
- {
-     if (!Middleware::admin('wali_kelas')) {
-         setFlash('Akses ditolak!', 'error');
-         return redirect('siswa/rapor');
-     }
+// Simpan data rapor (tetap sama, tapi redirect ke semester yang dipilih)
+public function simpan_rapor()
+{
+    if (!Middleware::admin('wali_kelas')) {
+        setFlash('error', 'Akses ditolak!');
+        return redirect('siswa/rapor');
+    }
 
-     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-         // Validasi input
-         if (empty($_POST['id_siswa']) || empty($_POST['id_jadwal_setting'])) {
-             setFlash('Data tidak lengkap', 'error');
-             return redirect('siswa/rapor');
-         }
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Validasi input
+        if (empty($_POST['id_siswa']) || empty($_POST['id_jadwal_setting'])) {
+            setFlash('error', 'Data tidak lengkap');
+            return redirect('siswa/rapor');
+        }
 
-         $id_siswa = $_POST['id_siswa'];
-         
-         // Simpan data
-         $result = $this->Mrapor->simpan_semua_nilai($_POST);
-         
-         if ($result) {
-             setFlash('success', 'Data rapor berhasil disimpan');
-         } else {
-             setFlash('error', 'Gagal menyimpan data rapor. Silakan coba lagi.');
-         }
-         
-         redirect('siswa/rapor_detail/' . $id_siswa);
-     } else {
-         setFlash('Method tidak diizinkan', 'error');
-         redirect('siswa/rapor');
-     }
- }
+        $id_siswa = $_POST['id_siswa'];
+        $id_jadwal_setting = $_POST['id_jadwal_setting'];
+        
+        // Simpan data
+        $result = $this->Mrapor->simpan_semua_nilai($_POST);
+        
+        if ($result) {
+            setFlash('success', 'Data rapor berhasil disimpan');
+        } else {
+            setFlash('error', 'Gagal menyimpan data rapor. Silakan coba lagi.');
+        }
+        
+        // Redirect ke halaman detail dengan parameter semester
+        redirect('siswa/rapor_detail/' . $id_siswa . '?semester=' . $id_jadwal_setting);
+    } else {
+        setFlash('error', 'Method tidak diizinkan');
+        redirect('siswa/rapor');
+    }
+}
    // wali kelas
+
+
+
 
    // siswa
    // Method untuk siswa melihat rapor mereka sendiri
@@ -763,7 +830,12 @@ class Siswa extends Controller
        } else {
            $data['rata_rata'] = 0;
        }
-   
+
+       echo "<pre>";
+       var_dump($data['semua_jadwal']);
+       echo "</pre>";
+
+       exit;
        require APPROOT . '/views/inc/header.php';
        $this->view('siswa/rapor_saya', $data);
        require APPROOT . '/views/inc/footer.php';
@@ -778,7 +850,7 @@ class Siswa extends Controller
        }
    
        $nis = $_SESSION['nik'];
-       $cek_siswa = $this->Mrapor->cek_id_siswa($nis);
+       $cek_siswa = $this->Mrapor->cek_id_saya($nis);
        
        if (!$cek_siswa) {
            setFlash('error', 'Data siswa tidak ditemukan');
@@ -788,7 +860,7 @@ class Siswa extends Controller
        $id_siswa = $cek_siswa->id_siswa;
        $id_jadwal = isset($_GET['semester']) ? (int)$_GET['semester'] : null;
    
-       $data['siswa'] = $this->Mrapor->ambil_data_siswa_by_nis($nis);
+       $data['siswa'] = $this->Mrapor->ambil_data_saya_by_id($id_siswa);
        $data['rapor'] = $this->Mrapor->ambil_rapor_lengkap_siswa($id_siswa, $id_jadwal);
        
        if (!$data['rapor']['ada_data']) {
