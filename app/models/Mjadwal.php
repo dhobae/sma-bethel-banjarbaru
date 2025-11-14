@@ -369,7 +369,13 @@ class Mjadwal
       left join m_pelajaran as m_pelajaran8 on jadwal_lengkap.mp8 = m_pelajaran8.id_pelajaran
       left join m_pelajaran as m_pelajaran9 on jadwal_lengkap.mp9 = m_pelajaran9.id_pelajaran
       left join m_pelajaran as m_pelajaran10 on jadwal_lengkap.mp10 = m_pelajaran10.id_pelajaran
-      where hari=:hari order by id_jadwal_lengkap";
+      where hari=:hari 
+      AND jadwal_lengkap.berlaku_jadwal_dari = (
+      SELECT berlaku_dari 
+      FROM jadwal_setting 
+      WHERE status = 1 
+      LIMIT 1)
+      order by id_jadwal_lengkap";
         $this->db->query($sql);
         $this->db->bind('hari', $hari);
         return $this->db->resultSet();
@@ -532,7 +538,14 @@ class Mjadwal
       left join m_pelajaran as m_pelajaran7 on jadwal_lengkap.mp7 = m_pelajaran7.id_pelajaran
       left join m_pelajaran as m_pelajaran8 on jadwal_lengkap.mp8 = m_pelajaran8.id_pelajaran
       left join m_pelajaran as m_pelajaran9 on jadwal_lengkap.mp9 = m_pelajaran9.id_pelajaran
-      left join m_pelajaran as m_pelajaran10 on jadwal_lengkap.mp10 = m_pelajaran10.id_pelajaran where wali_kelas=:wali_kelas  order by id_jadwal_lengkap";
+      left join m_pelajaran as m_pelajaran10 on jadwal_lengkap.mp10 = m_pelajaran10.id_pelajaran 
+      where wali_kelas=:wali_kelas 
+      AND jadwal_lengkap.berlaku_jadwal_dari = 
+      ( SELECT berlaku_dari 
+        FROM jadwal_setting 
+        WHERE status = 1 
+        LIMIT 1)
+      order by id_jadwal_lengkap";
         $this->db->query($sql);
         //$this->db->bind('hari', $hari);
         $this->db->bind('wali_kelas', $nik);

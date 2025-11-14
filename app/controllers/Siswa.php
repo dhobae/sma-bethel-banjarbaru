@@ -765,7 +765,7 @@ public function simpan_rapor()
    {
        // Cek apakah yang login adalah siswa
        if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'siswa') {
-           setFlash('error', 'Akses ditolak! Halaman ini hanya untuk siswa.');
+           setFlash('Akses ditolak! Halaman ini hanya untuk siswa.', 'error');
            return redirect('auth/login');
        }
    
@@ -775,7 +775,7 @@ public function simpan_rapor()
        $cek_siswa = $this->Mrapor->cek_id_saya($nis);
        
        if (!$cek_siswa) {
-           setFlash('error', 'Data siswa tidak ditemukan atau status tidak aktif.');
+           setFlash('Data siswa tidak ditemukan atau status tidak aktif.','error');
            require APPROOT . '/views/inc/header.php';
            $this->view('siswa/rapor_tidak_ditemukan');
            require APPROOT . '/views/inc/footer.php';
@@ -840,7 +840,7 @@ public function simpan_rapor()
    public function cetak_rapor()
    {
        if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'siswa') {
-           setFlash('error', 'Akses ditolak!');
+           setFlash('Akses ditolak!', 'error');
            return redirect('auth/login');
        }
    
@@ -848,7 +848,7 @@ public function simpan_rapor()
        $cek_siswa = $this->Mrapor->cek_id_saya($nis);
        
        if (!$cek_siswa) {
-           setFlash('error', 'Data siswa tidak ditemukan');
+           setFlash('Data siswa tidak ditemukan', 'error');
            return redirect('siswa/rapor_saya');
        }
    
@@ -859,7 +859,7 @@ public function simpan_rapor()
        $data['rapor'] = $this->Mrapor->ambil_rapor_lengkap_siswa($id_siswa, $id_jadwal);
        
        if (!$data['rapor']['ada_data']) {
-           setFlash('error', 'Rapor belum tersedia untuk periode ini');
+           setFlash('Rapor belum tersedia untuk periode ini', 'error');
            return redirect('siswa/rapor_saya');
        }
    
