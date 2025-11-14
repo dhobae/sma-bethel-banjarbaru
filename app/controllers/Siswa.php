@@ -702,8 +702,8 @@ public function rapor_detail($id = null)
         return redirect('siswa/rapor');
     }
 
-    // Ambil mata pelajaran berdasarkan kelas siswa
-    $data['pelajaran'] = $this->Mrapor->ambil_mata_pelajaran_kelas($siswa->kelas_siswa);
+    // Ambil mata pelajaran berdasarkan kelas siswa dan periode jadwal (REVISI)
+    $data['pelajaran'] = $this->Mrapor->ambil_mata_pelajaran_kelas($siswa->kelas_siswa, $jadwal->id_jadwal_setting);
     
     // Ambil data rapor yang sudah ada untuk semester terpilih
     $data['siswa'] = $siswa;
@@ -831,11 +831,6 @@ public function simpan_rapor()
            $data['rata_rata'] = 0;
        }
 
-       echo "<pre>";
-       var_dump($data['semua_jadwal']);
-       echo "</pre>";
-
-       exit;
        require APPROOT . '/views/inc/header.php';
        $this->view('siswa/rapor_saya', $data);
        require APPROOT . '/views/inc/footer.php';

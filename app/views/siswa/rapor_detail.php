@@ -60,15 +60,19 @@
                     <form method="GET" action="<?= URLROOT ?>/siswa/rapor_detail/<?= $data['siswa']->id_siswa ?>" class="form-inline">
                         <label class="mr-2"><strong>Ganti Semester:</strong></label>
                         <select name="semester" class="form-control mr-2" onchange="this.form.submit()" style="min-width: 400px;">
-                            <?php foreach($data['semua_jadwal'] as $jadwal): ?>
-                            <option value="<?= $jadwal->id_jadwal_setting ?>" 
-                                    <?= (isset($data['semester_dipilih']) && $data['semester_dipilih'] == $jadwal->id_jadwal_setting) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($jadwal->tahun_ajaran) ?> - 
-                                Semester <?= htmlspecialchars($jadwal->semester) ?> - 
-                                Blok <?= htmlspecialchars($jadwal->blok) ?>
-                                <?= ($jadwal->status == 1) ? '⭐ (Aktif)' : '' ?>
-                            </option>
-                            <?php endforeach; ?>
+                            <?php if (isset($data['semua_jadwal']) && !empty($data['semua_jadwal'])): ?>
+                                <?php foreach($data['semua_jadwal'] as $jadwal): ?>
+                                <option value="<?= $jadwal->id_jadwal_setting ?>" 
+                                        <?= (isset($data['semester_dipilih']) && $data['semester_dipilih'] == $jadwal->id_jadwal_setting) ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($jadwal->tahun_ajaran) ?> - 
+                                    Semester <?= htmlspecialchars($jadwal->semester) ?> - 
+                                    Blok <?= htmlspecialchars($jadwal->blok) ?>
+                                    <?= ($jadwal->status == 1) ? '⭐ (Aktif)' : '' ?>
+                                </option>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <option value="">Tidak ada semester tersedia</option>
+                            <?php endif; ?>
                         </select>
                         <noscript>
                             <button type="submit" class="btn btn-primary">
@@ -97,6 +101,7 @@
                 <div class="card card-outline card-info mb-3">
                     <div class="card-header">
                         <h5 class="card-title"><i class="fas fa-book"></i> Nilai Mata Pelajaran</h5>
+                        <small class="text-muted">Mata pelajaran yang ditampilkan adalah mata pelajaran yang berlaku untuk periode ini sesuai dengan kurikulum</small>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
@@ -115,12 +120,15 @@
                                     $no = 1;
                                     // Buat array nilai yang sudah ada untuk kemudahan akses
                                     $nilai_existing = [];
-                                    foreach($data['nilai_pelajaran'] as $np) {
-                                        $nilai_existing[$np->id_pelajaran] = $np;
+                                    if (isset($data['nilai_pelajaran']) && !empty($data['nilai_pelajaran'])) {
+                                        foreach($data['nilai_pelajaran'] as $np) {
+                                            $nilai_existing[$np->id_pelajaran] = $np;
+                                        }
                                     }
                                     
-                                    foreach($data['pelajaran'] as $mp): 
-                                        $nilai_data = isset($nilai_existing[$mp->id_pelajaran]) ? $nilai_existing[$mp->id_pelajaran] : null;
+                                    if (isset($data['pelajaran']) && !empty($data['pelajaran'])):
+                                        foreach($data['pelajaran'] as $mp): 
+                                            $nilai_data = isset($nilai_existing[$mp->id_pelajaran]) ? $nilai_existing[$mp->id_pelajaran] : null;
                                     ?>
                                     <tr>
                                         <td class="text-center"><?= $no++ ?></td>
@@ -153,7 +161,17 @@
                                                       placeholder="Deskripsi capaian kompetensi siswa..."><?= $nilai_data ? htmlspecialchars($nilai_data->deskripsi) : '' ?></textarea>
                                         </td>
                                     </tr>
-                                    <?php endforeach; ?>
+                                    <?php 
+                                        endforeach; 
+                                    else:
+                                    ?>
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted py-3">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                            Tidak ada mata pelajaran untuk periode ini. Hubungi administrator untuk mengatur jadwal pelajaran.
+                                        </td>
+                                    </tr>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                         </div>
@@ -172,15 +190,15 @@
                                     <label><strong>Sikap Spiritual</strong></label>
                                     <select name="predikat_spiritual" class="form-control">
                                         <option value="">- Pilih Predikat -</option>
-                                        <option value="SB" <?= ($data['nilai_sikap'] && $data['nilai_sikap']->predikat_spiritual == 'SB') ? 'selected' : '' ?>>SB - Sangat Baik</option>
-                                        <option value="B" <?= ($data['nilai_sikap'] && $data['nilai_sikap']->predikat_spiritual == 'B') ? 'selected' : '' ?>>B - Baik</option>
-                                        <option value="C" <?= ($data['nilai_sikap'] && $data['nilai_sikap']->predikat_spiritual == 'C') ? 'selected' : '' ?>>C - Cukup</option>
-                                        <option value="K" <?= ($data['nilai_sikap'] && $data['nilai_sikap']->predikat_spiritual == 'K') ? 'selected' : '' ?>>K - Kurang</option>
+                                        <option value="SB" <?= (isset($data['nilai_sikap']) && $data['nilai_sikap'] && $data['nilai_sikap']->predikat_spiritual == 'SB') ? 'selected' : '' ?>>SB - Sangat Baik</option>
+                                        <option value="B" <?= (isset($data['nilai_sikap']) && $data['nilai_sikap'] && $data['nilai_sikap']->predikat_spiritual == 'B') ? 'selected' : '' ?>>B - Baik</option>
+                                        <option value="C" <?= (isset($data['nilai_sikap']) && $data['nilai_sikap'] && $data['nilai_sikap']->predikat_spiritual == 'C') ? 'selected' : '' ?>>C - Cukup</option>
+                                        <option value="K" <?= (isset($data['nilai_sikap']) && $data['nilai_sikap'] && $data['nilai_sikap']->predikat_spiritual == 'K') ? 'selected' : '' ?>>K - Kurang</option>
                                     </select>
                                     <textarea name="deskripsi_spiritual" 
                                               class="form-control mt-2" 
                                               rows="3"
-                                              placeholder="Deskripsi sikap spiritual (ketaatan beribadah, toleransi, dll)..."><?= $data['nilai_sikap'] ? htmlspecialchars($data['nilai_sikap']->deskripsi_spiritual) : '' ?></textarea>
+                                              placeholder="Deskripsi sikap spiritual (ketaatan beribadah, toleransi, dll)..."><?= isset($data['nilai_sikap']) && $data['nilai_sikap'] ? htmlspecialchars($data['nilai_sikap']->deskripsi_spiritual) : '' ?></textarea>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -188,15 +206,15 @@
                                     <label><strong>Sikap Sosial</strong></label>
                                     <select name="predikat_sosial" class="form-control">
                                         <option value="">- Pilih Predikat -</option>
-                                        <option value="SB" <?= ($data['nilai_sikap'] && $data['nilai_sikap']->predikat_sosial == 'SB') ? 'selected' : '' ?>>SB - Sangat Baik</option>
-                                        <option value="B" <?= ($data['nilai_sikap'] && $data['nilai_sikap']->predikat_sosial == 'B') ? 'selected' : '' ?>>B - Baik</option>
-                                        <option value="C" <?= ($data['nilai_sikap'] && $data['nilai_sikap']->predikat_sosial == 'C') ? 'selected' : '' ?>>C - Cukup</option>
-                                        <option value="K" <?= ($data['nilai_sikap'] && $data['nilai_sikap']->predikat_sosial == 'K') ? 'selected' : '' ?>>K - Kurang</option>
+                                        <option value="SB" <?= (isset($data['nilai_sikap']) && $data['nilai_sikap'] && $data['nilai_sikap']->predikat_sosial == 'SB') ? 'selected' : '' ?>>SB - Sangat Baik</option>
+                                        <option value="B" <?= (isset($data['nilai_sikap']) && $data['nilai_sikap'] && $data['nilai_sikap']->predikat_sosial == 'B') ? 'selected' : '' ?>>B - Baik</option>
+                                        <option value="C" <?= (isset($data['nilai_sikap']) && $data['nilai_sikap'] && $data['nilai_sikap']->predikat_sosial == 'C') ? 'selected' : '' ?>>C - Cukup</option>
+                                        <option value="K" <?= (isset($data['nilai_sikap']) && $data['nilai_sikap'] && $data['nilai_sikap']->predikat_sosial == 'K') ? 'selected' : '' ?>>K - Kurang</option>
                                     </select>
                                     <textarea name="deskripsi_sosial" 
                                               class="form-control mt-2" 
                                               rows="3"
-                                              placeholder="Deskripsi sikap sosial (kejujuran, disiplin, tanggung jawab, dll)..."><?= $data['nilai_sikap'] ? htmlspecialchars($data['nilai_sikap']->deskripsi_sosial) : '' ?></textarea>
+                                              placeholder="Deskripsi sikap sosial (kejujuran, disiplin, tanggung jawab, dll)..."><?= isset($data['nilai_sikap']) && $data['nilai_sikap'] ? htmlspecialchars($data['nilai_sikap']->deskripsi_sosial) : '' ?></textarea>
                                 </div>
                             </div>
                         </div>
@@ -215,7 +233,7 @@
                     </div>
                     <div class="card-body">
                         <div id="ekskulContainer">
-                            <?php if(!empty($data['ekskul'])): ?>
+                            <?php if(isset($data['ekskul']) && !empty($data['ekskul'])): ?>
                                 <?php foreach($data['ekskul'] as $idx => $e): ?>
                                 <div class="row mb-2 ekskul-row">
                                     <div class="col-md-3">
@@ -286,7 +304,7 @@
                     </div>
                     <div class="card-body">
                         <div id="prestasiContainer">
-                            <?php if(!empty($data['prestasi'])): ?>
+                            <?php if(isset($data['prestasi']) && !empty($data['prestasi'])): ?>
                                 <?php foreach($data['prestasi'] as $idx => $p): ?>
                                 <div class="row mb-2 prestasi-row">
                                     <div class="col-md-2">
@@ -358,7 +376,7 @@
                         <textarea name="catatan" 
                                   class="form-control" 
                                   rows="4"
-                                  placeholder="Catatan perkembangan siswa, saran, dan masukan dari wali kelas..."><?= $data['catatan'] ? htmlspecialchars($data['catatan']->catatan) : '' ?></textarea>
+                                  placeholder="Catatan perkembangan siswa, saran, dan masukan dari wali kelas..."><?= isset($data['catatan']) && $data['catatan'] ? htmlspecialchars($data['catatan']->catatan) : '' ?></textarea>
                         <small class="text-muted">Contoh: Siswa menunjukkan peningkatan dalam mata pelajaran Matematika. Perlu meningkatkan kedisiplinan kehadiran.</small>
                     </div>
                 </div>

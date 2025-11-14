@@ -85,33 +85,50 @@ class Mrapor {
     
  
     // Ambil mata pelajaran berdasarkan kelas siswa (IMPROVED)
-    public function ambil_mata_pelajaran_kelas($kode_kelas)
+    public function ambil_mata_pelajaran_kelas($kode_kelas, $id_jadwal_setting = null)
     {
-       $sql = "SELECT DISTINCT 
+        // Jika id_jadwal_setting tidak diberikan, ambil yang aktif
+        if ($id_jadwal_setting === null) {
+            $jadwal_aktif = $this->ambil_jadwal_aktif();
+            if (!$jadwal_aktif) return [];
+            $id_jadwal_setting = $jadwal_aktif->id_jadwal_setting;
+        }
+        
+        // Ambil tanggal berlaku dari jadwal_setting
+        $this->db->query("SELECT berlaku_dari FROM jadwal_setting WHERE id_jadwal_setting = :id_jadwal");
+        $this->db->bind('id_jadwal', $id_jadwal_setting);
+        $jadwal_result = $this->db->single();
+        
+        if (!$jadwal_result) return [];
+        
+        $berlaku_dari = $jadwal_result->berlaku_dari;
+        
+        $sql = "SELECT DISTINCT 
                  mp.id_pelajaran,
                  mp.mata_pelajaran,
                  mp.singkatan
                FROM jadwal_lengkap jl
-               CROSS JOIN m_pelajaran mp
+               JOIN m_pelajaran mp ON (
+                 jl.mp1 = mp.id_pelajaran OR 
+                 jl.mp2 = mp.id_pelajaran OR 
+                 jl.mp3 = mp.id_pelajaran OR 
+                 jl.mp4 = mp.id_pelajaran OR 
+                 jl.mp5 = mp.id_pelajaran OR 
+                 jl.mp6 = mp.id_pelajaran OR 
+                 jl.mp7 = mp.id_pelajaran OR 
+                 jl.mp8 = mp.id_pelajaran OR 
+                 jl.mp9 = mp.id_pelajaran OR 
+                 jl.mp10 = mp.id_pelajaran
+               )
                WHERE jl.kode_kelas = :kode_kelas
                  AND jl.validasi = 1
-                 AND (
-                   jl.mp1 = mp.id_pelajaran OR 
-                   jl.mp2 = mp.id_pelajaran OR 
-                   jl.mp3 = mp.id_pelajaran OR 
-                   jl.mp4 = mp.id_pelajaran OR 
-                   jl.mp5 = mp.id_pelajaran OR 
-                   jl.mp6 = mp.id_pelajaran OR 
-                   jl.mp7 = mp.id_pelajaran OR 
-                   jl.mp8 = mp.id_pelajaran OR 
-                   jl.mp9 = mp.id_pelajaran OR 
-                   jl.mp10 = mp.id_pelajaran
-                 )
+                 AND jl.berlaku_jadwal_dari = :berlaku_dari
                ORDER BY mp.mata_pelajaran";
- 
-       $this->db->query($sql);
-       $this->db->bind('kode_kelas', $kode_kelas);
-       return $this->db->resultSet();
+    
+        $this->db->query($sql);
+        $this->db->bind('kode_kelas', $kode_kelas);
+        $this->db->bind('berlaku_dari', $berlaku_dari);
+        return $this->db->resultSet();
     }
 
 
@@ -324,7 +341,7 @@ class Mrapor {
     }
 
     // --- Cek kelengkapan data rapor siswa ---
-  // --- Cek kelengkapan data rapor siswa (REVISI) ---
+// --- Cek kelengkapan data rapor siswa (REVISI) ---
 public function cek_kelengkapan_rapor($id_jadwal, $id_siswa)
 {
     // Ambil data siswa untuk mendapatkan kelasnya
@@ -346,9 +363,49 @@ public function cek_kelengkapan_rapor($id_jadwal, $id_siswa)
         ];
     }
     
-    // Ambil semua mata pelajaran untuk kelas siswa
-    $this->db->query("SELECT COUNT(*) as total FROM m_pelajaran");
-    $this->db->execute();
+    // Ambil tanggal berlaku dari jadwal_setting
+    $this->db->query("SELECT berlaku_dari FROM jadwal_setting WHERE id_jadwal_setting = :id_jadwal");
+    $this->db->bind('id_jadwal', $id_jadwal);
+    $jadwal_result = $this->db->single();
+    
+    if (!$jadwal_result) {
+        return [
+            'nilai_sikap' => false,
+            'jumlah_nilai_mapel' => 0,
+            'total_mapel' => 0,
+            'persen_mapel' => 0,
+            'jumlah_ekskul' => 0,
+            'jumlah_prestasi' => 0,
+            'catatan' => false,
+            'persentase_total' => 0,
+            'status' => 'belum'
+        ];
+    }
+    
+    $berlaku_dari = $jadwal_result->berlaku_dari;
+    
+    // Ambil semua mata pelajaran untuk kelas siswa pada periode ini
+    $sql = "SELECT COUNT(DISTINCT mp.id_pelajaran) as total 
+            FROM jadwal_lengkap jl
+            JOIN m_pelajaran mp ON (
+              jl.mp1 = mp.id_pelajaran OR 
+              jl.mp2 = mp.id_pelajaran OR 
+              jl.mp3 = mp.id_pelajaran OR 
+              jl.mp4 = mp.id_pelajaran OR 
+              jl.mp5 = mp.id_pelajaran OR 
+              jl.mp6 = mp.id_pelajaran OR 
+              jl.mp7 = mp.id_pelajaran OR 
+              jl.mp8 = mp.id_pelajaran OR 
+              jl.mp9 = mp.id_pelajaran OR 
+              jl.mp10 = mp.id_pelajaran
+            )
+            WHERE jl.kode_kelas = :kode_kelas
+              AND jl.validasi = 1
+              AND jl.berlaku_jadwal_dari = :berlaku_dari";
+    
+    $this->db->query($sql);
+    $this->db->bind('kode_kelas', $siswa->kelas_siswa);
+    $this->db->bind('berlaku_dari', $berlaku_dari);
     $result = $this->db->single();
     $total_mapel = $result ? $result->total : 0;
     
@@ -428,9 +485,6 @@ public function cek_kelengkapan_rapor($id_jadwal, $id_siswa)
         'status' => $status
     ];
 }
-
-
-
 
     // Cek ID siswa berdasarkan NIS
   public function cek_id_saya($nis) 

@@ -11,6 +11,53 @@ class Jadwal extends Controller
       $this->Mdashboard = $this->model('Mdashboard');
    }
 
+   // TAMBAHKAN METHOD BARU INI
+   public function aktifkan_jadwal_setting()
+   {
+       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+           $id_jadwal_setting = $_POST['id_jadwal_setting'];
+           
+           // Ambil data jadwal setting yang dipilih
+           $jadwal_setting = $this->Mjadwal->get_jadwal_setting_by_id($id_jadwal_setting);
+           
+           if ($jadwal_setting) {
+               try {
+                   // Matikan semua jadwal setting
+                   $this->Mjadwal->nonaktifkan_semua_jadwal_setting();
+                   
+                   // Aktifkan jadwal setting yang dipilih
+                   $this->Mjadwal->aktifkan_jadwal_setting($id_jadwal_setting);
+                   
+                   // TAMBAHAN: Matikan semua tahun ajaran
+                   $this->Mjadwal->nonaktifkan_semua_tahun_ajaran();
+                   
+                   // TAMBAHAN: Aktifkan tahun ajaran yang sesuai
+                   $this->Mjadwal->aktifkan_tahun_ajaran($jadwal_setting->id_tahun_ajaran);
+                   
+                   echo json_encode([
+                       'status' => 'success',
+                       'message' => 'Jadwal setting berhasil diaktifkan'
+                   ]);
+               } catch (Exception $e) {
+                   echo json_encode([
+                       'status' => 'error',
+                       'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+                   ]);
+               }
+           } else {
+               echo json_encode([
+                   'status' => 'error',
+                   'message' => 'Jadwal setting tidak ditemukan'
+               ]);
+           }
+       } else {
+           echo json_encode([
+               'status' => 'error',
+               'message' => 'Method tidak valid'
+           ]);
+       }
+   }
+
    public function index()
    {
       if (isset($_GET['kelas'])) {
@@ -25,6 +72,18 @@ class Jadwal extends Controller
       $data['tahun_ajaran'] = $this->Mjadwal->tahun_ajaran();
       $data['jadwal_setting'] = $this->Mjadwal->jadwal_setting();
       $data['belum_ada_guru'] = $this->Mjadwal->belum_ada_guru();
+      $data['list_jadwal_setting'] = $this->Mjadwal->get_all_jadwal_setting();
+
+      // echo "<pre>";
+
+
+      // var_dump($data['jadwal_setting']);
+
+      // echo "</pre>";
+
+      // exit;
+
+
       require APPROOT . '/views/inc/header.php';
       $this->view('jadwal/jadwal', $data);
       require APPROOT . '/views/inc/footer.php';
@@ -401,6 +460,10 @@ class Jadwal extends Controller
    public function simpan_jadwal_setting()
    {
       $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+      // var_dump($_POST);
+      // exit;
+
       if ($this->Mjadwal->simpan_jadwal_setting($_POST)) {
          setFlash('Berhasil disimpan.', 'success');
          return redirect('jadwal/jadwal');

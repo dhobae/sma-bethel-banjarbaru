@@ -53,38 +53,6 @@ class SchedulerService
             $this->classes[] = $class;
         }
         error_log("SchedulerService: " . count($this->classes) . " kelas dimuat dari tabel jadwal.");
-
-        // Load data wali kelas
-        // $this->db->query("SELECT DISTINCT kelas, wali_kelas FROM jadwal_lengkap WHERE kelas IS NOT NULL AND wali_kelas IS NOT NULL");
-        // $waliKelasData = $this->db->resultSet();
-        // foreach ($waliKelasData as $wk) {
-        //     $this->waliKelas[$wk->kelas] = $wk->wali_kelas;
-        // }
-        // error_log("SchedulerService: " . count($this->waliKelas) . " data wali kelas dimuat.");
-
-         // Load data wali kelas - assign secara acak dari guru yang tersedia
-         $this->db->query("SELECT nik FROM pegawai WHERE jabatan = 'Guru' AND mengajar = 'Ya' AND hapus_pegawai = 0");
-         $guruList = $this->db->resultSet();
-         
-        if (!empty($guruList)) {
-            $guruNikList = array_map(function($guru) {
-                return $guru->nik;
-            }, $guruList);
-             
-            // Shuffle untuk randomisasi
-            shuffle($guruNikList);
-             
-            // Assign wali kelas untuk setiap kelas secara acak
-            $guruIndex = 0;
-            foreach ($this->classes as $class) {
-                $this->waliKelas[$class->kelas] = $guruNikList[$guruIndex % count($guruNikList)];
-                $guruIndex++;
-            }
-             
-            error_log("SchedulerService: " . count($this->waliKelas) . " wali kelas di-assign secara acak dari " . count($guruNikList) . " guru.");
-        } else {
-            error_log("SchedulerService: WARNING - Tidak ada guru dengan jabatan 'Guru' yang tersedia untuk wali kelas.");
-        }
     }
 
     private function initializeTimeSlots()
@@ -104,12 +72,69 @@ class SchedulerService
         error_log("SchedulerService: " . count($this->timeSlots) . " slot waktu tersedia.");
     }
 
+    /**
+     * Method baru untuk load wali kelas
+     * Prioritas: gunakan wali kelas lama, jika tidak ada baru assign baru
+     */
+    public function loadWaliKelas($waliKelasLama = null)
+    {
+        error_log("SchedulerService: Memuat wali kelas...");
+        
+        // Parse wali kelas lama jika ada
+        $waliKelasLamaMap = [];
+        if (!empty($waliKelasLama)) {
+            $waliKelasLamaMap = $waliKelasLama;
+            error_log("SchedulerService: " . count($waliKelasLamaMap) . " wali kelas lama ditemukan.");
+        }
+        
+        // Load guru yang tersedia untuk wali kelas
+        $this->db->query("SELECT nik FROM pegawai WHERE jabatan = 'Guru' AND mengajar = 'Ya' AND hapus_pegawai = 0");
+        $guruList = $this->db->resultSet();
+        
+        if (empty($guruList)) {
+            error_log("SchedulerService: WARNING - Tidak ada guru tersedia untuk wali kelas.");
+            return;
+        }
+        
+        $guruNikList = array_map(function($guru) {
+            return $guru->nik;
+        }, $guruList);
+        
+        // Shuffle untuk guru baru yang perlu di-assign
+        shuffle($guruNikList);
+        $guruIndex = 0;
+        
+        // Assign wali kelas untuk setiap kelas
+        foreach ($this->classes as $class) {
+            $kelasName = $class->kelas;
+            
+            // Cek apakah kelas ini sudah punya wali kelas lama
+            if (isset($waliKelasLamaMap[$kelasName])) {
+                // Gunakan wali kelas lama
+                $this->waliKelas[$kelasName] = $waliKelasLamaMap[$kelasName];
+                error_log("SchedulerService: Kelas $kelasName menggunakan wali kelas lama: " . $waliKelasLamaMap[$kelasName]);
+            } else {
+                // Assign wali kelas baru secara acak
+                $this->waliKelas[$kelasName] = $guruNikList[$guruIndex % count($guruNikList)];
+                error_log("SchedulerService: Kelas $kelasName di-assign wali kelas baru: " . $this->waliKelas[$kelasName]);
+                $guruIndex++;
+            }
+        }
+        
+        error_log("SchedulerService: Total " . count($this->waliKelas) . " wali kelas dimuat (lama + baru).");
+    }
+
     public function generateSchedule()
     {
         error_log("SchedulerService: generateSchedule() dimulai dengan CSP + GA Hybrid.");
 
         if (empty($this->teachers) || empty($this->subjects) || empty($this->classes)) {
             error_log("SchedulerService: ERROR - Data guru, mata pelajaran, atau kelas kosong.");
+            return [];
+        }
+
+        if (empty($this->waliKelas)) {
+            error_log("SchedulerService: ERROR - Wali kelas belum dimuat. Panggil loadWaliKelas() terlebih dahulu.");
             return [];
         }
 
@@ -537,25 +562,17 @@ class SchedulerService
             return false;
         }
 
-        // // Hapus jadwal lama
-        // $this->db->query("DELETE FROM jadwal_lengkap WHERE berlaku_jadwal_dari = :berlaku_jadwal_dari");
-        // $this->db->bind(':berlaku_jadwal_dari', $berlakuJadwalDari);
-        // $this->db->execute();
-
         $waliKelasTersedia = []; // untuk menampung wali_kelas unik
         $insertCount = 0;
+        
         foreach ($schedule as $daySchedule) {
             $kode_kelas = $daySchedule['kelas'] . $daySchedule['ruang'];
-            
-            // error_log("daftar wali kelas id :" . $daySchedule['wali_kelas']);
-
             $waliKelasId = $daySchedule['wali_kelas'];
 
             // Simpan hanya jika belum ada dalam array
             if (!in_array($waliKelasId, $waliKelasTersedia)) {
                 $waliKelasTersedia[] = $waliKelasId;
-               
-                error_log("daftar wali kelas id :" . $waliKelasId);
+                error_log("SchedulerService: Wali kelas untuk kelas " . $daySchedule['kelas'] . ": " . $waliKelasId);
             }
 
             $data = [
@@ -604,22 +621,20 @@ class SchedulerService
             }
         }
 
-        error_log("Wali kelas tersedia: " . implode(", ", $waliKelasTersedia));
-
-        // Setelah semua data jadwal disimpan dan wali_kelas terkumpul unik
+        error_log("SchedulerService: Wali kelas tersedia: " . implode(", ", $waliKelasTersedia));
+        
+        // Update tabel admin dengan wali kelas
         if (!empty($waliKelasTersedia)) {
-            // Ubah array menjadi string dipisahkan koma
             $nipPegawaiString = implode(",", $waliKelasTersedia);
 
-            // Query update tabel admin id = 3 (wali_kelas)
             $updateQuery = "UPDATE admin SET nip_pegawai = :nip_pegawai WHERE id = 3 AND hak_akses = 'wali_kelas'";
             $this->db->query($updateQuery);
             $this->db->bind(':nip_pegawai', $nipPegawaiString);
 
             if ($this->db->execute()) {
-                error_log("UPDATE admin berhasil: $nipPegawaiString");
+                error_log("SchedulerService: UPDATE admin berhasil: $nipPegawaiString");
             } else {
-                error_log("Gagal update admin wali_kelas");
+                error_log("SchedulerService: Gagal update admin wali_kelas");
             }
         }
 

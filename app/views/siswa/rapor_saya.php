@@ -15,7 +15,7 @@
                     <p class="mb-0 text-muted">E-RAPOR</p>
                 </div>
                 <div class="col-md-2 text-right">
-                    <?php if ($data['rapor']['ada_data']): ?>
+                    <?php if (isset($data['rapor']) && $data['rapor']['ada_data']): ?>
                     <a href="<?= URLROOT ?>/siswa/cetak_rapor?semester=<?= $data['semester_dipilih'] ?>" 
                        class="btn btn-sm btn-success" target="_blank">
                         <i class="fas fa-print"></i> Cetak
@@ -26,6 +26,7 @@
         </div>
         <div class="card-body">
             <!-- Data Siswa -->
+            <?php if (isset($data['siswa'])): ?>
             <div class="row mb-3">
                 <div class="col-md-6">
                     <table class="table table-sm table-borderless">
@@ -47,11 +48,11 @@
                     <table class="table table-sm table-borderless">
                         <tr>
                             <td width="150"><strong>Wali Kelas</strong></td>
-                            <td>: <?= $data['siswa']->nama_wali_kelas ? htmlspecialchars($data['siswa']->nama_wali_kelas) : '-' ?></td>
+                            <td>: <?= isset($data['siswa']->nama_wali_kelas) ? htmlspecialchars($data['siswa']->nama_wali_kelas) : '-' ?></td>
                         </tr>
                         <tr>
                             <td><strong>Tahun Masuk</strong></td>
-                            <td>: <?= htmlspecialchars($data['siswa']->tahun_masuk) ?></td>
+                            <td>: <?= isset($data['siswa']->tahun_masuk) ? htmlspecialchars($data['siswa']->tahun_masuk) : '-' ?></td>
                         </tr>
                         <tr>
                             <td><strong>Status</strong></td>
@@ -60,6 +61,7 @@
                     </table>
                 </div>
             </div>
+            <?php endif; ?>
 
             <!-- Filter Semester -->
             <div class="card card-secondary mb-3">
@@ -71,24 +73,40 @@
                         <label class="mr-2">Semester:</label>
                         <select name="semester" class="form-control mr-2" onchange="this.form.submit()">
                             <option value="">-- Pilih Semester --</option>
-                            <?php foreach($data['semua_jadwal'] as $jadwal): ?>
-                            <option value="<?= $jadwal->id_jadwal_setting ?>" 
-                                    <?= ($data['semester_dipilih'] == $jadwal->id_jadwal_setting) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($jadwal->tahun_ajaran) ?> - 
-                                Semester <?= htmlspecialchars($jadwal->semester) ?> - 
-                                Blok <?= htmlspecialchars($jadwal->blok) ?>
-                                <?= ($jadwal->status == 1) ? '(Aktif)' : '' ?>
-                            </option>
-                            <?php endforeach; ?>
+                            <?php if (isset($data['semua_jadwal']) && !empty($data['semua_jadwal'])): ?>
+                                <?php foreach($data['semua_jadwal'] as $jadwal): ?>
+                                <option value="<?= $jadwal->id_jadwal_setting ?>" 
+                                        <?= (isset($data['semester_dipilih']) && $data['semester_dipilih'] == $jadwal->id_jadwal_setting) ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($jadwal->tahun_ajaran) ?> - 
+                                    Semester <?= htmlspecialchars($jadwal->semester) ?> - 
+                                    Blok <?= htmlspecialchars($jadwal->blok) ?>
+                                    <?= ($jadwal->status == 1) ? '(Aktif)' : '' ?>
+                                </option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                         </select>
                         <noscript>
                             <button type="submit" class="btn btn-primary">Tampilkan</button>
                         </noscript>
                     </form>
+                    
+                    <?php if (isset($data['semester_dipilih']) && $data['semester_dipilih']): ?>
+                    <div class="mt-2">
+                        <span class="badge badge-info">
+                            <i class="fas fa-info-circle"></i> 
+                            Menampilkan data untuk: 
+                            <strong>
+                                <?= htmlspecialchars($data['rapor']['jadwal']->tahun_ajaran) ?> - 
+                                Semester <?= htmlspecialchars($data['rapor']['jadwal']->semester) ?> - 
+                                Blok <?= htmlspecialchars($data['rapor']['jadwal']->blok) ?>
+                            </strong>
+                        </span>
+                    </div>
+                    <?php endif; ?>
                 </div>
             </div>
 
-            <?php if ($data['rapor']['ada_data']): ?>
+            <?php if (isset($data['rapor']) && $data['rapor']['ada_data']): ?>
                 
                 <!-- Info Semester -->
                 <div class="alert alert-info">
@@ -113,7 +131,7 @@
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-success">
                             <div class="inner">
-                                <h3><?= number_format($data['rata_rata'], 2) ?></h3>
+                                <h3><?= isset($data['rata_rata']) ? number_format($data['rata_rata'], 2) : '0.00' ?></h3>
                                 <p>Rata-rata Nilai</p>
                             </div>
                             <div class="icon"><i class="fas fa-chart-line"></i></div>
@@ -143,6 +161,7 @@
                 <div class="card card-primary card-outline mb-3">
                     <div class="card-header">
                         <h5 class="card-title"><i class="fas fa-book-open"></i> Nilai Mata Pelajaran</h5>
+                        <small class="text-muted">Mata pelajaran yang ditampilkan adalah mata pelajaran yang berlaku untuk periode ini sesuai dengan kurikulum</small>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
@@ -161,18 +180,19 @@
                                     $no = 1;
                                     $total_nilai = 0;
                                     $jumlah_nilai = 0;
-                                    foreach($data['rapor']['nilai_pelajaran'] as $nilai): 
-                                        if ($nilai->nilai !== null) {
-                                            $total_nilai += $nilai->nilai;
-                                            $jumlah_nilai++;
-                                        }
-                                        
-                                        // Tentukan warna predikat
-                                        $badge_color = 'secondary';
-                                        if ($nilai->predikat == 'A') $badge_color = 'success';
-                                        elseif ($nilai->predikat == 'B') $badge_color = 'primary';
-                                        elseif ($nilai->predikat == 'C') $badge_color = 'warning';
-                                        elseif ($nilai->predikat == 'D') $badge_color = 'danger';
+                                    if (!empty($data['rapor']['nilai_pelajaran'])):
+                                        foreach($data['rapor']['nilai_pelajaran'] as $nilai): 
+                                            if ($nilai->nilai !== null) {
+                                                $total_nilai += $nilai->nilai;
+                                                $jumlah_nilai++;
+                                            }
+                                            
+                                            // Tentukan warna predikat
+                                            $badge_color = 'secondary';
+                                            if ($nilai->predikat == 'A') $badge_color = 'success';
+                                            elseif ($nilai->predikat == 'B') $badge_color = 'primary';
+                                            elseif ($nilai->predikat == 'C') $badge_color = 'warning';
+                                            elseif ($nilai->predikat == 'D') $badge_color = 'danger';
                                     ?>
                                     <tr>
                                         <td class="text-center"><?= $no++ ?></td>
@@ -185,7 +205,14 @@
                                         </td>
                                         <td><?= htmlspecialchars($nilai->deskripsi ?? '-') ?></td>
                                     </tr>
-                                    <?php endforeach; ?>
+                                    <?php 
+                                        endforeach; 
+                                    else:
+                                    ?>
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted">Belum ada nilai mata pelajaran untuk periode ini</td>
+                                    </tr>
+                                    <?php endif; ?>
                                     
                                     <?php if ($jumlah_nilai > 0): ?>
                                     <tr class="bg-light font-weight-bold">
@@ -235,6 +262,18 @@
                         </div>
                     </div>
                 </div>
+                <?php else: ?>
+                <div class="card card-success card-outline mb-3">
+                    <div class="card-header">
+                        <h5 class="card-title"><i class="fas fa-heart"></i> Penilaian Sikap</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i> 
+                            Belum ada penilaian sikap untuk periode ini
+                        </div>
+                    </div>
+                </div>
                 <?php endif; ?>
 
                 <!-- EKSTRAKURIKULER -->
@@ -269,6 +308,18 @@
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+                <?php else: ?>
+                <div class="card card-warning card-outline mb-3">
+                    <div class="card-header">
+                        <h5 class="card-title"><i class="fas fa-futbol"></i> Ekstrakurikuler</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i> 
+                            Belum ada data ekstrakurikuler untuk periode ini
+                        </div>
                     </div>
                 </div>
                 <?php endif; ?>
@@ -307,6 +358,18 @@
                         </table>
                     </div>
                 </div>
+                <?php else: ?>
+                <div class="card card-danger card-outline mb-3">
+                    <div class="card-header">
+                        <h5 class="card-title"><i class="fas fa-award"></i> Prestasi</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i> 
+                            Belum ada data prestasi untuk periode ini
+                        </div>
+                    </div>
+                </div>
                 <?php endif; ?>
 
                 <!-- CATATAN WALI KELAS -->
@@ -321,13 +384,25 @@
                         </p>
                     </div>
                 </div>
+                <?php else: ?>
+                <div class="card card-secondary card-outline mb-3">
+                    <div class="card-header">
+                        <h5 class="card-title"><i class="fas fa-comment"></i> Catatan Wali Kelas</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i> 
+                            Belum ada catatan dari wali kelas untuk periode ini
+                        </div>
+                    </div>
+                </div>
                 <?php endif; ?>
 
             <?php else: ?>
                 <!-- Tidak Ada Data -->
                 <div class="alert alert-warning text-center py-5">
                     <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
-                    <h4><?= htmlspecialchars($data['rapor']['message']) ?></h4>
+                    <h4><?= isset($data['rapor']['message']) ? htmlspecialchars($data['rapor']['message']) : 'Data tidak tersedia' ?></h4>
                     <p class="mb-0">Silakan pilih semester lain atau hubungi wali kelas Anda.</p>
                 </div>
             <?php endif; ?>
@@ -341,6 +416,10 @@
     .card-header .btn, 
     .card.card-secondary,
     .no-print {
+        display: none !important;
+    }
+    
+    .alert {
         display: none !important;
     }
 }

@@ -6,6 +6,74 @@ class Mjadwal
         $this->db = new Database;
     }
 
+    // TAMBAHKAN 4 METHOD BARU INI DI MODEL
+
+    
+
+    // 1. Ambil semua jadwal setting
+    public function get_all_jadwal_setting()
+    {
+        $sql = "SELECT * FROM jadwal_setting ORDER BY id_tahun_ajaran DESC, semester DESC, blok DESC";
+        $this->db->query($sql);
+        return $this->db->resultSet();
+    }
+
+    // 2. Ambil jadwal setting by ID
+    public function get_jadwal_setting_by_id($id)
+    {
+        $sql = "SELECT * FROM jadwal_setting WHERE id_jadwal_setting = :id";
+        $this->db->query($sql);
+        $this->db->bind('id', $id);
+        return $this->db->single();
+    }
+
+    // 3. Nonaktifkan semua jadwal setting
+    public function nonaktifkan_semua_jadwal_setting()
+    {
+        $sql = "UPDATE jadwal_setting SET status = 0";
+        $this->db->query($sql);
+        return $this->db->execute();
+    }
+
+    // 4. Aktifkan jadwal setting tertentu
+    public function aktifkan_jadwal_setting($id)
+    {
+        $sql = "UPDATE jadwal_setting SET status = 1, tanggal_dirubah = :tanggal WHERE id_jadwal_setting = :id";
+        $this->db->query($sql);
+        $this->db->bind('id', $id);
+        $this->db->bind('tanggal', date('Y-m-d'));
+        return $this->db->execute();
+    }
+
+    // Nonaktifkan semua tahun ajaran
+    public function nonaktifkan_semua_tahun_ajaran()
+    {
+        $sql = "UPDATE m_tahun_ajaran SET status = :status";
+        $this->db->query($sql);
+        $this->db->bind('status', 0);
+        return $this->db->execute();
+    }
+
+    // Aktifkan tahun ajaran tertentu
+    public function aktifkan_tahun_ajaran($id_tahun_ajaran)
+    {
+        $sql = "UPDATE m_tahun_ajaran SET status = :status WHERE id_tahun_ajaran = :id";
+        $this->db->query($sql);
+        $this->db->bind('id', $id_tahun_ajaran);
+        $this->db->bind('status', 1);
+        return $this->db->execute();
+    }
+
+    // public function update_berlaku_jadwal($tanggal_baru)
+    // {
+    //     $sql = "UPDATE jadwal_lengkap SET berlaku_jadwal_dari = :tanggal_baru";
+    //     $this->db->query($sql);
+    //     $this->db->bind('tanggal_baru', $tanggal_baru);
+    //     return $this->db->execute();
+    // }
+
+        // TAMBAHKAN 4 METHOD BARU INI DI MODEL
+
     public function jadwal()
     {
         $sql = "SELECT * from pegawai where absen=:absen order by nama";
@@ -15,54 +83,78 @@ class Mjadwal
     }
 
     public function jadwal_kelas($kelas)
-    {
-        $sql = "select jadwal_lengkap.*,
-      pegawai1.nama as nama1,
-      pegawai2.nama as nama2,
-      pegawai3.nama as nama3,
-      pegawai4.nama as nama4,
-      pegawai5.nama as nama5,
-      pegawai6.nama as nama6,
-      pegawai7.nama as nama7,
-      pegawai8.nama as nama8,
-      pegawai9.nama as nama9,
-      pegawai10.nama as nama10,
-      m_pelajaran1.mata_pelajaran as mata_pelajaran1, m_pelajaran1.singkatan as singkatan1,
-      m_pelajaran2.mata_pelajaran as mata_pelajaran2, m_pelajaran2.singkatan as singkatan2,
-      m_pelajaran3.mata_pelajaran as mata_pelajaran3, m_pelajaran3.singkatan as singkatan3,
-      m_pelajaran4.mata_pelajaran as mata_pelajaran4, m_pelajaran4.singkatan as singkatan4,
-      m_pelajaran5.mata_pelajaran as mata_pelajaran5, m_pelajaran5.singkatan as singkatan5,
-      m_pelajaran6.mata_pelajaran as mata_pelajaran6, m_pelajaran6.singkatan as singkatan6,
-      m_pelajaran7.mata_pelajaran as mata_pelajaran7, m_pelajaran7.singkatan as singkatan7,
-      m_pelajaran8.mata_pelajaran as mata_pelajaran8, m_pelajaran8.singkatan as singkatan8,
-      m_pelajaran9.mata_pelajaran as mata_pelajaran9, m_pelajaran9.singkatan as singkatan9,
-      m_pelajaran10.mata_pelajaran as mata_pelajaran10, m_pelajaran10.singkatan as singkatan10
-      from jadwal_lengkap
-      left join pegawai as pegawai1 on jadwal_lengkap.guru1 = pegawai1.nik
-      left join pegawai as pegawai2 on jadwal_lengkap.guru2 = pegawai2.nik
-      left join pegawai as pegawai3 on jadwal_lengkap.guru3 = pegawai3.nik
-      left join pegawai as pegawai4 on jadwal_lengkap.guru4 = pegawai4.nik
-      left join pegawai as pegawai5 on jadwal_lengkap.guru5 = pegawai5.nik
-      left join pegawai as pegawai6 on jadwal_lengkap.guru6 = pegawai6.nik
-      left join pegawai as pegawai7 on jadwal_lengkap.guru7 = pegawai7.nik
-      left join pegawai as pegawai8 on jadwal_lengkap.guru8 = pegawai8.nik
-      left join pegawai as pegawai9 on jadwal_lengkap.guru9 = pegawai9.nik
-      left join pegawai as pegawai10 on jadwal_lengkap.guru10 = pegawai10.nik
-      left join m_pelajaran as m_pelajaran1 on jadwal_lengkap.mp1 = m_pelajaran1.id_pelajaran
-      left join m_pelajaran as m_pelajaran2 on jadwal_lengkap.mp2 = m_pelajaran2.id_pelajaran
-      left join m_pelajaran as m_pelajaran3 on jadwal_lengkap.mp3 = m_pelajaran3.id_pelajaran
-      left join m_pelajaran as m_pelajaran4 on jadwal_lengkap.mp4 = m_pelajaran4.id_pelajaran
-      left join m_pelajaran as m_pelajaran5 on jadwal_lengkap.mp5 = m_pelajaran5.id_pelajaran
-      left join m_pelajaran as m_pelajaran6 on jadwal_lengkap.mp6 = m_pelajaran6.id_pelajaran
-      left join m_pelajaran as m_pelajaran7 on jadwal_lengkap.mp7 = m_pelajaran7.id_pelajaran
-      left join m_pelajaran as m_pelajaran8 on jadwal_lengkap.mp8 = m_pelajaran8.id_pelajaran
-      left join m_pelajaran as m_pelajaran9 on jadwal_lengkap.mp9 = m_pelajaran9.id_pelajaran
-      left join m_pelajaran as m_pelajaran10 on jadwal_lengkap.mp10 = m_pelajaran10.id_pelajaran
-      where kode_kelas=:kode_kelas order by id_jadwal_lengkap";
+    {   
+        // Ambil jadwal_setting yang aktif (status = 1)
+        $sql = "SELECT 
+                    jadwal_lengkap.*,
+                    pegawai1.nama as nama1,
+                    pegawai2.nama as nama2,
+                    pegawai3.nama as nama3,
+                    pegawai4.nama as nama4,
+                    pegawai5.nama as nama5,
+                    pegawai6.nama as nama6,
+                    pegawai7.nama as nama7,
+                    pegawai8.nama as nama8,
+                    pegawai9.nama as nama9,
+                    pegawai10.nama as nama10,
+                    m_pelajaran1.mata_pelajaran as mata_pelajaran1,
+                    m_pelajaran1.singkatan as singkatan1,
+                    m_pelajaran2.mata_pelajaran as mata_pelajaran2,
+                    m_pelajaran2.singkatan as singkatan2,
+                    m_pelajaran3.mata_pelajaran as mata_pelajaran3,
+                    m_pelajaran3.singkatan as singkatan3,
+                    m_pelajaran4.mata_pelajaran as mata_pelajaran4,
+                    m_pelajaran4.singkatan as singkatan4,
+                    m_pelajaran5.mata_pelajaran as mata_pelajaran5,
+                    m_pelajaran5.singkatan as singkatan5,
+                    m_pelajaran6.mata_pelajaran as mata_pelajaran6,
+                    m_pelajaran6.singkatan as singkatan6,
+                    m_pelajaran7.mata_pelajaran as mata_pelajaran7,
+                    m_pelajaran7.singkatan as singkatan7,
+                    m_pelajaran8.mata_pelajaran as mata_pelajaran8,
+                    m_pelajaran8.singkatan as singkatan8,
+                    m_pelajaran9.mata_pelajaran as mata_pelajaran9,
+                    m_pelajaran9.singkatan as singkatan9,
+                    m_pelajaran10.mata_pelajaran as mata_pelajaran10,
+                    m_pelajaran10.singkatan as singkatan10
+                FROM jadwal_lengkap
+    
+                LEFT JOIN pegawai AS pegawai1 ON jadwal_lengkap.guru1 = pegawai1.nik
+                LEFT JOIN pegawai AS pegawai2 ON jadwal_lengkap.guru2 = pegawai2.nik
+                LEFT JOIN pegawai AS pegawai3 ON jadwal_lengkap.guru3 = pegawai3.nik
+                LEFT JOIN pegawai AS pegawai4 ON jadwal_lengkap.guru4 = pegawai4.nik
+                LEFT JOIN pegawai AS pegawai5 ON jadwal_lengkap.guru5 = pegawai5.nik
+                LEFT JOIN pegawai AS pegawai6 ON jadwal_lengkap.guru6 = pegawai6.nik
+                LEFT JOIN pegawai AS pegawai7 ON jadwal_lengkap.guru7 = pegawai7.nik
+                LEFT JOIN pegawai AS pegawai8 ON jadwal_lengkap.guru8 = pegawai8.nik
+                LEFT JOIN pegawai AS pegawai9 ON jadwal_lengkap.guru9 = pegawai9.nik
+                LEFT JOIN pegawai AS pegawai10 ON jadwal_lengkap.guru10 = pegawai10.nik
+    
+                LEFT JOIN m_pelajaran AS m_pelajaran1 ON jadwal_lengkap.mp1 = m_pelajaran1.id_pelajaran
+                LEFT JOIN m_pelajaran AS m_pelajaran2 ON jadwal_lengkap.mp2 = m_pelajaran2.id_pelajaran
+                LEFT JOIN m_pelajaran AS m_pelajaran3 ON jadwal_lengkap.mp3 = m_pelajaran3.id_pelajaran
+                LEFT JOIN m_pelajaran AS m_pelajaran4 ON jadwal_lengkap.mp4 = m_pelajaran4.id_pelajaran
+                LEFT JOIN m_pelajaran AS m_pelajaran5 ON jadwal_lengkap.mp5 = m_pelajaran5.id_pelajaran
+                LEFT JOIN m_pelajaran AS m_pelajaran6 ON jadwal_lengkap.mp6 = m_pelajaran6.id_pelajaran
+                LEFT JOIN m_pelajaran AS m_pelajaran7 ON jadwal_lengkap.mp7 = m_pelajaran7.id_pelajaran
+                LEFT JOIN m_pelajaran AS m_pelajaran8 ON jadwal_lengkap.mp8 = m_pelajaran8.id_pelajaran
+                LEFT JOIN m_pelajaran AS m_pelajaran9 ON jadwal_lengkap.mp9 = m_pelajaran9.id_pelajaran
+                LEFT JOIN m_pelajaran AS m_pelajaran10 ON jadwal_lengkap.mp10 = m_pelajaran10.id_pelajaran
+    
+                WHERE 
+                    jadwal_lengkap.kode_kelas = :kode_kelas
+                    AND jadwal_lengkap.berlaku_jadwal_dari = (
+                        SELECT berlaku_dari 
+                        FROM jadwal_setting 
+                        WHERE status = 1 
+                        LIMIT 1
+                    )
+                ORDER BY id_jadwal_lengkap";
+    
         $this->db->query($sql);
         $this->db->bind('kode_kelas', $kelas);
         return $this->db->resultSet();
-    }
+    }    
 
     public function wali_kelas($kelas)
     {
@@ -349,14 +441,31 @@ class Mjadwal
         $this->db->execute();
         return true;
     }
-
     public function guru_aktif($status)
     {
-        $sql = "SELECT pegawai.*, jadwal_lengkap.* from pegawai left join jadwal_lengkap on pegawai.nik=jadwal_lengkap.wali_kelas where mengajar=:mengajar group by pegawai.nik order by nama";
+        $sql = "SELECT 
+                    pegawai.*, 
+                    jadwal_lengkap.*
+                FROM pegawai
+    
+                LEFT JOIN jadwal_lengkap 
+                    ON pegawai.nik = jadwal_lengkap.wali_kelas
+                    AND jadwal_lengkap.berlaku_jadwal_dari = (
+                        SELECT berlaku_dari
+                        FROM jadwal_setting
+                        WHERE status = 1
+                        LIMIT 1
+                    )
+    
+                WHERE pegawai.mengajar = :mengajar
+                GROUP BY pegawai.nik
+                ORDER BY pegawai.nama";
+    
         $this->db->query($sql);
         $this->db->bind('mengajar', $status);
         return $this->db->resultSet();
     }
+    
 
     public function status_mengajar_non($id)
     {
@@ -466,40 +575,76 @@ class Mjadwal
 
     public function ringkasan_x()
     {
-        $sql = "SELECT CONCAT_WS(', ', guru1, guru2, guru3, guru4, guru5, guru6, guru7, guru8, guru9, guru10) AS ringkasan_x FROM jadwal_lengkap where kelas='X'";
+        $sql = "SELECT 
+                    CONCAT_WS(', ', guru1, guru2, guru3, guru4, guru5, guru6, guru7, guru8, guru9, guru10) AS ringkasan_x
+                FROM jadwal_lengkap
+                WHERE kelas = 'X'
+                  AND berlaku_jadwal_dari = (
+                        SELECT berlaku_dari 
+                        FROM jadwal_setting 
+                        WHERE status = 1 
+                        LIMIT 1
+                  )";
+    
         $this->db->query($sql);
         $result = $this->db->resultSet();
+    
         $array_guru = array();
         foreach ($result as $row) {
             $array_guru[] = $row->ringkasan_x;
         }
-        $guru_string = implode(', ', $array_guru);
-        return $guru_string;
+    
+        return implode(', ', $array_guru);
     }
+    
     public function ringkasan_xi()
     {
-        $sql = "SELECT CONCAT_WS(', ', guru1, guru2, guru3, guru4, guru5, guru6, guru7, guru8, guru9, guru10) AS ringkasan_xi FROM jadwal_lengkap where kelas='XI'";
+        $sql = "SELECT 
+                    CONCAT_WS(', ', guru1, guru2, guru3, guru4, guru5, guru6, guru7, guru8, guru9, guru10) AS ringkasan_xi
+                FROM jadwal_lengkap
+                WHERE kelas = 'XI'
+                  AND berlaku_jadwal_dari = (
+                        SELECT berlaku_dari 
+                        FROM jadwal_setting 
+                        WHERE status = 1 
+                        LIMIT 1
+                  )";
+    
         $this->db->query($sql);
         $result = $this->db->resultSet();
+    
         $array_guru = array();
         foreach ($result as $row) {
             $array_guru[] = $row->ringkasan_xi;
         }
-        $guru_string = implode(', ', $array_guru);
-        return $guru_string;
+    
+        return implode(', ', $array_guru);
     }
+    
     public function ringkasan_xii()
     {
-        $sql = "SELECT CONCAT_WS(', ', guru1, guru2, guru3, guru4, guru5, guru6, guru7, guru8, guru9, guru10) AS ringkasan_xii FROM jadwal_lengkap where kelas='XII'";
+        $sql = "SELECT 
+                    CONCAT_WS(', ', guru1, guru2, guru3, guru4, guru5, guru6, guru7, guru8, guru9, guru10) AS ringkasan_xii
+                FROM jadwal_lengkap
+                WHERE kelas = 'XII'
+                  AND berlaku_jadwal_dari = (
+                        SELECT berlaku_dari 
+                        FROM jadwal_setting 
+                        WHERE status = 1 
+                        LIMIT 1
+                  )";
+    
         $this->db->query($sql);
         $result = $this->db->resultSet();
+    
         $array_guru = array();
         foreach ($result as $row) {
             $array_guru[] = $row->ringkasan_xii;
         }
-        $guru_string = implode(', ', $array_guru);
-        return $guru_string;
+    
+        return implode(', ', $array_guru);
     }
+    
 
     public function tahun_ajaran()
     {
@@ -523,70 +668,71 @@ class Mjadwal
         return $this->db->single();
     }
 
-    public function simpan_jadwal_setting($data)
-    {
-        $tahun_ajaran = $data['tahun_ajaran'];
-        $semester = $data['semester'];
-        $blok = $data['blok'];
+    // public function simpan_jadwal_setting($data)
+    // {
+    //     $tahun_ajaran = $data['tahun_ajaran'];
+    //     $semester = $data['semester'];
+    //     $blok = $data['blok'];
 
-        $sql = "SELECT * from jadwal_setting where id_tahun_ajaran=:id_tahun_ajaran and semester=:semester and blok=:blok";
-        $this->db->query($sql);
-        $this->db->bind('id_tahun_ajaran', $tahun_ajaran);
-        $this->db->bind('semester', $semester);
-        $this->db->bind('blok', $blok);
-        $cek = $this->db->single();
+    //     $sql = "SELECT * from jadwal_setting where id_tahun_ajaran=:id_tahun_ajaran and semester=:semester and blok=:blok";
+    //     $this->db->query($sql);
+    //     $this->db->bind('id_tahun_ajaran', $tahun_ajaran);
+    //     $this->db->bind('semester', $semester);
+    //     $this->db->bind('blok', $blok);
+    //     $cek = $this->db->single();
 
-        if (!$cek) {
-            $matikan = "UPDATE jadwal_setting set status=:status";
-            $this->db->query($matikan);
-            $this->db->bind('status', '0');
-            $this->db->execute();
+    //     if (!$cek) {
+    //         $matikan = "UPDATE jadwal_setting set status=:status";
+    //         $this->db->query($matikan);
+    //         $this->db->bind('status', '0');
+    //         $this->db->execute();
 
-            $proses = "INSERT into jadwal_setting (id_jadwal_setting, id_tahun_ajaran, semester, blok, berlaku_dari, tanggal_dirubah, status) values (:id_jadwal_setting, :id_tahun_ajaran, :semester, :blok, :berlaku_dari, :tanggal_dirubah, :status)";
-            $this->db->query($proses);
-            $this->db->bind('id_jadwal_setting', null);
-            $this->db->bind('id_tahun_ajaran', $data['tahun_ajaran']);
-            $this->db->bind('semester', $data['semester']);
-            $this->db->bind('blok', $data['blok']);
-            $this->db->bind('berlaku_dari', $data['berlaku']);
-            $this->db->bind('tanggal_dirubah', date('Y-m-d'));
-            $this->db->bind('status', '1');
-            $this->db->execute();
+    //         $proses = "INSERT into jadwal_setting (id_jadwal_setting, id_tahun_ajaran, semester, blok, berlaku_dari, tanggal_dirubah, status) values (:id_jadwal_setting, :id_tahun_ajaran, :semester, :blok, :berlaku_dari, :tanggal_dirubah, :status)";
+    //         $this->db->query($proses);
+    //         $this->db->bind('id_jadwal_setting', null);
+    //         $this->db->bind('id_tahun_ajaran', $data['tahun_ajaran']);
+    //         $this->db->bind('semester', $data['semester']);
+    //         $this->db->bind('blok', $data['blok']);
+    //         $this->db->bind('berlaku_dari', $data['berlaku']);
+    //         $this->db->bind('tanggal_dirubah', date('Y-m-d'));
+    //         $this->db->bind('status', '1');
+    //         $this->db->execute();
 
-            $proses2 = "UPDATE jadwal_lengkap set berlaku_jadwal_dari=:berlaku_jadwal_dari";
-            $this->db->query($proses2);
-            $this->db->bind('berlaku_jadwal_dari', $data['berlaku']);
-            $this->db->execute();
-        } else {
-            $matikan = "UPDATE jadwal_setting set status=:status";
-            $this->db->query($matikan);
-            $this->db->bind('status', '0');
-            $this->db->execute();
+    //         $proses2 = "UPDATE jadwal_lengkap set berlaku_jadwal_dari=:berlaku_jadwal_dari";
+    //         $this->db->query($proses2);
+    //         $this->db->bind('berlaku_jadwal_dari', $data['berlaku']);
+    //         $this->db->execute();
+    //     } else {
+    //         $matikan = "UPDATE jadwal_setting set status=:status";
+    //         $this->db->query($matikan);
+    //         $this->db->bind('status', '0');
+    //         $this->db->execute();
 
-            if ($data['id_jadwal_setting'] == $cek->id_jadwal_setting) {
-                $id = $data['id_jadwal_setting'];
-            } else {
-                $id = $cek->id_jadwal_setting;
-            }
+    //         if ($data['id_jadwal_setting'] == $cek->id_jadwal_setting) {
+    //             $id = $data['id_jadwal_setting'];
+    //         } else {
+    //             $id = $cek->id_jadwal_setting;
+    //         }
 
-            $proses = "UPDATE jadwal_setting set id_tahun_ajaran=:id_tahun_ajaran, semester=:semester, blok=:blok, berlaku_dari=:berlaku_dari, tanggal_dirubah=:tanggal_dirubah, status=:status where id_jadwal_setting=:id";
-            $this->db->query($proses);
-            $this->db->bind('id', $id);
-            $this->db->bind('id_tahun_ajaran', $data['tahun_ajaran']);
-            $this->db->bind('semester', $data['semester']);
-            $this->db->bind('blok', $data['blok']);
-            $this->db->bind('berlaku_dari', $data['berlaku']);
-            $this->db->bind('tanggal_dirubah', date('Y-m-d'));
-            $this->db->bind('status', '1');
-            $this->db->execute();
+    //         $proses = "UPDATE jadwal_setting set id_tahun_ajaran=:id_tahun_ajaran, semester=:semester, blok=:blok, berlaku_dari=:berlaku_dari, tanggal_dirubah=:tanggal_dirubah, status=:status where id_jadwal_setting=:id";
+    //         $this->db->query($proses);
+    //         $this->db->bind('id', $id);
+    //         $this->db->bind('id_tahun_ajaran', $data['tahun_ajaran']);
+    //         $this->db->bind('semester', $data['semester']);
+    //         $this->db->bind('blok', $data['blok']);
+    //         $this->db->bind('berlaku_dari', $data['berlaku']);
+    //         $this->db->bind('tanggal_dirubah', date('Y-m-d'));
+    //         $this->db->bind('status', '1');
+    //         $this->db->execute();
 
-            $proses2 = "UPDATE jadwal_lengkap set berlaku_jadwal_dari=:berlaku_jadwal_dari";
-            $this->db->query($proses2);
-            $this->db->bind('berlaku_jadwal_dari', $data['berlaku']);
-            $this->db->execute();
-        }
-        return true;
-    }
+    //         $proses2 = "UPDATE jadwal_lengkap set berlaku_jadwal_dari=:berlaku_jadwal_dari";
+    //         $this->db->query($proses2);
+    //         $this->db->bind('berlaku_jadwal_dari', $data['berlaku']);
+    //         $this->db->execute();
+    //     }
+    //     return true;
+    // }
+    // no used
 
     public function belum_ada_guru()
     {

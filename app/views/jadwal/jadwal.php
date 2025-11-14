@@ -21,7 +21,7 @@
 
       <div class="container1 mb-2" style="padding:0px">
          <div class="col" style="padding:0px">
-            <a href="<?= URLROOT ?>/jadwal?kelas=ringkasan" class="btn btn-outline-dark btn-sm tombol3 lebar2 <?= ($kelas == 'all') ? 'active' : '' ?>">Ringkasan</a>
+            <a href="<?= URLROOT ?>/jadwal?kelas=ringkasan" class="btn btn-outline-dark btn-sm tombol3 lebar2 <?= ($kelas == 'ringkasan') ? 'active' : '' ?>">Ringkasan</a>
 
             <a href="<?= URLROOT ?>/jadwal?kelas=XA" class="btn btn-outline-primary btn-sm tombol3 lebar <?= ($kelas == 'XA') ? 'active' : '' ?>">XA</a>
             <a href="<?= URLROOT ?>/jadwal?kelas=XB" class="btn btn-outline-primary btn-sm tombol3 lebar <?= ($kelas == 'XB') ? 'active' : '' ?>">XB</a>
@@ -67,7 +67,7 @@
          </div>
          <div class="text-center mb-3" style="font-size:0.95em">
             <b>Wali Kelas &nbsp;:&nbsp;
-               <?php if ($data['wali_kelas']->wali_kelas) {
+               <?php if (isset($data['wali_kelas']->wali_kelas)) {
                   echo $data['wali_kelas']->nama;
                } else {
                   echo "<span style='color:red'>~Wali kelas belum dipilih~</span>";
@@ -326,36 +326,43 @@
             </table>
          </div>
          <div class="mt-3">
-            <?php if (($data['wali_kelas']->validasi) != '1') { ?>
-               <span style="font-weight:bold; color:red" class="blink">Jadwal Belum di validasi</span>
-               <br />
-               <?php if (($d->wali_kelas == $_SESSION['nik']) || (Middleware::admin('kurikulum'))) { ?>
-                  <div class="mt-1">
+         <?php 
+         if (isset($data['wali_kelas']) && is_object($data['wali_kelas']) && $data['wali_kelas']->validasi != '1') { 
+         ?>
+            <span style="font-weight:bold; color:red" class="blink">Jadwal Belum di validasi</span>
+            <br />
+            <?php 
+            if ((isset($d) && isset($d->wali_kelas) && $d->wali_kelas == $_SESSION['nik']) || (Middleware::admin('kurikulum'))) { 
+            ?>
+               <div class="mt-1">
                      <a href="javascript:void(0)" onclick="validasi('<?= $data['wali_kelas']->kode_kelas ?>')" class="btn btn-success btn-sm tombol3" title="Validasi jadwal"><i class="fa fa-check"></i> &nbsp;Validasi Jadwal</a>
-
                      <a href="javascript:void(0)" onclick="kosongkan('<?= $data['wali_kelas']->kode_kelas ?>')" class="btn btn-danger btn-sm tombol3" title="Hapus semua jadwal"><i class="fa fa-trash"></i> &nbsp;Kosongkan Jadwal</a>
-                  </div>
-               <?php } ?>
-            <?php } else { ?>
-               <?php
+               </div>
+            <?php } ?>
+         <?php } else { ?>
+            <?php
+            if (isset($data['wali_kelas']) && is_object($data['wali_kelas'])) {
                if ($data['wali_kelas']->validasi_oleh == 'admin') {
-                  $validator = 'Administrator';
+                     $validator = 'Administrator';
                } else {
-                  $ambil = $this->Mjadwal->ambil_nama($data['wali_kelas']->validasi_oleh);
-                  $validator = $ambil->nama;
+                     $ambil = $this->Mjadwal->ambil_nama($data['wali_kelas']->validasi_oleh);
+                     $validator = isset($ambil->nama) ? $ambil->nama : 'Tidak Diketahui';
                }
-               ?>
+            ?>
                <span style="font-weight:bold; color:green" class="blink">
-                  Jadwal Sudah di validasi oleh : <?= $validator ?><br />
-                  Divalidasi pada tanggal : <?= dateID($data['wali_kelas']->tanggal_validasi) ?>
-                  <br />
+                     Jadwal Sudah di validasi oleh : <?= $validator ?><br />
+                     Divalidasi pada tanggal : <?= dateID($data['wali_kelas']->tanggal_validasi) ?>
+                     <br />
                </span>
-               <?php if (($d->wali_kelas == $_SESSION['nik']) || (Middleware::admin('kurikulum'))) { ?>
-                  <div class="mt-2">
-                     <a href="javascript:void(0)" onclick="kosongkan('<?= $data['wali_kelas']->kode_kelas ?>')" class="btn btn-danger btn-sm tombol3" title="Hapus semua jadwal"><i class="fa fa-trash"></i> &nbsp;Kosongkan Jadwal</a>
-                  </div>
+               <?php 
+               if ((isset($d) && isset($d->wali_kelas) && $d->wali_kelas == $_SESSION['nik']) || (Middleware::admin('kurikulum'))) { 
+               ?>
+                     <div class="mt-2">
+                        <a href="javascript:void(0)" onclick="kosongkan('<?= $data['wali_kelas']->kode_kelas ?>')" class="btn btn-danger btn-sm tombol3" title="Hapus semua jadwal"><i class="fa fa-trash"></i> &nbsp;Kosongkan Jadwal</a>
+                     </div>
                <?php } ?>
             <?php } ?>
+         <?php } ?>
          </div>
       <?php } else {
          $this->view('jadwal/ringkasan', $data);

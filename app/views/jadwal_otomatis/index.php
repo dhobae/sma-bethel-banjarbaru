@@ -8,6 +8,25 @@
                 <div class="card-body">
                     <?php flash('jadwal_message'); ?>
 
+                    <!-- Info Jadwal Aktif -->
+                    <?php if (!empty($data['tahun_ajaran_aktif'])): ?>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Jadwal Aktif Saat Ini:</strong> 
+                        Tahun Ajaran <?php echo $data['tahun_ajaran_aktif']; ?> - 
+                        Semester <?php echo $data['semester_aktif']; ?> - 
+                        Blok <?php echo $data['blok_aktif']; ?>
+                        (Berlaku dari: <?php echo date('d/m/Y', strtotime($data['jadwal_aktif'])); ?>)
+                    </div>
+                    <?php endif; ?>
+
+                    <?php if ($data['wali_kelas_tersedia']): ?>
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <strong>Wali Kelas:</strong> Sistem akan mempertahankan wali kelas lama yang sudah ada.
+                    </div>
+                    <?php endif; ?>
+
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <div class="card">
@@ -54,7 +73,7 @@
                                         </li>
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
                                             Tingkat Mutasi
-                                            <span class="badge bg-primary rounded-pill">10%</span>
+                                            <span class="badge bg-primary rounded-pill">15%</span>
                                         </li>
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
                                             Tingkat Crossover
@@ -78,12 +97,56 @@
                             <form id="generateForm" action="<?php echo URLROOT; ?>/jadwal_otomatis/generateSchedule"
                                 method="POST">
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <div class="form-group mb-3">
-                                            <label for="berlaku_jadwal_dari">Tanggal Berlaku Jadwal</label>
+                                            <label for="tahun_ajaran">Tahun Ajaran</label>
+                                            <input type="text" class="form-control" id="tahun_ajaran"
+                                                name="tahun_ajaran" placeholder="2025/2026" 
+                                                pattern="\d{4}/\d{4}"
+                                                title="Format: YYYY/YYYY (contoh: 2025/2026)">
+                                            <small class="form-text text-muted">Format: YYYY/YYYY. Kosongkan untuk generate otomatis dari tanggal berlaku.</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group mb-3">
+                                            <label for="semester">Semester</label>
+                                            <select class="form-control" id="semester" name="semester">
+                                                <option value="">-- Auto --</option>
+                                                <option value="Ganjil">Ganjil</option>
+                                                <option value="Genap">Genap</option>
+                                            </select>
+                                            <small class="form-text text-muted">Kosongkan untuk auto detect</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group mb-3">
+                                            <label for="blok">Blok</label>
+                                            <select class="form-control" id="blok" name="blok">
+                                                <option value="">-- Auto --</option>
+                                                <option value="I">I</option>
+                                                <option value="II">II</option>
+                                                <option value="III">III</option>
+                                            </select>
+                                            <small class="form-text text-muted">Kosongkan untuk auto detect</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label for="berlaku_jadwal_dari">Tanggal Berlaku Jadwal <span class="text-danger">*</span></label>
                                             <input type="date" class="form-control" id="berlaku_jadwal_dari"
-                                                name="berlaku_jadwal_dari" value="<?php echo date('Y-m-d'); ?>"
+                                                name="berlaku_jadwal_dari"
                                                 required>
+                                            <small class="form-text text-muted">Tanggal mulai berlakunya jadwal baru</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="alert alert-warning">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                            <strong>Perhatian:</strong> Sistem akan otomatis membuat/update data di tabel <code>m_tahun_ajaran</code> dan <code>jadwal_setting</code> berdasarkan input di atas.
                                         </div>
                                     </div>
                                 </div>
@@ -128,9 +191,52 @@ document.addEventListener('DOMContentLoaded', function() {
     const progressBar = document.getElementById('progress-bar');
     const statusMessage = document.getElementById('status-message');
 
+    // Auto-fill tahun ajaran berdasarkan tanggal berlaku
+    const berlakuInput = document.getElementById('berlaku_jadwal_dari');
+    const tahunAjaranInput = document.getElementById('tahun_ajaran');
+    const semesterInput = document.getElementById('semester');
+    const blokInput = document.getElementById('blok');
+
+    berlakuInput.addEventListener('change', function() {
+        if (this.value && !tahunAjaranInput.value) {
+            const date = new Date(this.value);
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1; // 0-11 -> 1-12
+            
+            // Tentukan tahun ajaran
+            if (month >= 7) {
+                tahunAjaranInput.value = year + '/' + (year + 1);
+            } else {
+                tahunAjaranInput.value = (year - 1) + '/' + year;
+            }
+            
+            // Tentukan semester jika belum dipilih
+            if (!semesterInput.value) {
+                semesterInput.value = (month >= 1 && month <= 6) ? 'Genap' : 'Ganjil';
+            }
+            
+            // Tentukan blok jika belum dipilih
+            if (!blokInput.value) {
+                if (month >= 7 && month <= 8) blokInput.value = 'I';
+                else if (month >= 9 && month <= 10) blokInput.value = 'II';
+                else if (month >= 11 && month <= 12) blokInput.value = 'III';
+                else if (month >= 1 && month <= 2) blokInput.value = 'I';
+                else if (month >= 3 && month <= 4) blokInput.value = 'II';
+                else if (month >= 5 && month <= 6) blokInput.value = 'III';
+            }
+        }
+    });
+
     if (form) {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
+
+            // Validasi tahun ajaran format jika diisi
+            const tahunAjaranVal = tahunAjaranInput.value.trim();
+            if (tahunAjaranVal && !/^\d{4}\/\d{4}$/.test(tahunAjaranVal)) {
+                alert('Format tahun ajaran harus YYYY/YYYY (contoh: 2025/2026)');
+                return;
+            }
 
             // Tampilkan card progress
             progressCard.style.display = 'block';
@@ -149,13 +255,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 progressBar.style.width = progress + '%';
                 progressBar.textContent = Math.round(progress) + '%';
 
-                if (progress < 30) {
+                if (progress < 20) {
+                    statusMessage.innerHTML =
+                        '<i class="fas fa-spinner fa-spin me-2"></i>Menyiapkan tahun ajaran dan jadwal setting...';
+                } else if (progress < 40) {
                     statusMessage.innerHTML =
                         '<i class="fas fa-spinner fa-spin me-2"></i>Menginisialisasi populasi awal...';
-                } else if (progress < 60) {
+                } else if (progress < 65) {
                     statusMessage.innerHTML =
                         '<i class="fas fa-spinner fa-spin me-2"></i>Melakukan evolusi dan optimasi...';
-                } else if (progress < 90) {
+                } else if (progress < 85) {
                     statusMessage.innerHTML =
                         '<i class="fas fa-spinner fa-spin me-2"></i>Mengevaluasi jadwal terbaik...';
                 } else {
