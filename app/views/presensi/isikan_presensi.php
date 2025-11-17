@@ -63,7 +63,7 @@
                         <td>Jam Pulang</td>
                         <td>:</td>
                         <td>
-                            <input type="time" name="jam_pulang" value="<?= $data['reset']->jam_pulang ?>" style="width:120px">
+                            <input type="time" name="jam_pulang" style="width:120px">
                         </td>
                     </tr>
 

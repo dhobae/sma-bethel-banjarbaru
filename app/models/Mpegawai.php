@@ -57,6 +57,7 @@ class Mpegawai
       return $this->db->single();
    }
 
+   // simpan sama simpan_foto perlu dirubah
    public function simpan($data, $files)
    {
       $sql = "INSERT into pegawai (id_pegawai, rfid, nik, username, nama, kode, jabatan, full_time, jk, agama, nomor_hp, notif_wa, tempat_lahir, tgl_lahir, alamat, pendidikan, email, absen, mengajar) values (:id_pegawai, :rfid, :nik, :username, :nama, :kode, :jabatan, :full_time, :jk, :agama, :nomor_hp, :notif_wa, :tempat_lahir, :tgl_lahir, :alamat, :pendidikan, :email, :absen, :mengajar)";
@@ -123,12 +124,12 @@ class Mpegawai
 
          if ($files['avatar']['size'] < 2000 * 1000) {
             if ($_SESSION['avatar'] == NULL) {
-               move_uploaded_file($files['avatar']['tmp_name'], "../public/skatel/avatar/" . $newAvatarName);
+               move_uploaded_file($files['avatar']['tmp_name'], "../public/smabethel/avatar/" . $newAvatarName);
             } else {
                if (unlink("../public/img/avatar/" . $_SESSION['avatar'])) {
-                  move_uploaded_file($files['avatar']['tmp_name'], "../public/skatel/avatar/" . $newAvatarName);
+                  move_uploaded_file($files['avatar']['tmp_name'], "../public/smabethel/avatar/" . $newAvatarName);
                } else {
-                  move_uploaded_file($files['avatar']['tmp_name'], "../public/skatel/avatar/" . $newAvatarName);
+                  move_uploaded_file($files['avatar']['tmp_name'], "../public/smabethel/avatar/" . $newAvatarName);
                }
             }
          } else {
@@ -319,12 +320,12 @@ class Mpegawai
 
          if ($files['avatar']['size'] < 2000 * 1000) {
             if ($_SESSION['avatar'] == NULL) {
-               move_uploaded_file($files['avatar']['tmp_name'], "../public/skatel/avatar/" . $newAvatarName);
+               move_uploaded_file($files['avatar']['tmp_name'], "../public/smabethel/avatar/" . $newAvatarName);
             } else {
-               if (unlink("../public/skatel/avatar/" . $_SESSION['avatar'])) {
-                  move_uploaded_file($files['avatar']['tmp_name'], "../public/skatel/avatar/" . $newAvatarName);
+               if (unlink("../public/smabethel/avatar/" . $_SESSION['avatar'])) {
+                  move_uploaded_file($files['avatar']['tmp_name'], "../public/smabethel/avatar/" . $newAvatarName);
                } else {
-                  move_uploaded_file($files['avatar']['tmp_name'], "../public/skatel/avatar/" . $newAvatarName);
+                  move_uploaded_file($files['avatar']['tmp_name'], "../public/smabethel/avatar/" . $newAvatarName);
                }
             }
          } else {

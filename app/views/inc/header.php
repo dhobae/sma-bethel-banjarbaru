@@ -111,7 +111,7 @@
                 <div class="image">
 
                     <?php if ($_SESSION['avatar']) { ?>
-                    <img src="<?= URLROOT ?>/skatel/avatar/<?= $_SESSION['avatar'] ?>" class="img-circle elevation-1"
+                    <img src="<?= URLROOT ?>/smabethel/avatar/<?= $_SESSION['avatar'] ?>" class="img-circle elevation-1"
                         alt="User Image" style="height:37px !important">
                     <?php } else { ?>
                     <img src="<?= URLROOT ?>/dist/img/userumum.jpg" class="img-circle elevation-2" alt="User Image">

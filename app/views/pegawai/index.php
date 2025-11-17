@@ -5,13 +5,13 @@
    <div class="card-body box-profile">
 
       <div class="tengah">
-         <img src="<?= URLROOT ?>/skatel/img/ts.png" width="120px">
+         <img src="<?= URLROOT ?>/smabethel/img/icon.png" width="80px">
       </div>
       <div class="huruf1 tengah" style="font-size:25px; font-weight:bold">
          Daftar Guru dan Karyawan
       </div>
       <div class="huruf1 tengah mb-1" style="font-size:20px; font-weight:bold; margin-top:-6px">
-         SMK Telkom Banjarbaru
+         SMA Bethel Banjarbaru
       </div>
 
       <div class="mb-2">

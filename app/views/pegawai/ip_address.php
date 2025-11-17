@@ -16,7 +16,10 @@ $tanggal = date("Y-m-d");
       </div>
 
       <div class="tengah mb-2">
-         <img src="<?= URLROOT ?>/skatel/img/ts.png" width="160px">
+         <img src="<?= URLROOT ?>/smabethel/img/icon.png" width="80px">
+      </div>
+      <div class="huruf1 tengah mb-3" style="font-size:20px; font-weight:bold; margin-top:-6px">
+         SMA Bethel Banjarbaru
       </div>
       <div class="tengah huruf1">
          <h5><b>IP Address Yang Terdaftar sebagai WFO</b></h5>

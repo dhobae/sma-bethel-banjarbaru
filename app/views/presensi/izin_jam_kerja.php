@@ -5,10 +5,10 @@
 <div class="card card-primary card-outline" style="margin-top:10px;">
    <div class="card-body">
       <div class="tengah mb-2">
-         <img src="<?= URLROOT ?>/skatel/img/ts.png" width="160px"> <br />
+         <img src="<?= URLROOT ?>/smabethel/img/icon.png" width="80px"> <br />
       </div>
       <div class="tengah judul1 mb-2">
-         <b>SMK Telkom Banjarbaru<br />[Daftar Izin Meninggalkan sekolah pada jam kerja]</b>
+         <b>SMA Bethel Banjarbaru<br />[Daftar Izin Meninggalkan sekolah pada jam kerja]</b>
       </div>
 
       <?php if ($_SESSION['role'] != 'admin') { ?>

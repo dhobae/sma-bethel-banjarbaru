@@ -15,10 +15,10 @@ require APPROOT . '../../public/dist/lib/ip.php';
       </div>
 
       <div class="tengah">
-         <img src="<?= URLROOT ?>/skatel/img/ts.png" width="120px">
+         <img src="<?= URLROOT ?>/smabethel/img/icon.png" width="80px">
       </div>
       <div class="huruf1 tengah" style="font-size:22px; font-weight:bold">
-         SMK Telkom Banjarbaru
+         SMA Bethel Banjarbaru
       </div>
       <div class="huruf1 tengah mb-1" style="font-size:20px; font-weight:bold; margin-top:-6px">
          [Daftar izin pegawai]

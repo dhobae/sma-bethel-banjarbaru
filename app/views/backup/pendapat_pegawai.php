@@ -4,8 +4,11 @@
 
     <div class="card-body">
         <div class="tengah mb-2">
-            <img src="<?= URLROOT ?>/skatel/img/ts.png" width="160px">
+            <img src="<?= URLROOT ?>/smabethel/img/icon.png" width="80px">
             <br />
+        </div>
+        <div class="huruf1 tengah mb-3" style="font-size:20px; font-weight:bold; margin-top:-6px">
+         SMA Bethel Banjarbaru
         </div>
         <div class="tengah judul1 mb-4">
             <b>Pendapat Pegawai tentang aplikasi Presensi ini</b>
