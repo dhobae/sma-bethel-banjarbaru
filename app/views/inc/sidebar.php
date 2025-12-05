@@ -221,6 +221,15 @@
          </a>
       </li>
 
+      <?php if(Middleware::admin('wali_kelas')) { ?>
+         <li class="nav-item">
+            <a href="<?= URLROOT ?>/siswa/rapor" class="nav-link">
+               <i class="nav-icon fa fa-book" aria-hidden="true"></i>
+               <p>Rapor</p>
+            </a>
+         </li>
+      <?php } ?>
+
       <?php if (Middleware::admin('kurikulum')) { ?>
          <li class="nav-item">
             <a href="<?= URLROOT ?>/siswa/cek_rfid" class="nav-link">
@@ -231,6 +240,15 @@
       <?php } ?>
 
       <li class="nav-header"><b>KURIKULUM</b></li>
+
+      <?php if (Middleware::admin('kurikulum')) { ?>
+         <li class="nav-item">
+            <a href="<?= URLROOT ?>/jadwal_otomatis" class="nav-link">
+               <i class="nav-icon fa fa-cogs" aria-hidden="true"></i>
+               <p>Buat Jadwal Otomatis</p>
+            </a>
+         </li>
+      <?php } ?>
 
       <li class="nav-item">
          <a href="<?= URLROOT ?>/jadwal/jadwal" class="nav-link">
@@ -605,6 +623,12 @@
       <a href="<?= URLROOT ?>/siswa/pengajuan_izin" class="nav-link">
          <i class="nav-icon fa fa-file" aria-hidden="true"></i>
          <p>Pengajuan Izin</p>
+      </a>
+   </li>
+   <li class="nav-item">
+      <a href="<?= URLROOT ?>/siswa/rapor" class="nav-link">
+         <i class="nav-icon fa fa-book" aria-hidden="true"></i>
+         <p>Rapor Saya</p>
       </a>
    </li>
 <?php } ?>

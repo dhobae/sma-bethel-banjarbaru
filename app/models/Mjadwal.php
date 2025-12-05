@@ -200,7 +200,7 @@ class Mjadwal
     {
         $sql = "SELECT m_prodi.*, pegawai.nama from m_prodi left join pegawai on m_prodi.ketua_prodi=pegawai.nik order by kode_prodi";
         $this->db->query($sql);
-        $this->db->bind('status_prodi', 'Aktif');
+        // $this->db->bind('status_prodi', 'Aktif');
         return $this->db->resultSet();
     }
 
@@ -543,8 +543,7 @@ class Mjadwal
       AND jadwal_lengkap.berlaku_jadwal_dari = 
       ( SELECT berlaku_dari 
         FROM jadwal_setting 
-        WHERE status = 1 
-        LIMIT 1)
+        WHERE status = 1)
       order by id_jadwal_lengkap";
         $this->db->query($sql);
         //$this->db->bind('hari', $hari);

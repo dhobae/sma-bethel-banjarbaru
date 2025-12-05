@@ -19,8 +19,17 @@ $kamis   = date('Y-m-d', $kamis1);
 $jumat   = date('Y-m-d', $jumat1);
 
 $tanggal_hari = array($senin, $selasa, $rabu, $kamis, $jumat);
-?>
 
+// Kelompokkan data berdasarkan kelas
+$jadwal_per_kelas = [];
+foreach ($data['absen'] as $d) {
+    $kode_kelas = $d->kode_kelas;
+    if (!isset($jadwal_per_kelas[$kode_kelas])) {
+        $jadwal_per_kelas[$kode_kelas] = [];
+    }
+    $jadwal_per_kelas[$kode_kelas][] = $d;
+}
+?>
 
 <div class="card card-primary card-outline" style="margin-top:10px;">
    <div class="card-body box-profile">
@@ -36,72 +45,75 @@ $tanggal_hari = array($senin, $selasa, $rabu, $kamis, $jumat);
          <input type="date" id="tanggal" style="height: 25px;" onchange="submitForm()" value="<?= $tgl ?>">
       </div>
 
-      <hr style="margin-top:0px; margin-bottom:0px">
-
-      <div class="table-responsive">
-         <table class="table tabel1">
-            <thead class="text-center">
-               <tr>
-                  <th rowspan="2">&nbsp;&nbsp;&nbsp;&nbsp;Hari&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                  <th colspan="10">Jam Ke</th>
-               </tr>
-               <tr>
-                  <th style="width:10%">1</th>
-                  <th style="width:10%">2</th>
-                  <th style="width:10%">3</th>
-                  <th style="width:10%">4</th>
-                  <th style="width:10%">5</th>
-                  <th style="width:10%">6</th>
-                  <th style="width:10%">7</th>
-                  <th style="width:10%">8</th>
-                  <th style="width:10%">9</th>
-                  <th style="width:10%">10</th>
-               </tr>
-            </thead>
-            <tbody>
-               <?php
-               $counter = 0;
-               foreach ($data['absen'] as $d) :
-               ?>
+      <?php foreach ($jadwal_per_kelas as $kode_kelas => $jadwal_kelas) : ?>
+         <hr style="margin-top:10px; margin-bottom:10px">
+         <h5 class="text-center">Kelas <?= $kode_kelas ?></h5>
+         
+         <div class="table-responsive">
+            <table class="table tabel1">
+               <thead class="text-center">
                   <tr>
-                     <td class="text-center" style="background-color:azure; vertical-align:middle; white-space: nowrap; padding-left:10px !important; padding-right:10px !important; padding-top:9px !important; ; padding-bottom:9px !important">
-                        <b>
-                           <span style="font-weight:bold; font-size:18px"><?= $d->hari ?></span><br />
-                           <small><b><?= date4ID($tanggal_hari[$counter]) ?></b></small>
-                        </b>
-                     </td>
-
-                     <?php for ($i = 1; $i <= 10; $i++) : ?>
-                        <?php
-                        $cek_absen = $this->Mjadwal->cek_absen($tanggal_hari[$counter], $d->kelas, $d->ruang, $i);
-                        if ($cek_absen) {
-                           $warna = 'lime';
-                        } else {
-                           $warna = '';
-                        }
-                        ?>
-
-                        <td class="text-center" style="background-color: <?= $warna ?>; padding-top:9px !important; padding-bottom:9px !important; white-space: nowrap;">
-                           <?php if ($cek_absen) { ?>
-                              <span class="kode_pegawai"><?= $d->{'kode_pegawai' . $i} ?><br /></span>
-                              <span class="mata_pelajaran"><?= substr($d->{'mata_pelajaran' . $i}, 0, 12) ?>...</span>
-                           <?php } else { ?>
-                              <span class="singkatan"><?= $d->{'singkatan' . $i} ?></span>
-                              <br />
-                              <span class="guru"><?= substr($d->{'nama' . $i}, 0, 12) ?>..</span>
-                           <?php } ?>
+                     <th rowspan="2">&nbsp;&nbsp;&nbsp;&nbsp;Hari&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                     <th colspan="10">Jam Ke</th>
+                  </tr>
+                  <tr>
+                     <th style="width:10%">1</th>
+                     <th style="width:10%">2</th>
+                     <th style="width:10%">3</th>
+                     <th style="width:10%">4</th>
+                     <th style="width:10%">5</th>
+                     <th style="width:10%">6</th>
+                     <th style="width:10%">7</th>
+                     <th style="width:10%">8</th>
+                     <th style="width:10%">9</th>
+                     <th style="width:10%">10</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  <?php
+                  $counter = 0;
+                  foreach ($jadwal_kelas as $d) :
+                  ?>
+                     <tr>
+                        <td class="text-center" style="background-color:azure; vertical-align:middle; white-space: nowrap; padding-left:10px !important; padding-right:10px !important; padding-top:9px !important; padding-bottom:9px !important">
+                           <b>
+                              <span style="font-weight:bold; font-size:18px"><?= $d->hari ?></span><br />
+                              <small><b><?= date4ID($tanggal_hari[$counter]) ?></b></small>
+                           </b>
                         </td>
 
-                     <?php endfor; ?>
+                        <?php for ($i = 1; $i <= 10; $i++) : ?>
+                           <?php
+                           $cek_absen = $this->Mjadwal->cek_absen($tanggal_hari[$counter], $d->kelas, $d->ruang, $i);
+                           if ($cek_absen) {
+                              $warna = 'lime';
+                           } else {
+                              $warna = '';
+                           }
+                           ?>
 
-                  </tr>
-               <?php
-                  $counter++;
-               endforeach;
-               ?>
-            </tbody>
-         </table>
-      </div>
+                           <td class="text-center" style="background-color: <?= $warna ?>; padding-top:9px !important; padding-bottom:9px !important; white-space: nowrap;">
+                              <?php if ($cek_absen) { ?>
+                                 <span class="kode_pegawai"><?= $d->{'kode_pegawai' . $i} ?><br /></span>
+                                 <span class="mata_pelajaran"><?= substr($d->{'mata_pelajaran' . $i}, 0, 12) ?>...</span>
+                              <?php } else { ?>
+                                 <span class="singkatan"><?= $d->{'singkatan' . $i} ?></span>
+                                 <br />
+                                 <span class="guru"><?= substr($d->{'nama' . $i}, 0, 12) ?>..</span>
+                              <?php } ?>
+                           </td>
+
+                        <?php endfor; ?>
+
+                     </tr>
+                  <?php
+                     $counter++;
+                  endforeach;
+                  ?>
+               </tbody>
+            </table>
+         </div>
+      <?php endforeach; ?>
    </div>
 </div>
 
