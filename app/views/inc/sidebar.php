@@ -626,7 +626,7 @@
       </a>
    </li>
    <li class="nav-item">
-      <a href="<?= URLROOT ?>/siswa/rapor" class="nav-link">
+      <a href="<?= URLROOT ?>/siswa/rapor_saya" class="nav-link">
          <i class="nav-icon fa fa-book" aria-hidden="true"></i>
          <p>Rapor Saya</p>
       </a>
