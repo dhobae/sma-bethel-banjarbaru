@@ -1,7 +1,7 @@
 <head>
-    <title>Presensi Pegawai SMK Telkom Banjarbaru</title>
+    <title>Presensi Pegawai SMA Bethel Banjarbaru</title>
     <link rel="stylesheet" href="<?=URLROOT?>/dist/lib/pahdi.css">
-    <link rel="shortcut icon" href="<?=URLROOT;?>/skatel/img/ts_icon1.png">
+    <link rel="shortcut icon" href="<?=URLROOT;?>/smabethel/img/icon.png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet"
@@ -9,23 +9,25 @@
 </head>
 
 <body>
+ 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <?php sflash2()?>
 
     <input type="password" id="inputRFID" onchange="prosesAbsen(this.value)" class="transparan">
 
     <div style="margin-bottom:20px" class="text-center">
-        <img src="<?=URLROOT;?>/skatel/img/ts2.png" alt="Skatel" style="width: 250px;height: auto;" />
+        <img src="<?=URLROOT;?>/smabethel/img/icon.png" alt="smabethel" style="width: 80px;height: auto;" />
     </div>
     <div style="font-family: 'courier new'; font-size:2em; margin-bottom:-10px">
-        <b>~ Presensi Pegawai SMK Telkom Banjarbaru ~</b>
+        <b>~ Presensi Pegawai SMA Bethel Banjarbaru ~</b>
     </div>
     <div style="font-family: 'courier new'; font-size:2.2em; margin-bottom:10px" class="blinking">
         <b>Tempelkan Kartu Presensi Anda</b>
     </div>
-    <div style="font-family: 'courier new'; font-size:1.2em; color: #ffeb3b;">
+    <div style="font-family: 'courier new'; font-size:1.2em; color: #ffeb3b;" class="mb-3">
         <i class="fa fa-map-marker"></i> <span id="statusLokasi">Mendeteksi lokasi...</span>
     </div>
+
 </body>
 
 <script src="<?=URLROOT?>/dist/plugins/sweetalert2/sweetalert2.min.js"></script>
@@ -83,18 +85,18 @@ function prosesAbsen(rfidValue) {
                     // ABSEN MASUK
                     Swal.fire({
                         icon: 'success',
-                        title: 'PRESENSI MASUK',
+                        title: '✓ PRESENSI MASUK',
                         html: `
-                            <div style="font-size: 1.2em;">
-                                <p style="font-size: 1.5em; margin: 15px 0; color: #28a745;"><b>${response.nama}</b></p>
-                                <p style="color: #666; font-size: 0.95em;">${response.nik} | ${response.jabatan}</p>
-                                <hr style="margin: 20px 0; border-top: 2px solid #e0e0e0;">
-                                <p style="font-size: 1.8em; margin: 20px 0; color: #28a745;"><b>${response.waktu}</b></p>
-                                <p style="color: #666; margin-top: 15px;">${response.message}</p>
+                            <div style="font-size: 1.1em;">
+                                <p style="font-size: 1.3em; margin: 10px 0;"><b>${response.nama}</b></p>
+                                <p style="color: #666;">${response.nik} | ${response.jabatan}</p>
+                                <hr style="margin: 15px 0;">
+                                <p style="color: #28a745; font-size: 1.2em;"><b>⏰ ${response.waktu}</b></p>
+                                <p style="color: #666; margin-top: 10px;">${response.message}</p>
                             </div>
                         `,
                         showConfirmButton: false,
-                        timer: 5000,
+                        timer: 7000,
                         timerProgressBar: true
                     }).then(() => {
                         refreshPage();
@@ -103,22 +105,22 @@ function prosesAbsen(rfidValue) {
                     // ABSEN PULANG
                     Swal.fire({
                         icon: 'info',
-                        title: 'PRESENSI PULANG',
+                        title: '✓ PRESENSI PULANG',
                         html: `
-                            <div style="font-size: 1.2em;">
-                                <p style="font-size: 1.5em; margin: 15px 0; color: #1976d2;"><b>${response.nama}</b></p>
-                                <p style="color: #666; font-size: 0.95em;">${response.nik} | ${response.jabatan}</p>
-                                <hr style="margin: 20px 0; border-top: 2px solid #e0e0e0;">
-                                <div style="margin: 20px 0;">
-                                    <p style="font-size: 1.1em; color: #555;">Masuk: <b>${response.jam_masuk}</b></p>
-                                    <p style="font-size: 1.8em; margin: 15px 0; color: #1976d2;"><b>${response.waktu}</b></p>
-                                    <p style="font-size: 1.1em; color: #1976d2;">Durasi: <b>${response.durasi}</b></p>
+                            <div style="font-size: 1.1em;">
+                                <p style="font-size: 1.3em; margin: 10px 0;"><b>${response.nama}</b></p>
+                                <p style="color: #666;">${response.nik} | ${response.jabatan}</p>
+                                <hr style="margin: 15px 0;">
+                                <div style="background: #f0f8ff; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                                    <p style="margin: 5px 0;">Masuk: <b>${response.jam_masuk}</b></p>
+                                    <p style="margin: 5px 0;">Pulang: <b>${response.waktu}</b></p>
+                                    <p style="margin: 5px 0; color: #007bff;">Durasi: <b>${response.durasi}</b></p>
                                 </div>
-                                <p style="color: #666; margin-top: 15px;">${response.message}</p>
+                                <p style="color: #666; margin-top: 10px;">${response.message}</p>
                             </div>
                         `,
                         showConfirmButton: false,
-                        timer: 5000,
+                        timer: 7000,
                         timerProgressBar: true
                     }).then(() => {
                         refreshPage();
@@ -128,51 +130,54 @@ function prosesAbsen(rfidValue) {
                 // SUDAH ABSEN LENGKAP
                 Swal.fire({
                     icon: 'warning',
-                    title: 'Sudah Presensi Lengkap',
+                    title: '⚠ Sudah Presensi Lengkap',
                     html: `
-                        <div style="font-size: 1.2em;">
-                            <p style="font-size: 1.5em; margin: 15px 0; color: #ff9800;"><b>${response.nama}</b></p>
-                            <p style="color: #666; font-size: 0.95em;">${response.nik} | ${response.jabatan}</p>
-                            <hr style="margin: 20px 0; border-top: 2px solid #e0e0e0;">
-                            <div style="margin: 20px 0;">
-                                <p style="font-size: 1.1em; color: #555;">✓ Masuk: <b>${response.jam_masuk}</b></p>
-                                <p style="font-size: 1.1em; color: #555; margin-top: 10px;">✓ Pulang: <b>${response.jam_pulang}</b></p>
+                        <div style="font-size: 1.1em;">
+                            <p style="font-size: 1.3em; margin: 10px 0;"><b>${response.nama}</b></p>
+                            <p style="color: #666;">${response.nik} | ${response.jabatan}</p>
+                            <hr style="margin: 15px 0;">
+                            <div style="background: #fff3cd; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                                <p style="margin: 5px 0;">✓ Masuk: <b>${response.jam_masuk}</b></p>
+                                <p style="margin: 5px 0;">✓ Pulang: <b>${response.jam_pulang}</b></p>
                             </div>
-                            <p style="color: #856404; margin-top: 15px;">${response.message}</p>
+                            <p style="color: #856404; margin-top: 10px;">${response.message}</p>
                         </div>
                     `,
-                    showConfirmButton: false,
+                    showConfirmButton: true,
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#ffc107',
                     timer: 5000,
                     timerProgressBar: true
                 }).then(() => {
                     refreshPage();
                 });
-            } else {
-                // ERROR - KARTU TIDAK TERDAFTAR atau IP TIDAK TERDAFTAR
-                let errorMessage = response.message;
-                let additionalInfo = '';
-
-                // Jika error karena IP tidak terdaftar
-                if (response.ip_address) {
-                    additionalInfo =
-                        `<p style="color: #666; font-size: 0.9em; margin-top: 10px;">IP Address: ${response.ip_address}</p>`;
-                }
-
+            } else if (response.status === 'info') {
+                // SEDANG IZIN
                 Swal.fire({
-                    icon: 'error',
-                    title: '✗ Akses Ditolak',
-                    html: `
-                        <div style="font-size: 1.1em;">
-                            <p style="color: #dc3545; margin: 15px 0;">${errorMessage}</p>
-                            ${additionalInfo}
-                            <p style="color: #666; margin-top: 10px;">Silakan hubungi bagian administrasi kepegawaian.</p>
-                        </div>
-                    `,
-                    showConfirmButton: false,
+                    icon: 'info',
+                    title: 'Presensi Gagal',
+                    text: response.message,
+                    confirmButtonText: 'OK',
                     timer: 5000,
                     timerProgressBar: true
-                }).then(() => {
-                    refreshPage();
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        refreshPage();
+                    }
+                });
+             } else {
+                // KESALAHAN
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Terjadi Kesalahan',
+                    text: response.message,
+                    confirmButtonText: 'OK',
+                    timer: 5000,
+                    timerProgressBar: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        refreshPage();
+                    }
                 });
             }
         },
@@ -184,9 +189,9 @@ function prosesAbsen(rfidValue) {
                 icon: 'error',
                 title: 'Terjadi Kesalahan',
                 text: 'Gagal menghubungi server. Silakan coba lagi atau hubungi administrator.',
-                showConfirmButton: false,
-                timer: 5000,
-                timerProgressBar: true
+                showConfirmButton: true,
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#dc3545'
             }).then(() => {
                 refreshPage();
             });
@@ -224,6 +229,28 @@ document.addEventListener('click', function(event) {
 </script>
 
 <style>
+
+/* Force SweetAlert2 vertical layout */
+.swal2-popup {
+    display: block !important;
+}
+
+.swal2-title {
+    display: block !important;
+    margin: 0 0 1em 0 !important;
+}
+
+.swal2-html-container {
+    display: block !important;
+    margin: 1em auto !important;
+    text-align: center !important;
+}
+
+.swal2-actions {
+    display: block !important;
+    margin-top: 1.5em !important;
+}
+
 .transparan {
     background-color: transparent;
     border: none;
@@ -233,14 +260,14 @@ document.addEventListener('click', function(event) {
 }
 
 body {
-    background: url(skatel/img/skatel.jpg) no-repeat center center fixed;
+    background: url(<?=URLROOT?>/smabethel/img/gambarsmabethel2.jpg) no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
     color: #cccccc;
     text-align: center;
-    padding-top: 50px;
+    padding-top: 2rem;
 }
 
 @keyframes blink {
@@ -260,4 +287,4 @@ body {
 .blinking {
     animation: blink 2s infinite;
 }
-</style>
+</styl>

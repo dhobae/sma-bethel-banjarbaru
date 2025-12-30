@@ -1,14 +1,12 @@
 <?php
 class Mabsen_pegawai
 {
+    // KHUSUS RFID PEGAWAI
     public function __construct()
     {
         $this->db = new Database;
     }
 
-    /**
-     * Ambil data pegawai berdasarkan RFID
-     */
     public function ambil_pegawai_by_rfid($rfid)
     {
         $sql = "SELECT * FROM pegawai WHERE rfid = :rfid";
@@ -17,64 +15,14 @@ class Mabsen_pegawai
         return $this->db->single();
     }
 
-    /**
-     * Cek IP Address apakah termasuk dalam subnet yang terdaftar
-     * Mendukung format CIDR (contoh: 192.168.40.0/24)
-     */
-    public function cek_ip_address($client_ip)
+    public function cek_absen($nik)
     {
-        // Ambil semua IP yang terdaftar
-        $sql = "SELECT * FROM ip_address";
-        $this->db->query($sql);
-        $registered_ips = $this->db->resultSet();
-
-        // Cek apakah client IP cocok dengan salah satu subnet
-        foreach ($registered_ips as $ip_data) {
-            $registered_ip = $ip_data->ip_address;
-
-            // Cek apakah IP dalam format CIDR (ada /24, /16, dll)
-            if (strpos($registered_ip, '/') !== false) {
-                // Format CIDR - cek apakah client IP dalam subnet ini
-                if ($this->ip_in_range($client_ip, $registered_ip)) {
-                    return $ip_data;
-                }
-            } else {
-                // Format IP biasa - cek exact match
-                if ($client_ip == $registered_ip) {
-                    return $ip_data;
-                }
-            }
-        }
-
-        return null; // IP tidak terdaftar
+       $tanggal = date("Y-m-d");
+       $query = "SELECT absen.*, libur.keterangan_libur as keterangan from absen left join libur on absen.from_masuk=libur.id where absen.nik in ('$nik','all') and absen.tanggal='$tanggal'";
+       $this->db->query($query);
+       return $this->db->resultSet();
     }
 
-    /**
-     * Fungsi helper untuk mengecek apakah IP ada dalam range CIDR
-     * Contoh: ip_in_range('192.168.40.50', '192.168.40.0/24') = true
-     */
-    private function ip_in_range($client_ip, $cidr)
-    {
-        // Pisahkan IP dan prefix (contoh: 192.168.40.0/24)
-        list($subnet, $mask) = explode('/', $cidr);
-
-        // Konversi IP ke format long integer
-        $client_ip_long = ip2long($client_ip);
-        $subnet_long = ip2long($subnet);
-
-        // Hitung netmask
-        $mask_long = -1 << (32 - (int) $mask);
-
-        // Buat subnet mask dalam format long
-        $subnet_long &= $mask_long;
-
-        // Cek apakah client IP dalam range
-        return ($client_ip_long & $mask_long) == $subnet_long;
-    }
-
-    /**
-     * Cek apakah pegawai sudah absen hari ini
-     */
     public function cek_absen_hari_ini($nik)
     {
         $sql = "SELECT * FROM absen
@@ -87,9 +35,6 @@ class Mabsen_pegawai
         return $this->db->single();
     }
 
-    /**
-     * Absen masuk pegawai (INSERT)
-     */
     public function absen_masuk($data)
     {
         $nik = $data['nik'];
@@ -127,9 +72,6 @@ class Mabsen_pegawai
         return $this->db->execute();
     }
 
-    /**
-     * Absen pulang pegawai (UPDATE)
-     */
     public function absen_pulang($data)
     {
         $nik = $data['nik'];
@@ -166,5 +108,11 @@ class Mabsen_pegawai
         $this->db->bind('tanggal', $tanggal);
 
         return $this->db->execute();
+    }
+
+    public function ambil_jam_kerja() {
+        $sql = "SELECT masuk,pulang FROM master_jam ORDER BY berlaku_mulai DESC LIMIT 1";
+        $this->db->query($sql);
+        return $this->db->single(); // jam masuk 07.30.00 & jam pulang 16.00.00 hasilnya
     }
 }

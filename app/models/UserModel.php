@@ -46,7 +46,11 @@ class UserModel
 
     public function login($username, $password)
     {
-        $this->db->query('SELECT * FROM users left join pegawai on users.nik_user=pegawai.nik WHERE users.username = :username');
+        $this->db->query('SELECT * FROM users 
+        left join pegawai on users.nik_user=pegawai.nik 
+        left join siswa on users.nik_user=siswa.nis
+        WHERE users.username = :username
+        ');
         $this->db->bind(':username', $username);
 
         $row = $this->db->single();

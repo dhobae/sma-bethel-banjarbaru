@@ -18,10 +18,10 @@
    <div class="card-body box-profile">
 
       <div class="tengah mb-1">
-         <img src="<?= URLROOT ?>/skatel/img/ts.png" width="120px">
+         <img src="<?= URLROOT ?>/smabethel/img/icon.png" width="80px">
       </div>
       <div class="huruf1 tengah" style="font-size:20px; font-weight:bold">
-         Edit Data Siswa Skatel Banjarbaru
+         Edit Data Siswa SMA Bethel Banjarbaru
       </div>
    </div>
 </div>
@@ -36,9 +36,9 @@
          <div class="card card-primary card-outline" style="margin-top:10px;">
             <div class="card-body box-profile tengah">
                <?php if ($data['siswa']->foto_siswa) { ?>
-                  <img src="<?= URLROOT ?>/skatel/avatar/<?= $data['siswa']->foto_siswa ?>" width="150px">
+                  <img src="<?= URLROOT ?>/smabethel/avatar/<?= $data['siswa']->foto_siswa ?>" width="150px">
                <?php } else { ?>
-                  <img src="<?= URLROOT ?>/skatel/avatar/foto1.jpg" width="150px">
+                  <img src="<?= URLROOT ?>/smabethel/avatar/foto1.jpg" width="150px">
                <?php } ?>
                <br /><br />
                <div class="divtujuh mb-2" style="text-align:right">

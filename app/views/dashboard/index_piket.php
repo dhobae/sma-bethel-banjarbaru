@@ -1,6 +1,6 @@
 <head>
-   <title>Daftar Hadir SMK Telkom Banjarbaru</title>
-   <link rel="shortcut icon" href="<?= URLROOT; ?>/skatel/img/ts_icon1.png">
+   <title>Daftar Hadir SMA Bethel Banjarbaru</title>
+   <link rel="shortcut icon" href="<?= URLROOT; ?>/smabethel/img/icon.png">
    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
    <meta http-equiv="refresh" content="600">
 </head>
@@ -50,7 +50,7 @@ $hari_indonesia = array(
                                  <?php if (!$field->avatar) { ?>
                                     <img src="<?= URLROOT ?>/img/avatar/no_avatar.png" class="fotonya rounded-circle">
                                  <?php } else { ?>
-                                    <img src="<?= URLROOT ?>/skatel/avatar/<?= $field->avatar ?>" class="fotonya rounded-circle">
+                                    <img src="<?= URLROOT ?>/smabethel/avatar/<?= $field->avatar ?>" class="fotonya rounded-circle">
                                  <?php } ?>
                               </div>
                               <div class="isi <?= $warna ?> text-white shadow">
@@ -88,7 +88,7 @@ $hari_indonesia = array(
                                  <?php if (!$field->avatar) { ?>
                                     <img src="<?= URLROOT ?>/img/avatar/no_avatar.png" class="fotonya rounded-circle">
                                  <?php } else { ?>
-                                    <img src="<?= URLROOT ?>/skatel/avatar/<?= $field->avatar ?>" class="fotonya rounded-circle">
+                                    <img src="<?= URLROOT ?>/smabethel/avatar/<?= $field->avatar ?>" class="fotonya rounded-circle">
                                  <?php } ?>
                               </div>
                               <div class="isi <?= $warna ?> text-white shadow">
@@ -122,7 +122,7 @@ $hari_indonesia = array(
                               <?php if (!$field->avatar) { ?>
                                  <img src="<?= URLROOT ?>/img/avatar/no_avatar.png" class="fotonya rounded-circle" style="filter: grayscale(100%);">
                               <?php } else { ?>
-                                 <img src="<?= URLROOT ?>/skatel/avatar/<?= $field->avatar ?>" class="fotonya rounded-circle" style="filter: grayscale(100%);">
+                                 <img src="<?= URLROOT ?>/smabethel/avatar/<?= $field->avatar ?>" class="fotonya rounded-circle" style="filter: grayscale(100%);">
                               <?php } ?>
                            </div>
                            <div class="isi text-white shadow bg-secondary">
@@ -158,7 +158,7 @@ $hari_indonesia = array(
                                  <?php if (!$field->avatar) { ?>
                                     <img src="<?= URLROOT ?>/img/avatar/no_avatar.png" class="fotonya rounded-circle">
                                  <?php } else { ?>
-                                    <img src="<?= URLROOT ?>/skatel/avatar/<?= $field->avatar ?>" class="fotonya rounded-circle">
+                                    <img src="<?= URLROOT ?>/smabethel/avatar/<?= $field->avatar ?>" class="fotonya rounded-circle">
                                  <?php } ?>
                               </div>
                               <div class="isi shadow bg-warning">
@@ -187,7 +187,7 @@ $hari_indonesia = array(
                                  <?php if (!$field->avatar) { ?>
                                     <img src="<?= URLROOT ?>/img/avatar/no_avatar.png" class="fotonya img-thumbnail rounded-circle" style="filter: grayscale(100%);">
                                  <?php } else { ?>
-                                    <img src="<?= URLROOT ?>/skatel/avatar/<?= $field->avatar ?>" class="fotonya img-thumbnail rounded-circle" style="filter: grayscale(100%);">
+                                    <img src="<?= URLROOT ?>/smabethel/avatar/<?= $field->avatar ?>" class="fotonya img-thumbnail rounded-circle" style="filter: grayscale(100%);">
                                  <?php } ?>
                               </div>
                               <div class="isi bg-secondary text-white shadow">
@@ -219,17 +219,29 @@ $hari_indonesia = array(
                         <?php if (!$field->avatar) { ?>
                            <img src="<?= URLROOT ?>/img/avatar/no_avatar.png" class="fotonya rounded-circle" style="filter: grayscale(100%);">
                         <?php } else { ?>
-                           <img src="<?= URLROOT ?>/skatel/avatar/<?= $field->avatar ?>" class="fotonya rounded-circle" style="filter: grayscale(100%);">
+                           <img src="<?= URLROOT ?>/smabethel/avatar/<?= $field->avatar ?>" class="fotonya rounded-circle" style="filter: grayscale(100%);">
                         <?php } ?>
                      </div>
                      <div class="isi text-white shadow" style="background-color: #999;">
                         <div class="row" style="font-family: monospace; font-size:9px; padding:13px 15px 0px">
+                        <?php if (date('D') == 'Sat' || date('D') == 'Sun') : ?>
+                           <div class="col" style="text-align:left;padding-left:20px">
+                              Hari<br />Libur
+                           </div>
+                        <?php else : ?>
                            <div class="col" style="text-align:left;padding-left:20px">
                               Belum<br />Absen
                            </div>
+                        <?php endif; ?>
+                        <?php if (date('D') == 'Sat' || date('D') == 'Sun') : ?>
                            <div class="col" style="text-align:right;padding-right:20px">
-                              WITA<br />10:15
+                              WITA<br />00:00
                            </div>
+                        <?php else : ?>
+                           <div class="col" style="text-align:right;padding-right:20px">
+                              WITA<br /><?= date('H:i'); ?>
+                           </div>
+                        <?php endif; ?>
                         </div>
                         <div class="row" style="font-size:14px; font-family:monospace; padding-top:5px">
                            <div class=" col">
@@ -257,7 +269,7 @@ $hari_indonesia = array(
          <?php if (!$field->avatar) { ?>
             <img src="<?= URLROOT ?>/img/avatar/no_avatar.png" class="fotonya rounded-circle" style="filter: grayscale(100%);">
          <?php } else { ?>
-            <img src="<?= URLROOT ?>/skatel/avatar/<?= $field->avatar ?>" class="fotonya rounded-circle" style="filter: grayscale(100%);">
+            <img src="<?= URLROOT ?>/smabethel/avatar/<?= $field->avatar ?>" class="fotonya rounded-circle" style="filter: grayscale(100%);">
          <?php } ?>
       </div>
       <div class="isi text-white shadow" style="background-color: #999;">
@@ -397,7 +409,7 @@ $hari_indonesia = array(
 
 <style>
    body {
-      background: url(skatel/img/skatel3.jpg) no-repeat center center fixed;
+      background: url(smabethel/img/hexa.jpg) no-repeat center center fixed;
       -webkit-background-size: cover;
       -moz-background-size: cover;
       -o-background-size: cover;

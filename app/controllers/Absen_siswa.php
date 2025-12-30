@@ -1,75 +1,61 @@
 <?php
 class Absen_siswa extends Controller
 {
-
+    // KHUSUS RFID SISWA
     public function __construct()
     {
-        //if (!isLoggedIn()) {
-        //    return redirect('auth/login');
-        //}
-        //new model instance
+        if (!isLoggedIn()) {
+            return redirect('auth/login');
+        }
+
+        $allowed_roles = ['rfid', 'admin'];
+
+        if (!in_array($_SESSION['role'], $allowed_roles)) {
+            return redirect('');
+        }
+   
         $this->Mabsen_siswa = $this->model('Mabsen_siswa');
+        $this->Mdashboard = $this->model('Mdashboard');
     }
 
     public function index()
     {
-        $this->view('khusus/index');
+        $this->view('khusus/absen_rfid_siswa');
     }
 
-    // KHUSUS RFID --------------------------------
-    public function ambil_siswa_by_rfid()
-    {
-        $isi = $_POST['isi'];
-
-        $data['ada_data'] = $this->Mabsen_siswa->ambil_siswa_by_rfid($isi);
-
-        if (!$data['ada_data']) {
-            echo "error";
-            return;
-        } else {
-            $nis = $data['ada_data']->nis;
-            $data['cek_absen'] = $this->Mabsen_siswa->cek_absen_rfid($nis);
-            if (!$data['cek_absen']) {
-                $data['absen_datang'] = 'belum';
-            } else {
-                $data['absen_datang'] = 'sudah';
-            }
-        }
-
-        $this->view('dashboard/isi_form_absen', $data);
-    }
-
-    public function hadir_rfid_siswa()
-    {
-        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-        if ($_POST['absen_datang'] == 'belum') {
-            if ($this->Mabsen_siswa->hadir_rfid_siswa($_POST)) {
-                setFlash('Presensi Hadir berhasil.', 'success');
-                return redirect('dashboard');
-            } else {
-                setFlash('Gagal melakukan presensi.', 'danger');
-                return redirect('dashboard');
-            }
-        } else {
-            if ($this->Mabsen_siswa->pulang_rfid_siswa($_POST)) {
-                setFlash('Presensi Pulang berhasil.', 'success');
-                return redirect('dashboard');
-            } else {
-                setFlash('Gagal melakukan presensi.', 'danger');
-                return redirect('dashboard');
-            }
-        }
+    private function getStatus() {
+        $jamKerja = $this->Mabsen_siswa->ambil_jam_sekolah();
+        $jam_masuk  = $jamKerja->masuk;   // 07:30:00
+        $jam_pulang = $jamKerja->pulang;  // 16:00:00
+        // VALIDASI JAM MASUK DAN PULANG (Toleransi masuk : 30 menit sebelum, 15 menit sesudah) , (pulang : 15 menit sebelum, 1 jam sesudah)
+        $hasil = validasi_waktu_rfid($jam_masuk, $jam_pulang);
+        return $hasil['status'];
     }
 
     public function isi_absen_by_rfid()
     {
         header('Content-Type: application/json');
 
-        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-        $isi = $_POST['isi'];
+        if(date('D') == 'Sat' || date('D') == 'Sun') {
+            echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Hari Libur Tidak Dapat Melakukan Absensi',
+            ]);
+            return;
+        }
 
-        // Cek apakah kartu terdaftar
-        $siswa = $this->Mabsen_siswa->ambil_siswa_by_rfid($isi);
+        if($this->getStatus() == 'ditutup') {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Perangkat RFID Ditutup',
+            ]);
+            return;
+        }
+
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+        $rfid = $_POST['isi'];
+
+        $siswa = $this->Mabsen_siswa->ambil_siswa_by_rfid($rfid);
 
         if (!$siswa) {
             echo json_encode([
@@ -79,20 +65,42 @@ class Absen_siswa extends Controller
             return;
         }
 
+        $data['cek_absen'] = $this->Mabsen_siswa->cek_absen_siswa($siswa->nis);
+        $status_masuk = null;
+
+        if (!empty($data['cek_absen']) && isset($data['cek_absen'][0])) {
+            $status_masuk = $data['cek_absen'][0]->status_ahs;
+        }
+
+        if ($status_masuk == 'Izin' || $status_masuk == 'Sakit') {
+            echo json_encode([
+                'status' => 'info',
+                'message' => 'Anda Sedang Izin',
+            ]);
+            return;
+        } else if ($status_masuk == 'Alpa') {
+            echo json_encode([
+                'status' => 'info',
+                'message' => 'Anda Sudah di Alpa, Tidak bisa melakukan presensi',
+            ]);
+            return; 
+        }
+
         $nis = $siswa->nis;
-        $nama = $siswa->nama ?? 'Siswa';
-        $kelas = $siswa->kelas ?? '-';
+        $nama = $siswa->nama_siswa ?? 'Siswa';
+        $kelas = $siswa->kelas_siswa ?? '-';
 
         // Cek status absen hari ini
-        $cek_absen = $this->Mabsen_siswa->cek_absen_rfid($nis);
+        $cek_absen = $this->Mabsen_siswa->cek_absen_hari_ini($nis);
 
         if (!$cek_absen) {
             // BELUM ABSEN MASUK - Lakukan absen masuk
+            $keterangan = $this->getStatus() == 'terlambat' ? ' (Terlambat)' : '';
             if ($this->Mabsen_siswa->hadir_rfid_siswa($_POST)) {
                 echo json_encode([
                     'status' => 'success',
                     'type' => 'masuk',
-                    'message' => 'Selamat datang! Presensi MASUK berhasil dicatat.',
+                    'message' => 'Selamat datang! Presensi MASUK berhasil dicatat' . $keterangan . '.',
                     'nama' => $nama,
                     'nis' => $nis,
                     'kelas' => $kelas,
@@ -108,6 +116,8 @@ class Absen_siswa extends Controller
             // SUDAH ABSEN MASUK - Cek apakah sudah absen pulang
             if (empty($cek_absen->jam_pulang_ahs) || $cek_absen->jam_pulang_ahs == null) {
                 // BELUM ABSEN PULANG - Lakukan absen pulang
+                if($this->getStatus() == 'pulang') {
+
                 if ($this->Mabsen_siswa->pulang_rfid_siswa($_POST)) {
                     // Hitung durasi kehadiran
                     $jam_masuk = strtotime($cek_absen->jam_masuk_ahs);
@@ -133,6 +143,13 @@ class Absen_siswa extends Controller
                         'message' => 'Gagal mencatat presensi pulang. Silakan coba lagi.',
                     ]);
                 }
+            } else {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Gagal mencatat presensi pulang. Waktu Pulang belum terbuka.',
+                ]);
+            }
+
             } else {
                 // SUDAH ABSEN MASUK DAN PULANG
                 echo json_encode([

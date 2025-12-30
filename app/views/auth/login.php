@@ -7,12 +7,12 @@
 	<meta name="Keywords" content="igracias, telkom university, academic information system, universitas telkom">
 	<meta name="Description" content="igracias, telkom university, academic information system, universitas telkom">
 	<title>
-		Presensi SMK Telkom Banjarbaru</title>
+		Presensi SMA Bethel Banjarbaru</title>
 	<link rel="shortcut icon" href="<?= URLROOT; ?>/smabethel/img/icon.png">
 
 	<style>
 		.full-page-wrapper.wrapper {
-			background: url(../skatel/img/skatel.jpg) no-repeat center center fixed;
+			background: url(<?=URLROOT?>/smabethel/img/gambarsmabethel2.jpg) no-repeat center center fixed;
 			-webkit-background-size: cover;
 			-moz-background-size: cover;
 			-o-background-size: cover;
@@ -27,8 +27,8 @@
 
 	<head>
 
-		<link href="<?= URLROOT; ?>/skatel/bootstrap.min.css" rel="stylesheet" type="text/css">
-		<link href="<?= URLROOT; ?>/skatel/style.css" rel="stylesheet" type="text/css">
+		<link href="<?= URLROOT; ?>/smabethel/bootstrap.min.css" rel="stylesheet" type="text/css">
+		<link href="<?= URLROOT; ?>/smabethel/style.css" rel="stylesheet" type="text/css">
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 	</head>
 
@@ -64,7 +64,7 @@
 				<div class="login-box center-block">
 
 					<div class="text-center" style="margin-bottom:15px">
-						<a href="index.html"><img src="<?= URLROOT; ?>/smabethel/img/icon.png" alt="Smabethel" style="width: 150px;height: auto;" /></a>
+						<a href="index.html"><img src="<?= URLROOT; ?>/smabethel/img/icon.png" alt="Smabethel" style="width: 90px;height: auto;" /></a>
 					</div>
 
 					<div class="text-center" style="font-family: 'calibri'; font-size:18px; line-height:20px; margin-bottom:10px">
@@ -120,7 +120,7 @@
 				</div>
 			</div>
 		</div>
-		<script src="<?= URLROOT; ?>/skatel/js/jquery-2.1.0.min.js"></script>
-		<script src="<?= URLROOT; ?>/skatel/js/bootstrap.js"></script>
-		<script src="<?= URLROOT; ?>/skatel/js/modernizr.js"></script>
+		<script src="<?= URLROOT; ?>/smabethel/js/jquery-2.1.0.min.js"></script>
+		<script src="<?= URLROOT; ?>/smabethel/js/bootstrap.js"></script>
+		<script src="<?= URLROOT; ?>/smabethel/js/modernizr.js"></script>
 	</body>

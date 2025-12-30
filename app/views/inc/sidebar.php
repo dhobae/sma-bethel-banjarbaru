@@ -348,7 +348,7 @@
          </a>
       </li>
       <li class="nav-item">
-         <a href="<?= URLROOT ?>/skatel/Presensi.pdf" class="nav-link">
+         <a href="<?= URLROOT ?>/smabethel/Presensi.pdf" class="nav-link">
             <i class="nav-icon fas fa-cogs"></i>
             <p>Tutorial</p>
          </a>

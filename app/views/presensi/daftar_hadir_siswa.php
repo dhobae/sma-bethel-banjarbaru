@@ -20,7 +20,7 @@ $hari_indonesia = array(
    <div class="card-body box-profile">
 
       <div class="mb-2">
-         <img src="<?= URLROOT ?>/skatel/img/ts.png" width="160px"><br />
+         <img src="<?= URLROOT ?>/smabethel/img/icon.png" width="90px"><br />
       </div>
 
       <div class="mb-3">

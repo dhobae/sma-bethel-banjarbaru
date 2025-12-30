@@ -365,9 +365,9 @@ class Msiswa
 
          if ($files['avatar']['size'] < 2000 * 1000) {
             if ($_SESSION['avatar'] == NULL) {
-               move_uploaded_file($files['avatar']['tmp_name'], "../public/skatel/avatar/" . $newAvatarName);
+               move_uploaded_file($files['avatar']['tmp_name'], "../public/smabethel/avatar/" . $newAvatarName);
             } else {
-               move_uploaded_file($files['avatar']['tmp_name'], "../public/skatel/avatar/" . $newAvatarName);
+               move_uploaded_file($files['avatar']['tmp_name'], "../public/smabethel/avatar/" . $newAvatarName);
             }
          } else {
             return false;
@@ -434,14 +434,16 @@ class Msiswa
             $newAvatarName = $_SESSION['nis'] . '.' . $file_extension;
          }
 
+         // return $newAvatarName;
+
          if ($files['avatar']['size'] < 2000 * 1000) {
             if ($_SESSION['avatar'] == NULL) {
-               move_uploaded_file($files['avatar']['tmp_name'], "../public/skatel/avatar/" . $newAvatarName);
+               move_uploaded_file($files['avatar']['tmp_name'], "../public/smabethel/avatar/" . $newAvatarName);
             } else {
-               if (unlink("../public/skatel/avatar/" . $_SESSION['avatar'])) {
-                  move_uploaded_file($files['avatar']['tmp_name'], "../public/skatel/avatar/" . $newAvatarName);
+               if (unlink("../public/smabethel/avatar/" . $_SESSION['avatar'])) {
+                  move_uploaded_file($files['avatar']['tmp_name'], "../public/smabethel/avatar/" . $newAvatarName);
                } else {
-                  move_uploaded_file($files['avatar']['tmp_name'], "../public/skatel/avatar/" . $newAvatarName);
+                  move_uploaded_file($files['avatar']['tmp_name'], "../public/smabethel/avatar/" . $newAvatarName);
                }
             }
          } else {

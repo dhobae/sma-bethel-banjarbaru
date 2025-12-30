@@ -175,3 +175,6 @@ function dateDiff($date1, $date2)
   $diff = $date2_ts - $date1_ts;
   return round($diff / 86400);
 }
+
+
+

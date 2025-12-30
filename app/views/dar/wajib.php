@@ -5,7 +5,7 @@
 
     <div class="card-body">
         <div class="tengah judul1">
-            <b>SMK Telkom Banjarbaru<br />Daily Activity Report (DAR)</b>
+            <b>SMA Bethel Banjarbaru<br />Daily Activity Report (DAR)</b>
             <br /><br />
         </div>
 

@@ -17,10 +17,10 @@ $bulanindo = array('01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' 
         ?>
 
         <div class="tengah">
-            <img src="<?= URLROOT ?>/skatel/img/ts.png" width="120px">
+            <img src="<?= URLROOT ?>/smabethel/img/icon.png" width="80px">
         </div>
         <div class="huruf1 tengah" style="font-size:25px; font-weight:bold">
-            SMK Telkom Banjarbaru
+            SMA Bethel Banjarbaru
         </div>
         <div class="huruf1 tengah mb-1" style="font-size:18px; font-weight:bold; margin-top:-6px">
             Rekap Presensi : <?= $data['nm']->nama ?><br />

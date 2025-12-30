@@ -134,6 +134,7 @@ class Siswa extends Controller
       }
 
       $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+      $data = $this->Msiswa->simpan_edit($_POST, $_FILES);
       if ($this->Msiswa->simpan_edit($_POST, $_FILES)) {
          setFlash('Berhasil disimpan.', 'success');
          if ($_SESSION['role'] == 'siswa') {
@@ -200,6 +201,8 @@ class Siswa extends Controller
       $data['kabupaten'] = $this->Msiswa->kabupaten();
       $data['kecamatan'] = $this->Msiswa->kecamatan();
       $data['prodi'] = $this->Msiswa->prodi();
+
+      // intip_data($data['siswa']);
       require APPROOT . '/views/inc/header.php';
       $this->view('siswa/edit', $data);
       require APPROOT . '/views/inc/footer.php';

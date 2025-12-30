@@ -1,26 +1,63 @@
 <?php
 class Absen_pegawai extends Controller
 {
+
+    // KHUSUS RFID PEGAWAI
     public function __construct()
     {
+        if (!isLoggedIn()) {
+            return redirect('auth/login');
+        }
+
+        $allowed_roles = ['rfid', 'admin'];
+
+        if (!in_array($_SESSION['role'], $allowed_roles)) {
+            return redirect('');
+        }
+        
+        
         $this->Mabsen_pegawai = $this->model('Mabsen_pegawai');
+        $this->Mdashboard = $this->model('Mdashboard');
+        $this->Mpresensi = $this->model('Mpresensi');
+    }
+
+    private function getStatus() {
+        $jamKerja = $this->Mabsen_pegawai->ambil_jam_kerja();
+        $jam_masuk  = $jamKerja->masuk;   // 07:30:00
+        $jam_pulang = $jamKerja->pulang;  // 16:00:00
+        // VALIDASI JAM MASUK DAN PULANG (Toleransi masuk : 30 menit sebelum, 15 menit sesudah) , (pulang : 15 menit sebelum, 1 jam sesudah)
+        $hasil = validasi_waktu_rfid($jam_masuk, $jam_pulang);
+        return $hasil['status'];
     }
 
     public function index()
-    {
-        $this->view('khusus/index2');
+    {        
+        // intip_data($this->getStatus());
+        $this->view('khusus/absen_rfid_pegawai');    
     }
 
-    /**
-     * Proses absen RFID pegawai dengan validasi IP Address
-     */
     public function isi_absen_by_rfid()
     {
         header('Content-Type: application/json');
 
+        if(date('D') == 'Sat' || date('D') == 'Sun') {
+            echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Hari Libur Tidak Dapat Melakukan Absensi',
+            ]);
+            return;
+        }
+        
+        if($this->getStatus() == 'ditutup') {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Perangkat RFID Ditutup',
+            ]);
+            return;
+        }
+
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
         $rfid = $_POST['isi'];
-        $ip_address = $_SERVER['REMOTE_ADDR'];
 
         // Ambil koordinat dari client (jika ada)
         $latitude = isset($_POST['latitude']) ? $_POST['latitude'] : '-';
@@ -29,18 +66,6 @@ class Absen_pegawai extends Controller
 
         if ($latitude && $longitude) {
             $lokasi_koordinat = $latitude . ',' . $longitude;
-        }
-
-        // VALIDASI: Cek IP Address harus terdaftar
-        $cek_ip = $this->Mabsen_pegawai->cek_ip_address($ip_address);
-
-        if (!$cek_ip) {
-            echo json_encode([
-                'status' => 'error',
-                'message' => 'IP Address tidak terdaftar. Anda hanya dapat melakukan presensi dari lokasi yang terdaftar.',
-                'ip_address' => $ip_address,
-            ]);
-            return;
         }
 
         // Cek apakah kartu RFID terdaftar
@@ -54,6 +79,33 @@ class Absen_pegawai extends Controller
             return;
         }
 
+        $data['cek_absen'] = $this->Mabsen_pegawai->cek_absen($pegawai->nik);
+        $status_masuk = null;
+       
+        if (!empty($data['cek_absen']) && isset($data['cek_absen'][0])) {
+            $status_masuk = $data['cek_absen'][0]->status_masuk;
+        }
+        
+        if ($status_masuk == 'Cuti1' || $status_masuk == 'Cuti2') {
+            echo json_encode([
+                'status' => 'info',
+                'message' => 'Anda Sedang Izin Cuti',
+            ]);
+            return;
+        } else if ($status_masuk == 'Sakit') {
+            echo json_encode([
+                'status' => 'info',
+                'message' => 'Anda Sedang Izin Sakit',
+            ]);
+            return;
+        } else if ($status_masuk == 'TL'){
+            echo json_encode([
+                'status' => 'info',
+                'message' => 'Anda Sedang Izin Tugas Luar',
+            ]);
+            return;
+        }
+
         $nik = $pegawai->nik;
         $nama = $pegawai->nama ?? 'Pegawai';
         $jabatan = $pegawai->jabatan ?? '-';
@@ -63,12 +115,13 @@ class Absen_pegawai extends Controller
 
         if (!$cek_absen) {
             // BELUM ABSEN MASUK - Lakukan absen masuk
+            $keterangan = 'Absen masuk via RFID' . ($this->getStatus() == 'terlambat' ? ' (Terlambat)' : '');
             $data_absen = [
                 'nik' => $nik,
                 'rfid' => $rfid,
                 'from_masuk' => 'WFO',
                 'loc_masuk' => $lokasi_koordinat,
-                'keterangan' => 'Absen masuk via RFID',
+                'keterangan' => $keterangan,
             ];
 
             if ($this->Mabsen_pegawai->absen_masuk($data_absen)) {
@@ -93,6 +146,9 @@ class Absen_pegawai extends Controller
             // SUDAH ABSEN MASUK - Cek apakah sudah absen pulang
             if (empty($cek_absen->jam_pulang) || $cek_absen->jam_pulang == null) {
                 // BELUM ABSEN PULANG - Lakukan absen pulang
+
+                if($this->getStatus() == 'pulang') {
+
                 $data_absen = [
                     'nik' => $nik,
                     'rfid' => $rfid,
@@ -129,6 +185,13 @@ class Absen_pegawai extends Controller
                         'message' => 'Gagal mencatat presensi pulang. Silakan coba lagi.',
                     ]);
                 }
+            } else {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Gagal mencatat presensi pulang. Waktu Pulang belum terbuka.',
+                ]);
+            }
+
             } else {
                 // SUDAH ABSEN MASUK DAN PULANG
                 echo json_encode([

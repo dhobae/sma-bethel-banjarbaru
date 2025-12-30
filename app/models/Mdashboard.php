@@ -198,7 +198,7 @@ class Mdashboard
 
       $no_hp = $this->ambil_nomor_datang($nik);
       $data['no_telp'] = $no_hp->nomor_hp;
-      $data['isi_pesan'] = "[Presensi Skatel BJB].\n\nSelamat Bekerja " . $no_hp->nama . ", anda sudah melakukan presensi datang pada jam " . $jam3 . ", status : " . $from_masuk;
+      $data['isi_pesan'] = "[Presensi SMA Bethel BJB].\n\nSelamat Bekerja " . $no_hp->nama . ", anda sudah melakukan presensi datang pada jam " . $jam3 . ", status : " . $from_masuk;
       notifWA($data);
 
       return true;
@@ -267,7 +267,7 @@ class Mdashboard
 
       $no_hp = $this->ambil_nomor_pulang($nik);
       $data['no_telp'] = $no_hp->nomor_hp;
-      $data['isi_pesan'] = "[Presensi Skatel BJB].\n\nSelamat Beristirahat " . $no_hp->nama . ", anda sudah melakukan presensi pulang pada jam " . $jam3 . ", status : " . $from_pulang;
+      $data['isi_pesan'] = "[Presensi SMA Bethel BJB].\n\nSelamat Beristirahat " . $no_hp->nama . ", anda sudah melakukan presensi pulang pada jam " . $jam3 . ", status : " . $from_pulang;
       notifWA($data);
 
       return true;
@@ -451,7 +451,13 @@ class Mdashboard
       left join m_pelajaran as m_pelajaran8 on jadwal_lengkap.mp8 = m_pelajaran8.id_pelajaran
       left join m_pelajaran as m_pelajaran9 on jadwal_lengkap.mp9 = m_pelajaran9.id_pelajaran
       left join m_pelajaran as m_pelajaran10 on jadwal_lengkap.mp10 = m_pelajaran10.id_pelajaran 
-      where kelas='X' and hari=:hari order by id_jadwal_lengkap";
+      where kelas='X' and hari=:hari and jadwal_lengkap.berlaku_jadwal_dari = (
+                        SELECT berlaku_dari 
+                        FROM jadwal_setting 
+                        WHERE status = 1 
+                        LIMIT 1
+                    )
+      ORDER BY id_jadwal_lengkap";
       $this->db->query($sql);
       $this->db->bind('hari', $hari);
       return $this->db->resultSet();
@@ -511,7 +517,13 @@ class Mdashboard
       left join m_pelajaran as m_pelajaran8 on jadwal_lengkap.mp8 = m_pelajaran8.id_pelajaran
       left join m_pelajaran as m_pelajaran9 on jadwal_lengkap.mp9 = m_pelajaran9.id_pelajaran
       left join m_pelajaran as m_pelajaran10 on jadwal_lengkap.mp10 = m_pelajaran10.id_pelajaran 
-      where kelas='XI' and hari=:hari order by id_jadwal_lengkap";
+      where kelas='XI' and hari=:hari and jadwal_lengkap.berlaku_jadwal_dari = (
+                        SELECT berlaku_dari 
+                        FROM jadwal_setting 
+                        WHERE status = 1 
+                        LIMIT 1
+                    )
+      ORDER BY id_jadwal_lengkap";
       $this->db->query($sql);
       $this->db->bind('hari', $hari);
       return $this->db->resultSet();
@@ -571,7 +583,13 @@ class Mdashboard
       left join m_pelajaran as m_pelajaran8 on jadwal_lengkap.mp8 = m_pelajaran8.id_pelajaran
       left join m_pelajaran as m_pelajaran9 on jadwal_lengkap.mp9 = m_pelajaran9.id_pelajaran
       left join m_pelajaran as m_pelajaran10 on jadwal_lengkap.mp10 = m_pelajaran10.id_pelajaran 
-      where kelas='XII' and hari=:hari order by id_jadwal_lengkap";
+      where kelas='XII' and hari=:hari and jadwal_lengkap.berlaku_jadwal_dari = (
+                        SELECT berlaku_dari 
+                        FROM jadwal_setting 
+                        WHERE status = 1 
+                        LIMIT 1
+                    )
+      ORDER BY id_jadwal_lengkap";
       $this->db->query($sql);
       $this->db->bind('hari', $hari);
       return $this->db->resultSet();

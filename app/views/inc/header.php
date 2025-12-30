@@ -53,8 +53,8 @@
                 <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
             </li>
             <!-- <li class="nav-item d-none d-sm-inline-block">
-                <a href="https://www.smktelkom-bjb.sch.id/web/" class="nav-link" target=_blank
-                    title="Ke Web Skatel Bjb">SMK Telkom Banjarbaru</a>
+                <a href="https://www.smabethel.sch.id/web/" class="nav-link" target=_blank
+                    title="Ke Web sma bethel Bjb">SMA Bethel Banjarbaru</a>
             </li> -->
             <!-- <li class="nav-item d-none d-sm-inline-block">
                 <a href="https://igracias.telkomschools.sch.id/ts/login/" class="nav-link" target=_blank
@@ -109,7 +109,6 @@
         <div class="sidebar">
             <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                 <div class="image">
-
                     <?php if ($_SESSION['avatar']) { ?>
                     <img src="<?= URLROOT ?>/smabethel/avatar/<?= $_SESSION['avatar'] ?>" class="img-circle elevation-1"
                         alt="User Image" style="height:37px !important">

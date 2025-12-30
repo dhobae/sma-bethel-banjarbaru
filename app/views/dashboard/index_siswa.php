@@ -187,7 +187,7 @@ $days = [
                                        <div class="inner" style="height:150px;">
                                           <span class="tile-label"><b>Hari ini <br />Anda Sudah Mengisi Presensi HADIR<br /> Pada Jam <?= $field->jam_masuk_ahs ?></b>
                                              <div class="mt-3 text-center d-none d-sm-block">
-                                                <b>SMK Bisa..!!!</b>
+                                                <b>SMA Bisa..!!!</b>
                                              </div>
                                           </span>
                                        </div>

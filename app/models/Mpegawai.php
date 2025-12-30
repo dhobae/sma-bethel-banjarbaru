@@ -113,7 +113,7 @@ class Mpegawai
          );
 
          if (!in_array($file_extension, $allowed_extension)) {
-            echo "tes";
+            return false;
          }
 
          if ($_SESSION['role'] == 'admin') {

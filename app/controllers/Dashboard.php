@@ -198,12 +198,11 @@ class Dashboard extends Controller
                     $this->view('dashboard/index_piket', $data);
                 }
             } else {
-                $data['pegawai_all'] = $this->Mdashboard->pegawai_all();
-                $this->view('dashboard/index_rfid', $data);
+                // $data['pegawai_all'] = $this->Mdashboard->pegawai_all();
+                $this->view('khusus/index'); 
             }
         } else {
-            require APPROOT . '/views/inc/header.php';
-            $this->view('dashboard/index_kunci');
+            
         }
     }
 
@@ -252,48 +251,48 @@ class Dashboard extends Controller
     }
 
     // KHUSUS RFID --------------------------------
-    public function ambil_pegawai_by_rfid()
-    {
-        $isi = $_POST['isi'];
-        $data['ada_data'] = $this->Mdashboard->ambil_pegawai_by_rfid($isi);
+    // public function ambil_pegawai_by_rfid()
+    // {
+    //     $isi = $_POST['isi'];
+    //     $data['ada_data'] = $this->Mdashboard->ambil_pegawai_by_rfid($isi);
 
-        if (!$data['ada_data']) {
-            echo "error";
-            return;
-        } else {
-            $nik = $data['ada_data']->nik;
-            $data['cek_absen'] = $this->Mdashboard->cek_absen_rfid($nik);
-            if (!$data['cek_absen']) {
-                $data['absen_datang'] = 'belum';
-            } else {
-                $data['absen_datang'] = 'sudah';
-            }
-        }
+    //     if (!$data['ada_data']) {
+    //         echo "error";
+    //         return;
+    //     } else {
+    //         $nik = $data['ada_data']->nik;
+    //         $data['cek_absen'] = $this->Mdashboard->cek_absen_rfid($nik);
+    //         if (!$data['cek_absen']) {
+    //             $data['absen_datang'] = 'belum';
+    //         } else {
+    //             $data['absen_datang'] = 'sudah';
+    //         }
+    //     }
 
-        $this->view('dashboard/isi_form_absen', $data);
-    }
+    //     $this->view('dashboard/isi_form_absen', $data);
+    // }
 
-    public function hadir_rfid()
-    {
-        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-        if ($_POST['absen_datang'] == 'belum') {
-            if ($this->Mdashboard->hadir_rfid($_POST)) {
-                setFlash('Presensi Hadir berhasil.', 'success');
-                return redirect('dashboard');
-            } else {
-                setFlash('Gagal melakukan presensi.', 'danger');
-                return redirect('dashboard');
-            }
-        } else {
-            if ($this->Mdashboard->pulang_rfid($_POST)) {
-                setFlash('Presensi Pulang berhasil.', 'success');
-                return redirect('dashboard');
-            } else {
-                setFlash('Gagal melakukan presensi.', 'danger');
-                return redirect('dashboard');
-            }
-        }
-    }
+    // public function hadir_rfid()
+    // {
+    //     $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+    //     if ($_POST['absen_datang'] == 'belum') {
+    //         if ($this->Mdashboard->hadir_rfid($_POST)) {
+    //             setFlash('Presensi Hadir berhasil.', 'success');
+    //             return redirect('dashboard');
+    //         } else {
+    //             setFlash('Gagal melakukan presensi.', 'danger');
+    //             return redirect('dashboard');
+    //         }
+    //     } else {
+    //         if ($this->Mdashboard->pulang_rfid($_POST)) {
+    //             setFlash('Presensi Pulang berhasil.', 'success');
+    //             return redirect('dashboard');
+    //         } else {
+    //             setFlash('Gagal melakukan presensi.', 'danger');
+    //             return redirect('dashboard');
+    //         }
+    //     }
+    // }
 
     //---HADIR SISWA -----------------------------
     public function hadir_siswa()

@@ -26,10 +26,10 @@ if (isset($_GET['submit'])) {
 
     <div class="card-body">
         <div class="tengah mb-2">
-            <img src="<?= URLROOT ?>/skatel/img/ts.png" width="160px"> <br />
+            <img src="<?= URLROOT ?>/smabethel/img/icon.png" width="120px"> <br />
         </div>
         <div class="tengah judul1">
-            <b>SMK Telkom Banjarbaru<br />Daily Activity Report (DAR)</b>
+            <b>SMA Bethel Banjarbaru<br />Daily Activity Report (DAR)</b>
             <br /><br />
         </div>
 

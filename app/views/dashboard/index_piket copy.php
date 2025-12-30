@@ -1,5 +1,5 @@
 <head>
-   <title>Daftar Hadir SMK Telkom Banjarbaru</title>
+   <title>Daftar Hadir SMA Bethel Banjarbaru</title>
    <link rel="shortcut icon" href="<?= URLROOT; ?>/skatel/img/ts_icon1.png">
    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
    <meta http-equiv="refresh" content="600">

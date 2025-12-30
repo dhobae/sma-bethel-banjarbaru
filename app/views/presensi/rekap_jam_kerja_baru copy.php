@@ -73,10 +73,10 @@ $bulan1 = array('01' => 'JANUARI', '02' => 'FEBRUARI', '03' => 'MARET', '04' => 
         </div>
 
         <div class="tengah">
-            <img src="<?= URLROOT ?>/skatel/img/ts.png" width="120px">
+            <img src="<?= URLROOT ?>/smabethel/img/icon.png" width="80px">
         </div>
         <div class="huruf1 tengah" style="font-size:25px; font-weight:bold">
-            SMK Telkom Banjarbaru
+            SMA Bethel Banjarbaru
         </div>
         <div class="huruf1 tengah mb-3" style="font-size:18px; font-weight:bold; margin-top:-6px">
             Rekap Bulan <b><?php echo $bulan1[$month] ?> </b>, Tahun <b><?= $year ?></b>

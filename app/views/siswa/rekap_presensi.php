@@ -5,10 +5,10 @@
    <div class="card-body box-profile">
 
       <div class="tengah mb-1">
-         <img src="<?= URLROOT ?>/skatel/img/ts.png" width="120px">
+         <img src="<?= URLROOT ?>/smabethel/img/icon.png" width="80px">
       </div>
       <div class="huruf1 tengah mb-4" style="font-size:20px; font-weight:bold">
-         Rekap Ketidakhadiran Siswa Skatel Banjarbaru
+         Rekap Ketidakhadiran Siswa SMA Bethel Banjarbaru
       </div>
 
       <?php

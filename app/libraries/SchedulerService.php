@@ -217,11 +217,58 @@ class SchedulerService
     private function generateCSPSchedule()
     {
         $schedule = [];
-        $teacherAssignments = []; // hari => jam => [teacherId => true]
-        $classAssignments = [];   // hari => jam => [kelas => true]
-
+        $teacherAssignments = []; 
+        $classAssignments = [];   
+        
         $hariList = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
-
+    
+        // Cari ID mata pelajaran yang sesuai
+        $upacaraSubjectId = null;
+        $ibadahJumatSubjectId = null;
+        
+        foreach ($this->subjects as $subjectId => $subject) {
+            if (strtolower($subject->mata_pelajaran) === 'upacara') {
+                $upacaraSubjectId = $subjectId;
+            } elseif (strtolower($subject->mata_pelajaran) === 'ibadah/jumat bersih') {
+                $ibadahJumatSubjectId = $subjectId;
+            }
+        }
+    
+        // Jika tidak ditemukan di database, insert ke m_pelajaran
+        if (!$upacaraSubjectId) {
+            $sql = "INSERT INTO m_pelajaran (mata_pelajaran, singkatan, prodi) 
+                    VALUES (:mata_pelajaran, :singkatan, :prodi)";
+                    
+            $this->db->query($sql);
+            $this->db->bind('mata_pelajaran', "UPACARA");
+            $this->db->bind('singkatan', "UPA");
+            $this->db->bind('prodi', "SMABETHEL");
+            
+            if ($this->db->execute()) {
+                $upacaraSubjectId = $this->db->lastInsertId();
+                error_log("SchedulerService: Mata pelajaran UPACARA berhasil disimpan dengan ID: " . $upacaraSubjectId);
+            } else {
+                error_log("SchedulerService: Gagal menyimpan mata pelajaran UPACARA");
+            }
+        }
+        
+        if (!$ibadahJumatSubjectId) {
+            $sql = "INSERT INTO m_pelajaran (mata_pelajaran, singkatan, prodi) 
+                    VALUES (:mata_pelajaran, :singkatan, :prodi)";
+                    
+            $this->db->query($sql);
+            $this->db->bind('mata_pelajaran', "IBADAH/JUMAT BERSIH");
+            $this->db->bind('singkatan', "IBD");
+            $this->db->bind('prodi', "SMABETHEL");
+            
+            if ($this->db->execute()) {
+                $ibadahJumatSubjectId = $this->db->lastInsertId();
+                error_log("SchedulerService: Mata pelajaran IBADAH/JUMAT BERSIH berhasil disimpan dengan ID: " . $ibadahJumatSubjectId);
+            } else {
+                error_log("SchedulerService: Gagal menyimpan mata pelajaran IBADAH/JUMAT BERSIH");
+            }
+        }
+    
         foreach ($this->classes as $class) {
             foreach ($hariList as $hari) {
                 $scheduleEntry = [
@@ -232,46 +279,53 @@ class SchedulerService
                     'prodi' => 'SMABETHEL',
                     'jam_ke' => [],
                 ];
-
-                // Semua hari memiliki 10 jam pelajaran
+    
+                // Semua hari memiliki 10 jam pelajaran (1-10)
                 for ($jam = 1; $jam <= 10; $jam++) {
-                    // Pilih mata pelajaran acak
-                    $subjectId = array_rand($this->subjects);
+                    $subjectId = null;
+                    $teacherId = null;
                     
-                    // CSP: Cari guru yang TERSEDIA di slot ini
-                    $teacherId = $this->getAvailableTeacher($hari, $jam, $teacherAssignments);
-
+                    // Aturan spesial: Senin jam 1 harus UPACARA
+                    if ($hari === 'Senin' && $jam === 1) {
+                        $subjectId = $upacaraSubjectId;
+                        $teacherId = null;
+                    }
+                    // Aturan spesial: Jumat jam 1 harus IBADAH/JUMAT BERSIH
+                    elseif ($hari === 'Jumat' && $jam === 1) {
+                        $subjectId = $ibadahJumatSubjectId;
+                        $teacherId = null;
+                    }
+                    // Untuk slot lainnya, pilih mata pelajaran acak
+                    else {
+                        $subjectId = array_rand($this->subjects);
+                        $teacherId = $this->getAvailableTeacher($hari, $jam, $teacherAssignments);
+                    }
+                    
+                    // Assign ke jadwal (tanpa pengecekan guru)
+                    $scheduleEntry['jam_ke'][$jam] = [
+                        'mata_pelajaran' => $subjectId,
+                        'guru' => $teacherId,
+                    ];
+    
+                    // Assign guru ke slot ini (hanya untuk mata pelajaran reguler)
                     if ($teacherId) {
-                        // Assign guru ke slot ini
                         if (!isset($teacherAssignments[$hari][$jam])) {
                             $teacherAssignments[$hari][$jam] = [];
                         }
                         $teacherAssignments[$hari][$jam][$teacherId] = true;
-
+    
                         // Mark kelas sudah terisi
                         if (!isset($classAssignments[$hari][$jam])) {
                             $classAssignments[$hari][$jam] = [];
                         }
                         $classAssignments[$hari][$jam][$class->kelas] = true;
-
-                        $scheduleEntry['jam_ke'][$jam] = [
-                            'mata_pelajaran' => $subjectId,
-                            'guru' => $teacherId,
-                        ];
-                    } else {
-                        // Jika tidak ada guru tersedia, biarkan kosong
-                        $scheduleEntry['jam_ke'][$jam] = [
-                            'mata_pelajaran' => null,
-                            'guru' => null,
-                        ];
-                        error_log("CSP WARNING: Tidak ada guru tersedia untuk $hari jam ke-$jam");
                     }
                 }
-
+    
                 $schedule[] = $scheduleEntry;
             }
         }
-
+    
         return $schedule;
     }
 
@@ -454,7 +508,7 @@ class SchedulerService
                 }
             }
         }
-
+                
         // Hitung mean dan standar deviasi
         $loads = array_values($teacherLoad);
         $mean = array_sum($loads) / count($loads);

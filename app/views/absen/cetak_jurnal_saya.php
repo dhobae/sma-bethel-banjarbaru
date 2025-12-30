@@ -47,7 +47,7 @@ $nm = $this->Mabsen->ambil_nama($_SESSION['nik']);
 <body class="cetak_body">
 
    <div style="text-align:center; margin-bottom:10px">
-      <img src="<?= URLROOT ?>/skatel/img/ts.png" width="140px">
+      <img src="<?= URLROOT ?>/smabethel/img/icon.png" width="90px">
    </div>
 
    <div style="text-align:center; margin-bottom:10px">

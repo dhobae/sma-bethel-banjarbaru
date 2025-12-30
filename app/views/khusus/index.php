@@ -1,9 +1,7 @@
 <head>
-    <title>
-        Presensi SMK Telkom Banjarbaru
-    </title>
+    <title>Presensi Pegawai SMA Bethel Banjarbaru</title>
     <link rel="stylesheet" href="<?=URLROOT?>/dist/lib/pahdi.css">
-    <link rel="shortcut icon" href="<?=URLROOT;?>/skatel/img/ts_icon1.png">
+    <link rel="shortcut icon" href="<?=URLROOT;?>/smabethel/img/icon.png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet"
@@ -11,258 +9,44 @@
 </head>
 
 <body>
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <?php sflash2()?>
 
-    <!--
-    <input type="password" id="inputUsername" onchange="processInput(this.value)" class="transparan">
-    -->
-    <input type="password" id="inputUsername" onchange="isi(this.value)" class="transparan">
+    <input type="password" id="inputRFID" onchange="prosesAbsen(this.value)" class="transparan">
 
     <div style="margin-bottom:20px" class="text-center">
-        <img src="<?=URLROOT;?>/skatel/img/ts2.png" alt="Skatel" style="width: 250px;height: auto;" /></a>
+        <img src="<?=URLROOT;?>/smabethel/img/icon.png" alt="smabethel" style="width: 80px;height: auto;" />
     </div>
     <div style="font-family: 'courier new'; font-size:2em; margin-bottom:-10px">
-        <b>~ Presensi Siswa SMK Telkom Banjarbaru ~</b>
+        <b>~ Pilih Opsi Absen ~</b>
     </div>
-    <div style="font-family: 'courier new'; font-size:2.2em; margin-bottom:30px" class="blinking">
-        <b>Tempelkan Kartu Presensi anda</b>
+    <div style="font-family: 'courier new'; gap:8px;" 
+    class="d-flex justify-content-center align-items-center mt-5">
+        <a style="font-size:1rem; font-weight: bold;" href="<?= URLROOT ?>/absen_pegawai" class="btn btn-primary ">Absen RFID Pegawai</a>
+        <a style="font-size:1rem; font-weight: bold;" href="<?= URLROOT ?>/absen_siswa" class="btn btn-secondary">Absen RFID Siswa</a>
     </div>
 </body>
 
 
-<!-- Modal absen datang -->
-<div class="modal fade" id="modal_absen">
-    <div class="modal-dialog">
-        <div class="modal-content warna_modal">
-            <form method="post" action="<?=URLROOT?>/dashboard/hadir_rfid">
-
-                <div class="modal-body">
-                    <div id="konten_absen">
-                        <!-- ISI DARI file isi_form_absen -->
-                        <?php $sudah = $absen_datang?>
-                    </div>
-                </div>
-
-            </form>
-        </div>
-    </div>
-</div>
-<!-- End Modal -->
-
-
-<script src="<?=URLROOT?>/dist/plugins/sweetalert2/sweetalert2.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-function processInput(isinya) {
-    $.ajax({
-        url: '<?=URLROOT?>/absen_siswa/isi_absen_by_rfid',
-        method: 'POST',
-        data: {
-            isi: isinya
-        },
-        success: function(response) {
-            if (response.trim() == "error") {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Kartu Anda tidak terdaftar',
-                    text: 'Maaf, kartu Anda tidak terdaftar dalam sistem.',
-                    confirmButtonText: 'OK',
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        refreshPage();
-                    }
-                });
-            } else {
-                $('#konten_absen').html(response);
-                $('#modal_absen').modal('show');
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error(error);
-        }
-    });
-}
-
-function isi(isinya) {
-    $.ajax({
-        url: '<?=URLROOT?>/absen_siswa/isi_absen_by_rfid',
-        method: 'POST',
-        data: {
-            isi: isinya
-        },
-        dataType: 'json',
-        success: function(response) {
-            if (response.status === 'success') {
-                if (response.type === 'masuk') {
-                    // ABSEN MASUK
-                    Swal.fire({
-                        icon: 'success',
-                        title: '✓ PRESENSI MASUK',
-                        html: `
-                            <div style="font-size: 1.1em;">
-                                <p style="font-size: 1.3em; margin: 10px 0;"><b>${response.nama}</b></p>
-                                <p style="color: #666;">NIS: ${response.nis} | Kelas: ${response.kelas}</p>
-                                <hr style="margin: 15px 0;">
-                                <p style="color: #28a745; font-size: 1.2em;"><b>⏰ ${response.waktu}</b></p>
-                                <p style="color: #666; margin-top: 10px;">${response.message}</p>
-                            </div>
-                        `,
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true
-                    }).then(() => {
-                        refreshPage();
-                    });
-                } else if (response.type === 'pulang') {
-                    // ABSEN PULANG
-                    Swal.fire({
-                        icon: 'info',
-                        title: '✓ PRESENSI PULANG',
-                        html: `
-                            <div style="font-size: 1.1em;">
-                                <p style="font-size: 1.3em; margin: 10px 0;"><b>${response.nama}</b></p>
-                                <p style="color: #666;">NIS: ${response.nis} | Kelas: ${response.kelas}</p>
-                                <hr style="margin: 15px 0;">
-                                <div style="background: #f0f8ff; padding: 10px; border-radius: 5px; margin: 10px 0;">
-                                    <p style="margin: 5px 0;">Masuk: <b>${response.jam_masuk}</b></p>
-                                    <p style="margin: 5px 0;">Pulang: <b>${response.waktu}</b></p>
-                                    <p style="margin: 5px 0; color: #007bff;">Durasi: <b>${response.durasi}</b></p>
-                                </div>
-                                <p style="color: #666; margin-top: 10px;">${response.message}</p>
-                            </div>
-                        `,
-                        showConfirmButton: false,
-                        timer: 4000,
-                        timerProgressBar: true
-                    }).then(() => {
-                        refreshPage();
-                    });
-                }
-            } else if (response.status === 'warning') {
-                // SUDAH ABSEN LENGKAP
-                Swal.fire({
-                    icon: 'warning',
-                    title: '⚠ Sudah Presensi Lengkap',
-                    html: `
-                        <div style="font-size: 1.1em;">
-                            <p style="font-size: 1.3em; margin: 10px 0;"><b>${response.nama}</b></p>
-                            <p style="color: #666;">NIS: ${response.nis} | Kelas: ${response.kelas}</p>
-                            <hr style="margin: 15px 0;">
-                            <div style="background: #fff3cd; padding: 10px; border-radius: 5px; margin: 10px 0;">
-                                <p style="margin: 5px 0;">✓ Masuk: <b>${response.jam_masuk}</b></p>
-                                <p style="margin: 5px 0;">✓ Pulang: <b>${response.jam_pulang}</b></p>
-                            </div>
-                            <p style="color: #856404; margin-top: 10px;">${response.message}</p>
-                        </div>
-                    `,
-                    showConfirmButton: true,
-                    confirmButtonText: 'OK',
-                    confirmButtonColor: '#ffc107',
-                    timer: 5000
-                }).then(() => {
-                    refreshPage();
-                });
-            } else {
-                // ERROR - KARTU TIDAK TERDAFTAR
-                Swal.fire({
-                    icon: 'error',
-                    title: '✗ Kartu Tidak Terdaftar',
-                    html: `
-                        <div style="font-size: 1.1em;">
-                            <p style="color: #dc3545; margin: 15px 0;">${response.message}</p>
-                            <p style="color: #666; margin-top: 10px;">Silakan hubungi petugas administrasi sekolah.</p>
-                        </div>
-                    `,
-                    showConfirmButton: true,
-                    confirmButtonText: 'OK',
-                    confirmButtonColor: '#dc3545',
-                    timer: 3000
-                }).then(() => {
-                    refreshPage();
-                });
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('AJAX Error: ', error);
-            console.error('Response: ', xhr.responseText);
-
-            Swal.fire({
-                icon: 'error',
-                title: 'Terjadi Kesalahan',
-                text: 'Gagal menghubungi server. Silakan coba lagi atau hubungi admin.',
-                showConfirmButton: true,
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#dc3545'
-            }).then(() => {
-                refreshPage();
-            });
-        }
-    });
-}
-
-function refreshPage() {
-    // Clear input
-    document.getElementById("inputUsername").value = "";
-    // Focus kembali ke input
-    document.getElementById("inputUsername").focus();
-    // Reload page setelah delay singkat
-    setTimeout(function() {
-        location.reload(true);
-    }, 500);
-}
-
-// Auto-focus on page load
-window.onload = function() {
-    document.getElementById("inputUsername").value = "";
-    document.getElementById("inputUsername").focus();
-};
-
-// Maintain focus on input field
-$(document).ready(function() {
-    $('#inputUsername').focus();
-});
-
-// Return focus when clicking anywhere
-document.addEventListener('click', function(event) {
-    const nisInput = document.getElementById('inputUsername');
-    if (event.target !== nisInput) {
-        nisInput.focus();
-    }
-});
-</script>
-
 <style>
+
 .transparan {
     background-color: transparent;
     border: none;
     outline: none;
+    position: absolute;
+    left: -9999px;
 }
 
 body {
-    background: url(skatel/img/skatel.jpg) no-repeat center center fixed;
+    background: url(<?=URLROOT?>/smabethel/img/gambarsmabethel2.jpg) no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
     color: #cccccc;
     text-align: center;
-}
-
-.full-page-wrapper.wrapper {
-    background: url(skatel/img/skatel.jpg) no-repeat center center fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-    color: #cccccc;
+    padding-top: 2rem;
 }
 
 @keyframes blink {

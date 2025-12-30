@@ -10,10 +10,10 @@ $tahun = date('Y');
     <div class="card-body box-profile">
 
         <div class="tengah">
-            <img src="<?= URLROOT ?>/skatel/img/ts.png" width="120px">
+            <img src="<?= URLROOT ?>/smabethel/img/icon.png" width="80px">
         </div>
         <div class="huruf1 tengah" style="font-size:20px; font-weight:bold">
-            SMK Telkom Banjarbaru
+            SMA Bethel Banjarbaru
         </div>
         <div class="huruf1 tengah mb-3" style="font-size:18px; font-weight:bold; margin-top:-6px">
             Rekap Cuti Tahun <?= date('Y') ?>

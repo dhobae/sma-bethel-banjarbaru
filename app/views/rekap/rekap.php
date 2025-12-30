@@ -14,11 +14,11 @@ $bulanindo = array('01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' 
       ?>
 
       <div class="text-center mb-1">
-         <img src="<?= URLROOT ?>/skatel/img/ts.png" width="160px"> <br />
+         <img src="<?= URLROOT ?>/smabethel/img/icon.png" width="160px"> <br />
       </div>
 
       <div class="text-center huruf1 mb-3" style="font-size:20px; font-weight:bold; line-height:25px">
-         SMK Telkom Banjarbaru <br />
+         SMA Bethel Banjarbaru <br />
          Presensi :
          <?php
          if ($_SESSION['role'] == 'pegawai') {
@@ -157,7 +157,7 @@ $bulanindo = array('01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' 
                                     $totallibur = $totallibur + $ttllbur;
                                  } else {
                                     //-- Jika normal ------------------------------------------- --
-                                    if ($field2->jam_masuk > '08:00:00') {
+                                    if ($field2->jam_masuk > '07:30:00') {
                                        $statustelat = 'Telat';
                                     } else {
                                        $statustelat = 'On Time';

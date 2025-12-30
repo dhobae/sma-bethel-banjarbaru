@@ -1,13 +1,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="Keywords" content="SMK Telkom Banjarbar, presensi, presensi skatel, skatel banjarbaru">
+    <meta name="Keywords" content="SMA Bethel Banjarbar, presensi, presensi smabethel, smabethel banjarbaru">
     <meta name="Description" content="igracias, telkom university, academic information system, universitas telkom">
     <title>
-        Presensi SMK Telkom Banjarbaru
+        Presensi SMA Bethel Banjarbaru
     </title>
     <link rel="stylesheet" href="<?= URLROOT ?>/dist/lib/pahdi.css">
-    <link rel="shortcut icon" href="<?= URLROOT; ?>/skatel/img/ts_icon1.png">
+    <link rel="shortcut icon" href="<?= URLROOT; ?>/smabethel/img/icon.png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -20,10 +20,10 @@
 
     <input type="password" id="inputUsername" onchange="processInput(this.value)" class="transparan">
     <div style="margin-bottom:20px" class="text-center">
-        <img src="<?= URLROOT; ?>/skatel/img/ts2.png" alt="Skatel" style="width: 250px;height: auto;" /></a>
+        <img src="<?= URLROOT; ?>/smabethel/img/icon.png" alt="smabethel" style="width: 80px;height: auto;" /></a>
     </div>
     <div style="font-family: 'courier new'; font-size:2em; margin-bottom:-10px">
-        <b>~ Presensi Pegawai SMK Telkom Banjarbaru ~</b>
+        <b>~ Presensi Pegawai SMA Bethel Banjarbaru ~</b>
     </div>
     <div style="font-family: 'courier new'; font-size:2.2em; margin-bottom:30px" class="blinking">
         <b>Tempelkan Kartu Presensi anda</b>
@@ -198,7 +198,7 @@ $jumlah_baris = ceil($jumlah_nama / $jumlah_kolom);
     }
 
     body {
-        background: url(skatel/img/skatel.jpg) no-repeat center center fixed;
+        background: url(<?=URLROOT?>smabethel/img/gambarsmabethel2.jpg) no-repeat center center fixed;
         -webkit-background-size: cover;
         -moz-background-size: cover;
         -o-background-size: cover;
@@ -208,7 +208,7 @@ $jumlah_baris = ceil($jumlah_nama / $jumlah_kolom);
     }
 
     .full-page-wrapper.wrapper {
-        background: url(skatel/img/skatel.jpg) no-repeat center center fixed;
+        background: url(<?=URLROOT?>smabethel/img/gambarsmabethel2.jpg) no-repeat center center fixed;
         -webkit-background-size: cover;
         -moz-background-size: cover;
         -o-background-size: cover;

@@ -4,7 +4,7 @@
 <div class="card card-primary card-outline" style="margin-top:10px;">
    <div class="card-body box-profile">
       <div class="tengah mb-2">
-         <img src="<?= URLROOT ?>/skatel/img/ts.png" width="120px">
+         <img src="<?= URLROOT ?>/smabethel/img/icon.png" width="80px">
       </div>
       <div class="huruf1 tengah mb-1" style="font-size:20px; font-weight:bold; margin-top:-6px">
          Tambah / Buat izin mengajar

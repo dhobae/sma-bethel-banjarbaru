@@ -46,7 +46,7 @@ if ($tgl > date('Y-m-d')) {
    <div class="card-body box-profile">
 
       <div class="tengah mb-1">
-         <img src="<?= URLROOT ?>/skatel/img/ts.png" width="140px">
+         <img src="<?= URLROOT ?>/smabethel/img/ts.png" width="90px">
       </div>
       <div class="tengah mb-1 huruf1" style="font-size:28px">
          <b>

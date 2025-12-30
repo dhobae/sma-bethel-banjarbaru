@@ -1,2 +1,0 @@
-- e rapor wali kelas dan siswa
-- generate jadwal pelajaran

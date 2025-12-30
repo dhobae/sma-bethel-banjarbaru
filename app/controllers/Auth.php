@@ -55,10 +55,10 @@ class Auth extends Controller
                $data['password_err'] = 'Please enter your password';
             }
 
-            //$ip_address = $_SERVER['REMOTE_ADDR'];
-            //if ($this->userModel->isBruteForce($ip_address)) {
-            //   die('Too many failed login attempts. Try again later.');
-            //}
+            $ip_address = $_SERVER['REMOTE_ADDR'];
+            if ($this->userModel->isBruteForce($ip_address)) {
+              die('Too many failed login attempts. Try again later.');
+            }
 
             if (empty($data['username_err']) && empty($data['password_err'])) {
                $loggedInUser = $this->userModel->login($data['username'], $data['password']);
@@ -114,6 +114,12 @@ class Auth extends Controller
       if ($_SESSION['role'] != 'admin') {
          $_SESSION['password_change_required'] = true;
       }
+
+      if($_SESSION['role'] == 'siswa') {
+         $_SESSION['avatar'] = $user->foto_siswa;
+         $_SESSION['nis'] = $user->nik_user;
+      }
+
 
       return redirect('dashboard');
    }

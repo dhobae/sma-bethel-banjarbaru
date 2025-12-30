@@ -14,7 +14,6 @@ class Presensi extends Controller
     public function index()
     {
         $data['daftar'] = $this->Mpresensi->daftar();
-
         require APPROOT . '/views/inc/header.php';
         $this->view('presensi/daftar_hadir', $data);
         require APPROOT . '/views/inc/footer.php';

@@ -1,5 +1,12 @@
 <?php
 
+function intip_data($data) {
+  echo "<pre>";
+  var_dump($data);
+  echo "</pre>";
+  exit;
+}
+
 function rupiah($price)
 {
   $res = "Rp. " . number_format($price, 0, ",", ".");

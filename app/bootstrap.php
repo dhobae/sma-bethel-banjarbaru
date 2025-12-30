@@ -6,6 +6,7 @@ require_once 'helpers/url_helpers.php';
 require_once 'helpers/session_helper.php';
 require_once 'helpers/datetime_helper.php';
 require_once 'helpers/general_helper.php';
+require_once 'helpers/rfid_helper.php'; // new
 
 // Autoload Core Libraries
 spl_autoload_register(function ($className) {
