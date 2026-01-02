@@ -341,6 +341,151 @@ class Mrapor {
     }
 
     // --- Cek kelengkapan data rapor siswa ---
+// public function cek_kelengkapan_rapor($id_jadwal, $id_siswa)
+// {
+//     // Ambil data siswa untuk mendapatkan kelasnya
+//     $this->db->query("SELECT kelas_siswa FROM siswa WHERE id_siswa = :ids");
+//     $this->db->bind('ids', $id_siswa);
+//     $siswa = $this->db->single();
+    
+//     if (!$siswa) {
+//         return [
+//             'nilai_sikap' => false,
+//             'jumlah_nilai_mapel' => 0,
+//             'total_mapel' => 0,
+//             'persen_mapel' => 0,
+//             'jumlah_ekskul' => 0,
+//             'jumlah_prestasi' => 0,
+//             'catatan' => false,
+//             'persentase_total' => 0,
+//             'status' => 'belum'
+//         ];
+//     }
+    
+//     // Ambil tanggal berlaku dari jadwal_setting
+//     $this->db->query("SELECT berlaku_dari FROM jadwal_setting WHERE id_jadwal_setting = :id_jadwal");
+//     $this->db->bind('id_jadwal', $id_jadwal);
+//     $jadwal_result = $this->db->single();
+    
+//     if (!$jadwal_result) {
+//         return [
+//             'nilai_sikap' => false,
+//             'jumlah_nilai_mapel' => 0,
+//             'total_mapel' => 0,
+//             'persen_mapel' => 0,
+//             'jumlah_ekskul' => 0,
+//             'jumlah_prestasi' => 0,
+//             'catatan' => false,
+//             'persentase_total' => 0,
+//             'status' => 'belum'
+//         ];
+//     }
+    
+//     $berlaku_dari = $jadwal_result->berlaku_dari;
+    
+//     // Ambil semua mata pelajaran untuk kelas siswa pada periode ini
+//     $sql = "SELECT COUNT(DISTINCT mp.id_pelajaran) as total 
+//             FROM jadwal_lengkap jl
+//             JOIN m_pelajaran mp ON (
+//               jl.mp1 = mp.id_pelajaran OR 
+//               jl.mp2 = mp.id_pelajaran OR 
+//               jl.mp3 = mp.id_pelajaran OR 
+//               jl.mp4 = mp.id_pelajaran OR 
+//               jl.mp5 = mp.id_pelajaran OR 
+//               jl.mp6 = mp.id_pelajaran OR 
+//               jl.mp7 = mp.id_pelajaran OR 
+//               jl.mp8 = mp.id_pelajaran OR 
+//               jl.mp9 = mp.id_pelajaran OR 
+//               jl.mp10 = mp.id_pelajaran
+//             )
+//             WHERE jl.kode_kelas = :kode_kelas
+//               AND jl.validasi = 1
+//               AND jl.berlaku_jadwal_dari = :berlaku_dari";
+    
+//     $this->db->query($sql);
+//     $this->db->bind('kode_kelas', $siswa->kelas_siswa);
+//     $this->db->bind('berlaku_dari', $berlaku_dari);
+//     $result = $this->db->single();
+//     $total_mapel = $result ? $result->total : 0;
+    
+//     // Cek nilai sikap
+//     $this->db->query("SELECT id_nilai_sikap FROM nilai_sikap WHERE id_jadwal_setting = :idj AND id_siswa = :ids");
+//     $this->db->bind('idj', $id_jadwal);
+//     $this->db->bind('ids', $id_siswa);
+//     $nilai_sikap = ($this->db->single() !== false);
+
+//     // Hitung nilai mapel
+//     $this->db->query("SELECT COUNT(*) as jml FROM nilai_pelajaran WHERE id_jadwal_setting = :idj AND id_siswa = :ids");
+//     $this->db->bind('idj', $id_jadwal);
+//     $this->db->bind('ids', $id_siswa);
+//     $result = $this->db->single();
+//     $jumlah_nilai_mapel = $result ? $result->jml : 0;
+    
+//     // Hitung persentase kelengkapan nilai mapel
+//     $persen_mapel = ($total_mapel > 0) ? ($jumlah_nilai_mapel / $total_mapel) * 100 : 0;
+
+//     // Hitung ekskul
+//     $this->db->query("SELECT COUNT(*) as jml FROM ekstrakurikuler WHERE id_jadwal_setting = :idj AND id_siswa = :ids");
+//     $this->db->bind('idj', $id_jadwal);
+//     $this->db->bind('ids', $id_siswa);
+//     $result = $this->db->single();
+//     $jumlah_ekskul = $result ? $result->jml : 0;
+
+//     // Hitung prestasi
+//     $this->db->query("SELECT COUNT(*) as jml FROM prestasi WHERE id_jadwal_setting = :idj AND id_siswa = :ids");
+//     $this->db->bind('idj', $id_jadwal);
+//     $this->db->bind('ids', $id_siswa);
+//     $result = $this->db->single();
+//     $jumlah_prestasi = $result ? $result->jml : 0;
+
+//     // Cek catatan
+//     $this->db->query("SELECT id_catatan FROM catatan_wali_kelas WHERE id_jadwal_setting = :idj AND id_siswa = :ids");
+//     $this->db->bind('idj', $id_jadwal);
+//     $this->db->bind('ids', $id_siswa);
+//     $catatan = ($this->db->single() !== false);
+    
+//     // Hitung persentase total dengan bobot yang ditentukan
+//     $persentase_total = 0;
+    
+//     // Nilai Mata Pelajaran 20%
+//     $persentase_total += ($persen_mapel / 100) * 20;
+    
+//     // Penilaian Sikap 20%
+//     $persentase_total += $nilai_sikap ? 20 : 0;
+    
+//     // Ekstrakurikuler 20%
+//     $persentase_total += ($jumlah_ekskul > 0) ? 20 : 0;
+    
+//     // Prestasi 20%
+//     $persentase_total += ($jumlah_prestasi > 0) ? 20 : 0;
+    
+//     // Catatan Wali Kelas 20%
+//     $persentase_total += $catatan ? 20 : 0;
+    
+//     // Tentukan status kelengkapan
+//     $status = 'belum';
+//     if ($persentase_total >= 80) {
+//         $status = 'lengkap';
+//     } elseif ($persentase_total >= 40) {
+//         $status = 'sebagian';
+//     } else {
+//         $status = 'minim';
+//     }
+
+//     return [
+//         'nilai_sikap' => $nilai_sikap,
+//         'jumlah_nilai_mapel' => $jumlah_nilai_mapel,
+//         'total_mapel' => $total_mapel,
+//         'persen_mapel' => round($persen_mapel),
+//         'jumlah_ekskul' => $jumlah_ekskul,
+//         'jumlah_prestasi' => $jumlah_prestasi,
+//         'catatan' => $catatan,
+//         'persentase_total' => round($persentase_total),
+//         'status' => $status
+//     ];
+// }
+
+
 // --- Cek kelengkapan data rapor siswa (REVISI) ---
 public function cek_kelengkapan_rapor($id_jadwal, $id_siswa)
 {
@@ -465,12 +610,14 @@ public function cek_kelengkapan_rapor($id_jadwal, $id_siswa)
     
     // Tentukan status kelengkapan
     $status = 'belum';
-    if ($persentase_total >= 80) {
-        $status = 'lengkap';
+    if ($persentase_total >= 100) {
+        $status = 'lengkap'; // 100% - Semua lengkap
+    } elseif ($persentase_total >= 80) {
+        $status = 'hampir_lengkap'; // 80-99% - Hampir lengkap
     } elseif ($persentase_total >= 40) {
-        $status = 'sebagian';
+        $status = 'sebagian'; // 40-79% - Sebagian
     } else {
-        $status = 'minim';
+        $status = 'minim'; // <40% - Minim
     }
 
     return [

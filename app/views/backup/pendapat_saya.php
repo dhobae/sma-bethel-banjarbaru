@@ -19,7 +19,7 @@
          <div class="row justify-content-md-center">
             <di class="col-lg-8 tengah">
                <div>
-                  <b>Menurut anda, Apakah Presensi ini tetap digunakan untuk tidak?</b>
+                  <b>Menurut anda, Apakah Presensi ini tetap digunakan atau tidak?</b>
                   <div class="mt-2">
                      <select name="pendapat" required>
                         <option value="">~Pilih~</option>

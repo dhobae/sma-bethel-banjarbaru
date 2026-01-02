@@ -112,13 +112,13 @@
     <!-- Header -->
     <div class="header">
         <h1>SMA BETHEL BANJARBARU</h1>
-        <p>Jl. [Alamat Sekolah]</p>
-        <p>Telp: [Nomor Telepon] | Email: [Email Sekolah]</p>
-        <p style="margin-top: 10px; font-size: 14pt;"><strong>LAPORAN HASIL BELAJAR SISWA</strong></p>
+        <p>Jl. Jl. Kubis No.Ujung, Loktabat Utara, Kec. Banjarbaru Utara, Kota Banjar Baru, Kalimantan Selatan 70714</p>
+        <p>Telp: 05114781106 | Email: smabethelbanjarbaru@gmail.com</p>
     </div>
 
     <!-- Identitas Siswa -->
     <table class="info">
+        <p style="margin-top: 10px; font-size: 14pt; text-align: center;"><strong>LAPORAN HASIL BELAJAR SISWA</strong></p>
         <tr>
             <td width="150">Nama Siswa</td>
             <td width="10">:</td>
@@ -270,13 +270,13 @@
                 <td width="50%" style="text-align: center;">
                     <p>Orang Tua/Wali,</p>
                     <div class="ttd-space"></div>
-                    <p>(__________________)</p>
+                    <p><strong style="text-decoration: underline;">__________________</p>
                 </td>
                 <td width="50%" style="text-align: center;">
                     <p>Banjarbaru, <?= date('d F Y') ?></p>
                     <p>Wali Kelas,</p>
                     <div class="ttd-space"></div>
-                    <p><strong><?= htmlspecialchars($data['siswa']->nama_wali_kelas ?? '________________') ?></strong></p>
+                    <p><strong style="text-decoration: underline;"><?= htmlspecialchars($data['siswa']->nama_wali_kelas ?? '________________') ?></strong></p>
                 </td>
             </tr>
         </table>
@@ -285,9 +285,14 @@
             <p>Mengetahui,</p>
             <p>Kepala Sekolah</p>
             <div class="ttd-space"></div>
-            <p><strong>(__________________)</strong></p>
+            <p><strong style="text-decoration: underline;">Ichu Yulianty, S.Hut, M.Th</strong></p>
         </div>
     </div>
+    <script>
+        window.onload = function () {
+            window.print();
+        };
+    </script>
 
 </body>
 </html>

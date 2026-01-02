@@ -8,15 +8,17 @@ class Jadwal_otomatis extends Controller
         if (!isLoggedIn()) {
             redirect('auth/login');
         }
-
-        if ($_SESSION['role'] == 'siswa') {
+        // harus kurikulum/admin
+        if (!Middleware::admin('kurikulum') && $_SESSION['role'] != 'admin') {
             redirect('');
         }
 
         $this->db = new Database();
+        $this->Mjadwal = $this->model('Mjadwal');
     }
 
-    private function getJadwalSettingAktif() {
+    private function getJadwalSettingAktif()
+    {
         $sql = "SELECT 
             js.*,
             ta.tahun_ajaran
@@ -34,14 +36,15 @@ class Jadwal_otomatis extends Controller
      * Cek apakah ada wali kelas lama di jadwal_lengkap
      * Return: array dengan format ['kelas' => 'nik_guru'] atau null jika kosong
      */
-    private function getWaliKelasLama() {
-        $sql = "SELECT DISTINCT kelas, wali_kelas 
+    private function getWaliKelasLama()
+    {
+        $sql = "SELECT DISTINCT kelas, ruang, wali_kelas 
                 FROM jadwal_lengkap 
                 WHERE wali_kelas IS NOT NULL AND wali_kelas != ''";
-        
+
         $this->db->query($sql);
         $result = $this->db->resultSet();
-    
+
         if (empty($result)) {
             error_log("CONTROLLER: Tidak ada wali kelas lama ditemukan.");
             return null;
@@ -49,7 +52,9 @@ class Jadwal_otomatis extends Controller
 
         $waliKelasMap = [];
         foreach ($result as $row) {
-            $waliKelasMap[$row->kelas] = $row->wali_kelas;
+            // Format kunci: kelas tanpa spasi (misal: XIIA, XIB)
+            $kelasKey = str_replace(' ', '', $row->kelas . $row->ruang);
+            $waliKelasMap[$kelasKey] = $row->wali_kelas;
         }
 
         error_log("CONTROLLER: " . count($waliKelasMap) . " wali kelas lama ditemukan.");
@@ -59,17 +64,16 @@ class Jadwal_otomatis extends Controller
     /**
      * Parse tahun ajaran dari format "YYYY/YYYY" atau date
      */
-    private function parseTahunAjaran($dateString) {
+    private function parseTahunAjaran($dateString)
+    {
         $year = date('Y', strtotime($dateString));
         $nextYear = $year + 1;
         return $year . '/' . $nextYear;
     }
 
-    /**
-     * Tentukan semester berdasarkan bulan
-     */
-    private function getSemesterFromDate($dateString) {
-        $month = (int)date('m', strtotime($dateString));
+    private function getSemesterFromDate($dateString)
+    {
+        $month = (int) date('m', strtotime($dateString));
         // Januari - Juni = Genap (semester 2)
         // Juli - Desember = Ganjil (semester 1)
         return ($month >= 1 && $month <= 6) ? 'Genap' : 'Ganjil';
@@ -78,9 +82,10 @@ class Jadwal_otomatis extends Controller
     /**
      * Tentukan blok berdasarkan bulan
      */
-    private function getBlokFromDate($dateString) {
-        $month = (int)date('m', strtotime($dateString));
-        
+    private function getBlokFromDate($dateString)
+    {
+        $month = (int) date('m', strtotime($dateString));
+
         // Pembagian blok per tahun:
         // Blok I: Juli-Agustus (bulan 7-8)
         // Blok II: September-Oktober (bulan 9-10)
@@ -88,21 +93,25 @@ class Jadwal_otomatis extends Controller
         // Blok I: Januari-Februari (bulan 1-2)
         // Blok II: Maret-April (bulan 3-4)
         // Blok III: Mei-Juni (bulan 5-6)
-        
-        if ($month >= 7 && $month <= 8) return 'I';
-        if ($month >= 9 && $month <= 10) return 'II';
-        if ($month >= 11 && $month <= 12) return 'III';
-        if ($month >= 1 && $month <= 2) return 'I';
-        if ($month >= 3 && $month <= 4) return 'II';
-        if ($month >= 5 && $month <= 6) return 'III';
-        
+
+        if ($month >= 7 && $month <= 8)
+            return 'I';
+        if ($month >= 9 && $month <= 10)
+            return 'II';
+        if ($month >= 11 && $month <= 12)
+            return 'III';
+        if ($month >= 1 && $month <= 2)
+            return 'I';
+        if ($month >= 3 && $month <= 4)
+            return 'II';
+        if ($month >= 5 && $month <= 6)
+            return 'III';
+
         return 'I'; // default
     }
 
-    /**
-     * Cari atau buat tahun ajaran
-     */
-    private function getOrCreateTahunAjaran($tahunAjaran) {
+    private function getOrCreateTahunAjaran($tahunAjaran)
+    {
         // Cek apakah tahun ajaran sudah ada
         $this->db->query("SELECT * FROM m_tahun_ajaran WHERE tahun_ajaran = :tahun_ajaran");
         $this->db->bind(':tahun_ajaran', $tahunAjaran);
@@ -112,11 +121,11 @@ class Jadwal_otomatis extends Controller
             // Jika tahun ajaran sudah ada, set statusnya menjadi aktif (1) dan nonaktifkan yang lain
             $this->db->query("UPDATE m_tahun_ajaran SET status = 0");
             $this->db->execute();
-            
+
             $this->db->query("UPDATE m_tahun_ajaran SET status = 1 WHERE id_tahun_ajaran = :id_tahun_ajaran");
             $this->db->bind(':id_tahun_ajaran', $existing->id_tahun_ajaran);
             $this->db->execute();
-            
+
             error_log("CONTROLLER: Tahun ajaran $tahunAjaran diaktifkan (ID: {$existing->id_tahun_ajaran})");
             return $existing->id_tahun_ajaran;
         }
@@ -128,7 +137,7 @@ class Jadwal_otomatis extends Controller
         // Buat tahun ajaran baru dengan status aktif (1)
         $this->db->query("INSERT INTO m_tahun_ajaran (tahun_ajaran, status) VALUES (:tahun_ajaran, 1)");
         $this->db->bind(':tahun_ajaran', $tahunAjaran);
-        
+
         if ($this->db->execute()) {
             $newId = $this->db->lastInsertId();
             error_log("CONTROLLER: Tahun ajaran baru dibuat dan diaktifkan: $tahunAjaran (ID: $newId)");
@@ -138,10 +147,8 @@ class Jadwal_otomatis extends Controller
         return null;
     }
 
-    /**
-     * Cari atau buat jadwal setting
-     */
-    private function getOrCreateJadwalSetting($idTahunAjaran, $semester, $blok, $berlakuDari, $tanggalDirubah) {
+    private function getOrCreateJadwalSetting($idTahunAjaran, $semester, $blok, $berlakuDari, $tanggalDirubah)
+    {
         // Cek apakah kombinasi sudah ada
         $this->db->query("SELECT * FROM jadwal_setting 
                          WHERE id_tahun_ajaran = :id_tahun_ajaran 
@@ -168,11 +175,9 @@ class Jadwal_otomatis extends Controller
             return $existing->id_jadwal_setting;
         }
 
-        // Non-aktifkan semua jadwal setting lain
         $this->db->query("UPDATE jadwal_setting SET status = 0");
         $this->db->execute();
 
-        // Buat jadwal setting baru
         $this->db->query("INSERT INTO jadwal_setting 
                          (id_tahun_ajaran, semester, blok, berlaku_dari, tanggal_dirubah, status) 
                          VALUES 
@@ -182,7 +187,7 @@ class Jadwal_otomatis extends Controller
         $this->db->bind(':blok', $blok);
         $this->db->bind(':berlaku_dari', $berlakuDari);
         $this->db->bind(':tanggal_dirubah', $tanggalDirubah);
-        
+
         if ($this->db->execute()) {
             $newId = $this->db->lastInsertId();
             error_log("CONTROLLER: Jadwal setting baru dibuat (ID: $newId)");
@@ -191,7 +196,28 @@ class Jadwal_otomatis extends Controller
 
         return null;
     }
-    
+
+
+    private function validasiTanggal($tanggal)
+    {
+        $sql = "SELECT COUNT(*) as total_rows 
+                FROM jadwal_lengkap 
+                WHERE berlaku_jadwal_dari = :tanggal";
+
+        $this->db->query($sql);
+        $this->db->bind(':tanggal', $tanggal);
+        $result = $this->db->single();
+
+        return $result->total_rows > 0;
+    }
+
+    private function getMataPelajaran()
+    {
+        $sql = "SELECT * from m_pelajaran order by mata_pelajaran";
+        $this->db->query($sql);
+        return $this->db->resultSet();
+    }
+
     public function index()
     {
         // Cek apakah ada request untuk generate jadwal
@@ -206,7 +232,8 @@ class Jadwal_otomatis extends Controller
             'wali_kelas_tersedia' => !empty($this->getWaliKelasLama()),
             'tahun_ajaran_aktif' => $jadwalAktif ? $jadwalAktif->tahun_ajaran : '',
             'semester_aktif' => $jadwalAktif ? $jadwalAktif->semester : '',
-            'blok_aktif' => $jadwalAktif ? $jadwalAktif->blok : ''
+            'blok_aktif' => $jadwalAktif ? $jadwalAktif->blok : '',
+            'mata_pelajaran' => $this->getMataPelajaran()
         ];
 
         require APPROOT . '/views/inc/header.php';
@@ -214,11 +241,15 @@ class Jadwal_otomatis extends Controller
         require APPROOT . '/views/inc/footer.php';
     }
 
+
     public function generateSchedule()
     {
+        header('Content-Type: application/json');
+
         // Aktifkan error reporting untuk debugging (HAPUS DI PRODUKSI)
         error_reporting(E_ALL);
-        ini_set('display_errors', 1);
+        ini_set('display_errors', 0);
+        // Ubah ke 0 agar error tidak merusak JSON response
 
         // Ambil input dari form
         $berlakuJadwalDari = $_POST['berlaku_jadwal_dari'] ?? null;
@@ -226,14 +257,36 @@ class Jadwal_otomatis extends Controller
         $blok = $_POST['blok'] ?? null;
         $tahunAjaranInput = $_POST['tahun_ajaran'] ?? null;
 
-        if (empty($berlakuJadwalDari)) {
-            error_log("CONTROLLER: ERROR - Tanggal berlaku jadwal kosong.");
-            flash('jadwal_message', 'Tanggal berlaku jadwal harus diisi.', 'alert-danger');
-            redirect('jadwal_otomatis');
+        if (
+            empty($_POST['berlaku_jadwal_dari']) ||
+            empty($_POST['semester']) ||
+            empty($_POST['blok']) ||
+            empty($_POST['tahun_ajaran'])
+        ) {
+            echo json_encode([
+                'type' => 'error',
+                'title' => 'Gagal',
+                'message' => 'tahun ajar,semester,blok, dan tanggal berlaku wajib diisi.'
+            ]);
+            exit;
+        }
+
+        // ambil pengecualian, mata pelajaran hanya untuk kelas tertentu, misal kelas X yang hanya dapat informatika pada generate
+        // if (isset($_POST['mata_pelajaran']) && isset($_POST['kelas'])) {
+            // jika ada mata pelajaran dan kelas nya yang mana?
+        // }
+
+        if ($this->validasiTanggal($berlakuJadwalDari)) {
+            error_log("CONTROLLER: Jadwal sudah ada pada tanggal $berlakuJadwalDari");
+            echo json_encode([
+                'type' => 'error',
+                'title' => 'Gagal Generate Jadwal',
+                'message' => 'Jadwal sudah ada pada tanggal ' . date('d/m/Y', strtotime($berlakuJadwalDari)) . '. Silakan pilih tanggal lain.'
+            ]);
+            exit;
         }
 
         try {
-            // Tentukan tahun ajaran, semester, dan blok
             $tahunAjaran = $tahunAjaranInput ?? $this->parseTahunAjaran($berlakuJadwalDari);
             $semester = $semester ?? $this->getSemesterFromDate($berlakuJadwalDari);
             $blok = $blok ?? $this->getBlokFromDate($berlakuJadwalDari);
@@ -241,23 +294,21 @@ class Jadwal_otomatis extends Controller
 
             error_log("CONTROLLER: Tahun Ajaran: $tahunAjaran, Semester: $semester, Blok: $blok");
 
-            // Buat/ambil tahun ajaran
             $idTahunAjaran = $this->getOrCreateTahunAjaran($tahunAjaran);
             if (!$idTahunAjaran) {
-                throw new Exception("Gagal membuat/mengambil tahun ajaran");
+                throw new Exception("Gagal membuat atau mengambil data tahun ajaran");
             }
 
-            // Buat/update jadwal setting
             $idJadwalSetting = $this->getOrCreateJadwalSetting(
-                $idTahunAjaran, 
-                $semester, 
-                $blok, 
-                $berlakuJadwalDari, 
+                $idTahunAjaran,
+                $semester,
+                $blok,
+                $berlakuJadwalDari,
                 $tanggalDirubah
             );
 
             if (!$idJadwalSetting) {
-                throw new Exception("Gagal membuat/mengambil jadwal setting");
+                throw new Exception("Gagal membuat atau mengambil jadwal setting");
             }
 
             error_log("CONTROLLER: Mengambil data wali kelas lama...");
@@ -271,40 +322,51 @@ class Jadwal_otomatis extends Controller
 
             error_log("CONTROLLER: Menginisialisasi SchedulerService...");
             $scheduler = new SchedulerService($this->db);
-            
-            // 加载wali_kelas数据到SchedulerService
-            error_log("CONTROLLER: Memanggil loadWaliKelas()...");
+
+            // error_log("CONTROLLER: Memanggil loadWaliKelas()...");
             $scheduler->loadWaliKelas($waliKelasLama);
 
-            error_log("CONTROLLER: Memanggil generateSchedule() dengan wali kelas lama...");
+            // error_log("CONTROLLER: Memanggil generateSchedule() dengan wali kelas lama...");
             $schedule = $scheduler->generateSchedule();
 
             if (empty($schedule)) {
                 error_log("CONTROLLER: ERROR - Hasil jadwal kosong dari service.");
-                flash('jadwal_message', 'Gagal membuat jadwal: Hasil jadwal kosong. Periksa data guru, mata pelajaran, dan kelas.', 'alert-danger');
-                redirect('jadwal_otomatis');
+                throw new Exception("Hasil jadwal kosong. Periksa data guru, mata pelajaran, dan kelas.");
             }
 
-            error_log("CONTROLLER: Memanggil saveScheduleToDatabase()...");
+            // error_log("CONTROLLER: Memanggil saveScheduleToDatabase()...");
             $saveResult = $scheduler->saveScheduleToDatabase($schedule, $berlakuJadwalDari);
 
-            if ($saveResult) {
-                $message = 'Jadwal berhasil dibuat dengan algoritma genetika!';
-                $message .= " (Tahun Ajaran: $tahunAjaran, Semester: $semester, Blok: $blok)";
-                if ($waliKelasLama) {
-                    $message .= ' Wali kelas lama dipertahankan.';
-                }
-                flash('jadwal_message', $message, 'alert-success');
-            } else {
-                flash('jadwal_message', 'Gagal menyimpan jadwal ke database.', 'alert-danger');
+            if (!$saveResult) {
+                throw new Exception("Gagal menyimpan jadwal ke database");
             }
 
-        } catch (Exception $e) {
-            error_log("CONTROLLER: FATAL ERROR - " . $e->getMessage());
-            error_log("TRACE: " . $e->getTraceAsString());
-            flash('jadwal_message', 'Terjadi kesalahan fatal: ' . $e->getMessage(), 'alert-danger');
-        }
+            // error_log("CONTROLLER: SUCCESS - Jadwal berhasil dibuat");
 
-        redirect('jadwal_otomatis');
+            $message = 'Jadwal berhasil dibuat dengan algoritma genetika!';
+            $message .= " (Tahun Ajaran: $tahunAjaran, Semester: $semester, Blok: $blok)";
+            if ($waliKelasLama) {
+                $message .= ' Wali kelas lama dipertahankan.';
+            }
+
+            echo json_encode([
+                'type' => 'success',
+                'title' => 'Berhasil',
+                'message' => $message,
+                'redirect' => URLROOT . '/jadwal'
+            ]);
+            exit;
+
+        } catch (Exception $e) {
+            // error_log("CONTROLLER: FATAL ERROR - " . $e->getMessage());
+            // error_log("TRACE: " . $e->getTraceAsString());
+
+            echo json_encode([
+                'type' => 'error',
+                'title' => 'Terjadi Kesalahan',
+                'message' => $e->getMessage()
+            ]);
+            exit;
+        }
     }
 }

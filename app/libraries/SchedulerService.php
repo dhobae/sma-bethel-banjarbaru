@@ -28,7 +28,7 @@ class SchedulerService
     private function loadDataFromDatabase()
     {
         error_log("SchedulerService: Memuat data dari database...");
-
+    
         // Load data guru
         $this->db->query("SELECT * FROM pegawai WHERE mengajar = 'Ya' AND hapus_pegawai = 0 AND jabatan = 'Guru'");
         $teachers = $this->db->resultSet();
@@ -37,7 +37,7 @@ class SchedulerService
             $this->teacherLoad[$teacher->nik] = 0; // Inisialisasi beban mengajar
         }
         error_log("SchedulerService: " . count($this->teachers) . " guru dimuat.");
-
+    
         // Load data mata pelajaran
         $this->db->query("SELECT * FROM m_pelajaran");
         $subjects = $this->db->resultSet();
@@ -45,12 +45,16 @@ class SchedulerService
             $this->subjects[$subject->id_pelajaran] = $subject;
         }
         error_log("SchedulerService: " . count($this->subjects) . " mata pelajaran dimuat.");
-
-        // Load data kelas dari tabel jadwal
-        $this->db->query("SELECT DISTINCT kelas, ruang FROM jadwal WHERE kelas IS NOT NULL ORDER BY kelas");
+    
+        // Load data kelas dari tabel jadwal - PERBAIKAN DI SINI
+        $this->db->query("SELECT DISTINCT kelas, ruang FROM jadwal WHERE kelas IS NOT NULL ORDER BY kelas, ruang");
         $classes = $this->db->resultSet();
         foreach ($classes as $class) {
-            $this->classes[] = $class;
+            // Simpan sebagai kombinasi kelas dan ruang
+            $this->classes[] = [
+                'kelas' => $class->kelas,
+                'ruang' => $class->ruang
+            ];
         }
         error_log("SchedulerService: " . count($this->classes) . " kelas dimuat dari tabel jadwal.");
     }
@@ -102,22 +106,36 @@ class SchedulerService
         
         // Shuffle untuk guru baru yang perlu di-assign
         shuffle($guruNikList);
-        $guruIndex = 0;
         
         // Assign wali kelas untuk setiap kelas
+        $assignedTeachers = []; // Track teachers that have been assigned
         foreach ($this->classes as $class) {
-            $kelasName = $class->kelas;
+            $kelasName = $class['kelas'];
+            $ruangName = $class['ruang'];
+            
+            // Format kunci: kelas tanpa spasi (misal: XIIA, XIB)
+            $kelasKey = str_replace(' ', '', $kelasName . $ruangName);
             
             // Cek apakah kelas ini sudah punya wali kelas lama
-            if (isset($waliKelasLamaMap[$kelasName])) {
+            if (isset($waliKelasLamaMap[$kelasKey])) {
                 // Gunakan wali kelas lama
-                $this->waliKelas[$kelasName] = $waliKelasLamaMap[$kelasName];
-                error_log("SchedulerService: Kelas $kelasName menggunakan wali kelas lama: " . $waliKelasLamaMap[$kelasName]);
+                $this->waliKelas[$kelasKey] = $waliKelasLamaMap[$kelasKey];
+                $assignedTeachers[] = $waliKelasLamaMap[$kelasKey]; // Track assigned teacher
+                error_log("SchedulerService: Kelas $kelasKey menggunakan wali kelas lama: " . $waliKelasLamaMap[$kelasKey]);
             } else {
-                // Assign wali kelas baru secara acak
-                $this->waliKelas[$kelasName] = $guruNikList[$guruIndex % count($guruNikList)];
-                error_log("SchedulerService: Kelas $kelasName di-assign wali kelas baru: " . $this->waliKelas[$kelasName]);
-                $guruIndex++;
+                // Assign wali kelas baru secara acak, pastikan tidak duplikat
+                $availableTeachers = array_diff($guruNikList, $assignedTeachers);
+                
+                if (empty($availableTeachers)) {
+                    // Jika tidak ada guru tersedia (semua sudah di-assign), ambil dari guruNikList lagi
+                    error_log("SchedulerService: WARNING - Tidak ada guru tersedia untuk kelas $kelasKey. Menggunakan guru yang sudah di-assign.");
+                    $availableTeachers = $guruNikList;
+                }
+                
+                $teacher = $availableTeachers[array_rand($availableTeachers)];
+                $this->waliKelas[$kelasKey] = $teacher;
+                $assignedTeachers[] = $teacher;
+                error_log("SchedulerService: Kelas $kelasKey di-assign wali kelas baru: " . $teacher);
             }
         }
         
@@ -221,65 +239,65 @@ class SchedulerService
         $classAssignments = [];   
         
         $hariList = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
-    
+        
         // Cari ID mata pelajaran yang sesuai
-        $upacaraSubjectId = null;
-        $ibadahJumatSubjectId = null;
+        // $upacaraSubjectId = null;
+        // $ibadahJumatSubjectId = null;
         
-        foreach ($this->subjects as $subjectId => $subject) {
-            if (strtolower($subject->mata_pelajaran) === 'upacara') {
-                $upacaraSubjectId = $subjectId;
-            } elseif (strtolower($subject->mata_pelajaran) === 'ibadah/jumat bersih') {
-                $ibadahJumatSubjectId = $subjectId;
-            }
-        }
-    
+        // foreach ($this->subjects as $subjectId => $subject) {
+        //     if (strtolower($subject->mata_pelajaran) === 'upacara') {
+        //         $upacaraSubjectId = $subjectId;
+        //     } elseif (strtolower($subject->mata_pelajaran) === 'ibadah/jumat bersih') {
+        //         $ibadahJumatSubjectId = $subjectId;
+        //     }
+        // }
+        
         // Jika tidak ditemukan di database, insert ke m_pelajaran
-        if (!$upacaraSubjectId) {
-            $sql = "INSERT INTO m_pelajaran (mata_pelajaran, singkatan, prodi) 
-                    VALUES (:mata_pelajaran, :singkatan, :prodi)";
+        // if (!$upacaraSubjectId) {
+        //     $sql = "INSERT INTO m_pelajaran (mata_pelajaran, singkatan, prodi) 
+        //             VALUES (:mata_pelajaran, :singkatan, :prodi)";
                     
-            $this->db->query($sql);
-            $this->db->bind('mata_pelajaran', "UPACARA");
-            $this->db->bind('singkatan', "UPA");
-            $this->db->bind('prodi', "SMABETHEL");
+        //     $this->db->query($sql);
+        //     $this->db->bind('mata_pelajaran', "UPACARA");
+        //     $this->db->bind('singkatan', "UPA");
+        //     $this->db->bind('prodi', "SMABETHEL");
             
-            if ($this->db->execute()) {
-                $upacaraSubjectId = $this->db->lastInsertId();
-                error_log("SchedulerService: Mata pelajaran UPACARA berhasil disimpan dengan ID: " . $upacaraSubjectId);
-            } else {
-                error_log("SchedulerService: Gagal menyimpan mata pelajaran UPACARA");
-            }
-        }
+        //     if ($this->db->execute()) {
+        //         $upacaraSubjectId = $this->db->lastInsertId();
+        //         error_log("SchedulerService: Mata pelajaran UPACARA berhasil disimpan dengan ID: " . $upacaraSubjectId);
+        //     } else {
+        //         error_log("SchedulerService: Gagal menyimpan mata pelajaran UPACARA");
+        //     }
+        // }
         
-        if (!$ibadahJumatSubjectId) {
-            $sql = "INSERT INTO m_pelajaran (mata_pelajaran, singkatan, prodi) 
-                    VALUES (:mata_pelajaran, :singkatan, :prodi)";
+        // if (!$ibadahJumatSubjectId) {
+        //     $sql = "INSERT INTO m_pelajaran (mata_pelajaran, singkatan, prodi) 
+        //             VALUES (:mata_pelajaran, :singkatan, :prodi)";
                     
-            $this->db->query($sql);
-            $this->db->bind('mata_pelajaran', "IBADAH/JUMAT BERSIH");
-            $this->db->bind('singkatan', "IBD");
-            $this->db->bind('prodi', "SMABETHEL");
+        //     $this->db->query($sql);
+        //     $this->db->bind('mata_pelajaran', "IBADAH/JUMAT BERSIH");
+        //     $this->db->bind('singkatan', "IBD");
+        //     $this->db->bind('prodi', "SMABETHEL");
             
-            if ($this->db->execute()) {
-                $ibadahJumatSubjectId = $this->db->lastInsertId();
-                error_log("SchedulerService: Mata pelajaran IBADAH/JUMAT BERSIH berhasil disimpan dengan ID: " . $ibadahJumatSubjectId);
-            } else {
-                error_log("SchedulerService: Gagal menyimpan mata pelajaran IBADAH/JUMAT BERSIH");
-            }
-        }
-    
+        //     if ($this->db->execute()) {
+        //         $ibadahJumatSubjectId = $this->db->lastInsertId();
+        //         error_log("SchedulerService: Mata pelajaran IBADAH/JUMAT BERSIH berhasil disimpan dengan ID: " . $ibadahJumatSubjectId);
+        //     } else {
+        //         error_log("SchedulerService: Gagal menyimpan mata pelajaran IBADAH/JUMAT BERSIH");
+        //     }
+        // }
+        
         foreach ($this->classes as $class) {
             foreach ($hariList as $hari) {
                 $scheduleEntry = [
                     'hari' => $hari,
-                    'kelas' => $class->kelas,
-                    'ruang' => $class->ruang,
-                    'wali_kelas' => $this->waliKelas[$class->kelas] ?? '',
+                    'kelas' => $class['kelas'],  // PERUBAHAN: dari $class->kelas menjadi $class['kelas']
+                    'ruang' => $class['ruang'], // PERUBAHAN: dari $class->ruang menjadi $class['ruang']
+                    'wali_kelas' => $this->waliKelas[str_replace(' ', '', $class['kelas'] . $class['ruang'])] ?? '', // PERUBAHAN: gunakan kunci tanpa spasi
                     'prodi' => 'SMABETHEL',
                     'jam_ke' => [],
                 ];
-    
+        
                 // Semua hari memiliki 10 jam pelajaran (1-10)
                 for ($jam = 1; $jam <= 10; $jam++) {
                     $subjectId = null;
@@ -287,12 +305,12 @@ class SchedulerService
                     
                     // Aturan spesial: Senin jam 1 harus UPACARA
                     if ($hari === 'Senin' && $jam === 1) {
-                        $subjectId = $upacaraSubjectId;
+                        $subjectId = null;
                         $teacherId = null;
                     }
                     // Aturan spesial: Jumat jam 1 harus IBADAH/JUMAT BERSIH
                     elseif ($hari === 'Jumat' && $jam === 1) {
-                        $subjectId = $ibadahJumatSubjectId;
+                        $subjectId = null;
                         $teacherId = null;
                     }
                     // Untuk slot lainnya, pilih mata pelajaran acak
@@ -306,26 +324,26 @@ class SchedulerService
                         'mata_pelajaran' => $subjectId,
                         'guru' => $teacherId,
                     ];
-    
+        
                     // Assign guru ke slot ini (hanya untuk mata pelajaran reguler)
                     if ($teacherId) {
                         if (!isset($teacherAssignments[$hari][$jam])) {
                             $teacherAssignments[$hari][$jam] = [];
                         }
                         $teacherAssignments[$hari][$jam][$teacherId] = true;
-    
+        
                         // Mark kelas sudah terisi
                         if (!isset($classAssignments[$hari][$jam])) {
                             $classAssignments[$hari][$jam] = [];
                         }
-                        $classAssignments[$hari][$jam][$class->kelas] = true;
+                        $classAssignments[$hari][$jam][str_replace(' ', '', $class['kelas'] . $class['ruang'])] = true; // PERUBAHAN: gunakan kunci tanpa spasi
                     }
                 }
-    
+        
                 $schedule[] = $scheduleEntry;
             }
         }
-    
+        
         return $schedule;
     }
 
@@ -610,25 +628,25 @@ class SchedulerService
     public function saveScheduleToDatabase($schedule, $berlakuJadwalDari)
     {
         error_log("SchedulerService: saveScheduleToDatabase() dimulai.");
-
+    
         if (empty($schedule)) {
             error_log("SchedulerService: ERROR - Jadwal kosong.");
             return false;
         }
-
+    
         $waliKelasTersedia = []; // untuk menampung wali_kelas unik
         $insertCount = 0;
         
         foreach ($schedule as $daySchedule) {
             $kode_kelas = $daySchedule['kelas'] . $daySchedule['ruang'];
             $waliKelasId = $daySchedule['wali_kelas'];
-
+    
             // Simpan hanya jika belum ada dalam array
             if (!in_array($waliKelasId, $waliKelasTersedia)) {
                 $waliKelasTersedia[] = $waliKelasId;
                 error_log("SchedulerService: Wali kelas untuk kelas " . $daySchedule['kelas'] . ": " . $waliKelasId);
             }
-
+    
             $data = [
                 'hari' => $daySchedule['hari'],
                 'kode_kelas' => $kode_kelas,
@@ -643,12 +661,12 @@ class SchedulerService
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
             ];
-
+    
             // Isi mp1-mp10 dan guru1-guru10 (sekarang 10 jam untuk semua hari)
             for ($jam = 1; $jam <= 10; $jam++) {
                 $mpField = 'mp' . $jam;
                 $guruField = 'guru' . $jam;
-
+    
                 if (isset($daySchedule['jam_ke'][$jam]) && is_array($daySchedule['jam_ke'][$jam])) {
                     $data[$mpField] = $daySchedule['jam_ke'][$jam]['mata_pelajaran'] ?? null;
                     $data[$guruField] = $daySchedule['jam_ke'][$jam]['guru'] ?? null;
@@ -657,43 +675,43 @@ class SchedulerService
                     $data[$guruField] = null;
                 }
             }
-
+    
             $columns = implode(", ", array_keys($data));
             $placeholders = implode(", ", array_fill(0, count($data), "?"));
             $query = "INSERT INTO jadwal_lengkap ($columns) VALUES ($placeholders)";
-
+    
             $this->db->query($query);
-
+    
             $i = 1;
             foreach ($data as $value) {
                 $this->db->bind($i, $value);
                 $i++;
             }
-
+    
             if ($this->db->execute()) {
                 $insertCount++;
             }
         }
-
+    
         error_log("SchedulerService: Wali kelas tersedia: " . implode(", ", $waliKelasTersedia));
         
         // Update tabel admin dengan wali kelas
         if (!empty($waliKelasTersedia)) {
             $nipPegawaiString = implode(",", $waliKelasTersedia);
-
+    
             $updateQuery = "UPDATE admin SET nip_pegawai = :nip_pegawai WHERE id = 3 AND hak_akses = 'wali_kelas'";
             $this->db->query($updateQuery);
             $this->db->bind(':nip_pegawai', $nipPegawaiString);
-
+    
             if ($this->db->execute()) {
                 error_log("SchedulerService: UPDATE admin berhasil: $nipPegawaiString");
             } else {
                 error_log("SchedulerService: Gagal update admin wali_kelas");
             }
         }
-
+    
         error_log("SchedulerService: " . $insertCount . " baris berhasil disimpan.");
-
+    
         return $insertCount > 0;
     }
 }

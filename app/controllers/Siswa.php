@@ -197,6 +197,8 @@ class Siswa extends Controller
    public function edit_saya()
    {
       $data['siswa'] = $this->Msiswa->saya();
+      // intip_data($data['siswa']);
+
       $data['propinsi'] = $this->Msiswa->propinsi();
       $data['kabupaten'] = $this->Msiswa->kabupaten();
       $data['kecamatan'] = $this->Msiswa->kecamatan();
@@ -634,12 +636,12 @@ public function rapor()
 public function rapor_detail($id = null)
 {
     if (!Middleware::admin('wali_kelas')) {
-        setFlash('error', 'Akses ditolak! Hanya wali kelas yang bisa mengakses halaman ini.');
+        setFlash('Akses ditolak! Hanya wali kelas yang bisa mengakses halaman ini.', 'error');
         return redirect('siswa/rapor');
     }
 
     if (!$id) {
-        setFlash('error', 'ID siswa tidak valid');
+        setFlash('ID siswa tidak valid', 'error');
         return redirect('siswa/rapor');
     }
 
@@ -647,7 +649,7 @@ public function rapor_detail($id = null)
     $siswa = $this->Mrapor->ambil_siswa_by_id($id);
     
     if (!$siswa) {
-        setFlash('error', 'Data siswa tidak ditemukan');
+        setFlash('Data siswa tidak ditemukan', 'error');
         return redirect('siswa/rapor');
     }
 
@@ -662,7 +664,7 @@ public function rapor_detail($id = null)
     }
 
     if (!$found) {
-        setFlash('error', 'Anda tidak berhak mengakses data siswa ini');
+        setFlash('Anda tidak berhak mengakses data siswa ini', 'error');
         return redirect('siswa/rapor');
     }
 
@@ -701,7 +703,7 @@ public function rapor_detail($id = null)
     }
 
     if (!$jadwal) {
-        setFlash('error', 'Tidak ada jadwal/semester yang tersedia. Hubungi administrator.');
+        setFlash('Terjadi kesalahan', 'error');
         return redirect('siswa/rapor');
     }
 
@@ -727,14 +729,14 @@ public function rapor_detail($id = null)
 public function simpan_rapor()
 {
     if (!Middleware::admin('wali_kelas')) {
-        setFlash('error', 'Akses ditolak!');
+        setFlash('Akses ditolak!', 'error');
         return redirect('siswa/rapor');
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Validasi input
         if (empty($_POST['id_siswa']) || empty($_POST['id_jadwal_setting'])) {
-            setFlash('error', 'Data tidak lengkap');
+            setFlash('Data tidak lengkap', 'error');
             return redirect('siswa/rapor');
         }
 
@@ -745,15 +747,15 @@ public function simpan_rapor()
         $result = $this->Mrapor->simpan_semua_nilai($_POST);
         
         if ($result) {
-            setFlash('success', 'Data rapor berhasil disimpan');
+            setFlash('Data rapor berhasil disimpan', 'success');
         } else {
-            setFlash('error', 'Gagal menyimpan data rapor. Silakan coba lagi.');
+            setFlash('Gagal menyimpan data rapor. Silakan coba lagi.', 'error');
         }
         
         // Redirect ke halaman detail dengan parameter semester
         redirect('siswa/rapor_detail/' . $id_siswa . '?semester=' . $id_jadwal_setting);
     } else {
-        setFlash('error', 'Method tidak diizinkan');
+        setFlash('Method tidak diizinkan', 'error');
         redirect('siswa/rapor');
     }
 }
@@ -871,8 +873,6 @@ public function simpan_rapor()
        // Load view cetak (tanpa header/footer)
        $this->view('siswa/rapor_cetak', $data);
    }
-
-
  // siswa
 
 }

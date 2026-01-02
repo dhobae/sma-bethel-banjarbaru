@@ -384,11 +384,11 @@
                 <!-- TOMBOL AKSI -->
                 <div class="row">
                     <div class="col-12">
-                        <button type="submit" class="btn btn-success btn-lg">
+                        <button type="submit" class="btn btn-sm btn-success btn-lg">
                             <i class="fas fa-save"></i> Simpan Semua Data Rapor
                         </button>
-                        <a href="<?= URLROOT ?>/siswa/rapor" class="btn btn-secondary btn-lg">
-                            <i class="fas fa-times"></i> Batal
+                        <a href="<?= URLROOT ?>/siswa/rapor" class="btn btn-sm btn-secondary btn-lg">
+                            <i class="fas fa-times"></i> Batal/Kembali
                         </a>
                     </div>
                 </div>

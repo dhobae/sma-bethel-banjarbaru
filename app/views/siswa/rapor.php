@@ -112,6 +112,9 @@
                             if ($status == 'lengkap') {
                                 $card_color = 'bg-success';
                                 $status_text = 'Lengkap';
+                            } elseif ($status == 'hampir_lengkap') {
+                                $card_color = 'bg-info';
+                                $status_text = 'Hampir Lengkap';
                             } elseif ($status == 'sebagian') {
                                 $card_color = 'bg-warning';
                                 $status_text = 'Sebagian';
@@ -185,10 +188,19 @@
                 <div class="row">
                     <div class="col-md-3">
                         <div class="info-box bg-success">
+                            <span class="info-box-icon"><i class="fas fa-check-double"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Lengkap (100%)</span>
+                                <span class="info-box-number" id="count-lengkap">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="info-box bg-info">
                             <span class="info-box-icon"><i class="fas fa-check"></i></span>
                             <div class="info-box-content">
-                                <span class="info-box-text">Lengkap (≥80%)</span>
-                                <span class="info-box-number" id="count-lengkap">0</span>
+                                <span class="info-box-text">Hampir Lengkap (≥80%)</span>
+                                <span class="info-box-number" id="count-hampir">0</span>
                             </div>
                         </div>
                     </div>
@@ -207,15 +219,6 @@
                             <div class="info-box-content">
                                 <span class="info-box-text">Minim (<40%)</span>
                                 <span class="info-box-number" id="count-minim">0</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="info-box bg-info">
-                            <span class="info-box-icon"><i class="fas fa-users"></i></span>
-                            <div class="info-box-content">
-                                <span class="info-box-text">Total Siswa</span>
-                                <span class="info-box-number"><?= count($data['siswa']) ?></span>
                             </div>
                         </div>
                     </div>
@@ -241,7 +244,8 @@
                             <div class="col-md-6">
                                 <h5>Status Kelengkapan:</h5>
                                 <ul>
-                                    <li><span class="badge bg-success">Lengkap</span>: ≥80% (selesai)</li>
+                                    <li><span class="badge bg-success">Lengkap</span>: 100% (Lengkap)</li>
+                                    <li><span class="badge bg-info">Hampir Lengkap</span>: ≥80% (Hampir Lengkap)</li>
                                     <li><span class="badge bg-warning">Sebagian</span>: 40-79% (sedang diproses)</li>
                                     <li><span class="badge bg-danger">Minim</span>: <40% (perlu segera diisi)</li>
                                 </ul>
@@ -279,16 +283,18 @@ document.getElementById('searchSiswa').addEventListener('keyup', function() {
 // Hitung statistik kelengkapan
 document.addEventListener('DOMContentLoaded', function() {
     const cards = document.querySelectorAll('.small-box');
-    let lengkap = 0, sebagian = 0, minim = 0;
+    let lengkap = 0, hampir = 0, sebagian = 0, minim = 0;
     
     cards.forEach(card => {
         if (card.classList.contains('bg-success')) lengkap++;
+        else if (card.classList.contains('bg-info')) hampir++;
         else if (card.classList.contains('bg-warning')) sebagian++;
         else if (card.classList.contains('bg-danger')) minim++;
     });
     
     if (document.getElementById('count-lengkap')) {
         document.getElementById('count-lengkap').textContent = lengkap;
+        document.getElementById('count-hampir').textContent = hampir;
         document.getElementById('count-sebagian').textContent = sebagian;
         document.getElementById('count-minim').textContent = minim;
     }

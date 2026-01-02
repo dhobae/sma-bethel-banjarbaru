@@ -21,31 +21,52 @@
 
       <div class="container1 mb-2" style="padding:0px">
          <div class="col" style="padding:0px">
-            <a href="<?= URLROOT ?>/jadwal?kelas=ringkasan" class="btn btn-outline-dark btn-sm tombol3 lebar2 <?= ($kelas == 'ringkasan') ? 'active' : '' ?>">Ringkasan</a>
+            <a href="<?= URLROOT ?>/jadwal?kelas=ringkasan"
+               class="btn btn-outline-dark btn-sm tombol3 lebar2 <?= ($kelas == 'ringkasan') ? 'active' : '' ?>">Ringkasan</a>
 
-            <a href="<?= URLROOT ?>/jadwal?kelas=XA" class="btn btn-outline-primary btn-sm tombol3 lebar <?= ($kelas == 'XA') ? 'active' : '' ?>">XA</a>
-            <a href="<?= URLROOT ?>/jadwal?kelas=XB" class="btn btn-outline-primary btn-sm tombol3 lebar <?= ($kelas == 'XB') ? 'active' : '' ?>">XB</a>
-            <a href="<?= URLROOT ?>/jadwal?kelas=XC" class="btn btn-outline-primary btn-sm tombol3 lebar <?= ($kelas == 'XC') ? 'active' : '' ?>">XC</a>
-            <a href="<?= URLROOT ?>/jadwal?kelas=XD" class="btn btn-outline-primary btn-sm tombol3 lebar <?= ($kelas == 'XD') ? 'active' : '' ?>">XD</a>
-            <a href="<?= URLROOT ?>/jadwal?kelas=XE" class="btn btn-outline-primary btn-sm tombol3 lebar <?= ($kelas == 'XE') ? 'active' : '' ?>">XE</a>
-            <a href="<?= URLROOT ?>/jadwal?kelas=XF" class="btn btn-outline-primary btn-sm tombol3 lebar <?= ($kelas == 'XF') ? 'active' : '' ?>">XF</a>
-            <a href="<?= URLROOT ?>/jadwal?kelas=XG" class="btn btn-outline-primary btn-sm tombol3 lebar <?= ($kelas == 'XG') ? 'active' : '' ?>">XG</a>
+            <a href="<?= URLROOT ?>/jadwal?kelas=XA"
+               class="btn btn-outline-primary btn-sm tombol3 lebar <?= ($kelas == 'XA') ? 'active' : '' ?>">XA</a>
+            <a href="<?= URLROOT ?>/jadwal?kelas=XB"
+               class="btn btn-outline-primary btn-sm tombol3 lebar <?= ($kelas == 'XB') ? 'active' : '' ?>">XB</a>
+            <a href="<?= URLROOT ?>/jadwal?kelas=XC"
+               class="btn btn-outline-primary btn-sm tombol3 lebar <?= ($kelas == 'XC') ? 'active' : '' ?>">XC</a>
+            <a href="<?= URLROOT ?>/jadwal?kelas=XD"
+               class="btn btn-outline-primary btn-sm tombol3 lebar <?= ($kelas == 'XD') ? 'active' : '' ?>">XD</a>
+            <a href="<?= URLROOT ?>/jadwal?kelas=XE"
+               class="btn btn-outline-primary btn-sm tombol3 lebar <?= ($kelas == 'XE') ? 'active' : '' ?>">XE</a>
+            <a href="<?= URLROOT ?>/jadwal?kelas=XF"
+               class="btn btn-outline-primary btn-sm tombol3 lebar <?= ($kelas == 'XF') ? 'active' : '' ?>">XF</a>
+            <a href="<?= URLROOT ?>/jadwal?kelas=XG"
+               class="btn btn-outline-primary btn-sm tombol3 lebar <?= ($kelas == 'XG') ? 'active' : '' ?>">XG</a>
+            <a href="<?= URLROOT ?>/jadwal?kelas=XIA"
+               class="btn btn-outline-danger btn-sm tombol3 lebar <?= ($kelas == 'XIA') ? 'active' : '' ?>">XIA</a>
+            <a href="<?= URLROOT ?>/jadwal?kelas=XIB"
+               class="btn btn-outline-danger btn-sm tombol3 lebar <?= ($kelas == 'XIB') ? 'active' : '' ?>">XIB</a>
+            <a href="<?= URLROOT ?>/jadwal?kelas=XIC"
+               class="btn btn-outline-danger btn-sm tombol3 lebar <?= ($kelas == 'XIC') ? 'active' : '' ?>">XIC</a>
+            <a href="<?= URLROOT ?>/jadwal?kelas=XID"
+               class="btn btn-outline-danger btn-sm tombol3 lebar <?= ($kelas == 'XID') ? 'active' : '' ?>">XID</a>
+            <a href="<?= URLROOT ?>/jadwal?kelas=XIE"
+               class="btn btn-outline-danger btn-sm tombol3 lebar <?= ($kelas == 'XIE') ? 'active' : '' ?>">XIE</a>
+            <a href="<?= URLROOT ?>/jadwal?kelas=XIF"
+               class="btn btn-outline-danger btn-sm tombol3 lebar <?= ($kelas == 'XIF') ? 'active' : '' ?>">XIF</a>
+            <a href="<?= URLROOT ?>/jadwal?kelas=XIG"
+               class="btn btn-outline-danger btn-sm tombol3 lebar <?= ($kelas == 'XIG') ? 'active' : '' ?>">XIG</a>
 
-            <a href="<?= URLROOT ?>/jadwal?kelas=XIA" class="btn btn-outline-danger btn-sm tombol3 lebar <?= ($kelas == 'XIA') ? 'active' : '' ?>">XIA</a>
-            <a href="<?= URLROOT ?>/jadwal?kelas=XIB" class="btn btn-outline-danger btn-sm tombol3 lebar <?= ($kelas == 'XIB') ? 'active' : '' ?>">XIB</a>
-            <a href="<?= URLROOT ?>/jadwal?kelas=XIC" class="btn btn-outline-danger btn-sm tombol3 lebar <?= ($kelas == 'XIC') ? 'active' : '' ?>">XIC</a>
-            <a href="<?= URLROOT ?>/jadwal?kelas=XID" class="btn btn-outline-danger btn-sm tombol3 lebar <?= ($kelas == 'XID') ? 'active' : '' ?>">XID</a>
-            <a href="<?= URLROOT ?>/jadwal?kelas=XIE" class="btn btn-outline-danger btn-sm tombol3 lebar <?= ($kelas == 'XIE') ? 'active' : '' ?>">XIE</a>
-            <a href="<?= URLROOT ?>/jadwal?kelas=XIF" class="btn btn-outline-danger btn-sm tombol3 lebar <?= ($kelas == 'XIF') ? 'active' : '' ?>">XIF</a>
-            <a href="<?= URLROOT ?>/jadwal?kelas=XIG" class="btn btn-outline-danger btn-sm tombol3 lebar <?= ($kelas == 'XIG') ? 'active' : '' ?>">XIG</a>
-
-            <a href="<?= URLROOT ?>/jadwal?kelas=XIIA" class="btn btn-outline-success btn-sm tombol3 lebar <?= ($kelas == 'XIIA') ? 'active' : '' ?>">XIIA</a>
-            <a href="<?= URLROOT ?>/jadwal?kelas=XIIB" class="btn btn-outline-success btn-sm tombol3 lebar <?= ($kelas == 'XIIB') ? 'active' : '' ?>">XIIB</a>
-            <a href="<?= URLROOT ?>/jadwal?kelas=XIIC" class="btn btn-outline-success btn-sm tombol3 lebar <?= ($kelas == 'XIIC') ? 'active' : '' ?>">XIIC</a>
-            <a href="<?= URLROOT ?>/jadwal?kelas=XIID" class="btn btn-outline-success btn-sm tombol3 lebar <?= ($kelas == 'XIID') ? 'active' : '' ?>">XIID</a>
-            <a href="<?= URLROOT ?>/jadwal?kelas=XIIE" class="btn btn-outline-success btn-sm tombol3 lebar <?= ($kelas == 'XIIE') ? 'active' : '' ?>">XIIE</a>
-            <a href="<?= URLROOT ?>/jadwal?kelas=XIIF" class="btn btn-outline-success btn-sm tombol3 lebar <?= ($kelas == 'XIIF') ? 'active' : '' ?>">XIIF</a>
-            <a href="<?= URLROOT ?>/jadwal?kelas=XIIG" class="btn btn-outline-success btn-sm tombol3 lebar <?= ($kelas == 'XIIG') ? 'active' : '' ?>">XIIG</a>
+            <a href="<?= URLROOT ?>/jadwal?kelas=XIIA"
+               class="btn btn-outline-success btn-sm tombol3 lebar <?= ($kelas == 'XIIA') ? 'active' : '' ?>">XIIA</a>
+            <a href="<?= URLROOT ?>/jadwal?kelas=XIIB"
+               class="btn btn-outline-success btn-sm tombol3 lebar <?= ($kelas == 'XIIB') ? 'active' : '' ?>">XIIB</a>
+            <a href="<?= URLROOT ?>/jadwal?kelas=XIIC"
+               class="btn btn-outline-success btn-sm tombol3 lebar <?= ($kelas == 'XIIC') ? 'active' : '' ?>">XIIC</a>
+            <a href="<?= URLROOT ?>/jadwal?kelas=XIID"
+               class="btn btn-outline-success btn-sm tombol3 lebar <?= ($kelas == 'XIID') ? 'active' : '' ?>">XIID</a>
+            <a href="<?= URLROOT ?>/jadwal?kelas=XIIE"
+               class="btn btn-outline-success btn-sm tombol3 lebar <?= ($kelas == 'XIIE') ? 'active' : '' ?>">XIIE</a>
+            <a href="<?= URLROOT ?>/jadwal?kelas=XIIF"
+               class="btn btn-outline-success btn-sm tombol3 lebar <?= ($kelas == 'XIIF') ? 'active' : '' ?>">XIIF</a>
+            <a href="<?= URLROOT ?>/jadwal?kelas=XIIG"
+               class="btn btn-outline-success btn-sm tombol3 lebar <?= ($kelas == 'XIIG') ? 'active' : '' ?>">XIIG</a>
 
             <hr style="margin-top:0px">
          </div>
@@ -102,8 +123,8 @@
                </thead>
                <tbody>
                   <?php
-                  foreach ($data['jadwal'] as $d) :
-                  ?>
+                  foreach ($data['jadwal'] as $d):
+                     ?>
                      <tr>
                         <td class="text-center" style="vertical-align:middle">
                            <b><?= $d->hari ?></b>
@@ -111,34 +132,51 @@
 
                            <?php
                            if (($_SESSION['role'] == 'admin') || (Middleware::admin('kurikulum')) || ($_SESSION['nik'] == $d->wali_kelas)) { ?>
-                              <a href="<?= URLROOT ?>/jadwal/edit_jadwal_kelas?id=<?= $d->id_jadwal_lengkap ?>&kelas=<?= $kelas ?>" title="Edit jadwal hari ini"><i class="fa fa-edit"></i></a>
+                              <a href="<?= URLROOT ?>/jadwal/edit_jadwal_kelas?id=<?= $d->id_jadwal_lengkap ?>&kelas=<?= $kelas ?>"
+                                 title="Edit jadwal hari ini"><i class="fa fa-edit"></i></a>
                            <?php } else { ?>
                               <a href="#" title="Edit jadwal hari ini" class="disabled"><i class="fa fa-edit"></i></a>
                            <?php } ?>
 
                         </td>
                         <td class="text-center" style="white-space: nowrap;">
-                           <span style="font-weight:bold; font-size:18px"><?= $d->singkatan1 ?></span>
-                           <br />
-                           <span style="font-size:13px; color:orangered">
-                              <?php
-                              if (strpos($d->guru1, ',') !== false) {
-                                 $nama_array1 = explode(",", $d->guru1);
-                                 foreach ($nama_array1 as $nm1) {
-                                    $nama1 = $this->Mjadwal->ambil_nama($nm1);
-                                    echo substr($nama1->nama, 0, 5);
-                                    if ($nm1 !== end($nama_array1)) {
-                                       echo " | ";
-                                    }
-                                 }
-                              } else {
-                                 echo substr($d->nama1, 0, 12) . "..";
+                           <?php
+                           if (empty($d->singkatan1)) {
+                              if (strtolower($d->hari) == 'senin') {
+                                 echo '<span style="font-weight:bold; font-size:18px;">UPACARA</span>';
                               }
+                              elseif (strtolower($d->hari) == 'jumat') {
+                                 echo '<span style="font-weight:bold; font-size:18px;">IBADAH</span>';
+                              }
+                              else {
+                                 echo '<span style="font-weight:bold; font-size:18px">-</span>';
+                              }
+                           } else {
                               ?>
-                           </span>
+                              <span style="font-weight:bold; font-size:18px">
+                                 <?= $d->singkatan1 ?>
+                              </span>
+                              <br />
+                              <span style="font-size:13px; color:orangered">
+                                 <?php
+                                 if (strpos($d->guru1, ',') !== false) {
+                                    $nama_array1 = explode(",", $d->guru1);
+                                    foreach ($nama_array1 as $nm1) {
+                                       $nama1 = $this->Mjadwal->ambil_nama($nm1);
+                                       echo substr($nama1->nama, 0, 5);
+                                       if ($nm1 !== end($nama_array1)) {
+                                          echo " | ";
+                                       }
+                                    }
+                                 } else {
+                                    echo substr($d->nama1, 0, 12) . "..";
+                                 }
+                                 ?>
+                              </span>
+                           <?php } ?>
                         </td>
                         <td class="text-center" style="white-space: nowrap;">
-                           <span style="font-weight:bold; font-size:18px"><?= $d->singkatan2  ?></span>
+                           <span style="font-weight:bold; font-size:18px"><?= $d->singkatan2 ?></span>
                            <br />
                            <span style="font-size:13px; color:orangered">
                               <?php
@@ -317,52 +355,58 @@
                               ?>
                            </span>
                         </td>
-                      
+
                      </tr>
-                  <?php
+                     <?php
                   endforeach;
                   ?>
                </tbody>
             </table>
          </div>
          <div class="mt-3">
-         <?php 
-         if (isset($data['wali_kelas']) && is_object($data['wali_kelas']) && $data['wali_kelas']->validasi != '1') { 
-         ?>
-            <span style="font-weight:bold; color:red" class="blink">Jadwal Belum di validasi</span>
-            <br />
-            <?php 
-            if ((isset($d) && isset($d->wali_kelas) && $d->wali_kelas == $_SESSION['nik']) || (Middleware::admin('kurikulum'))) { 
-            ?>
-               <div class="mt-1">
-                     <a href="javascript:void(0)" onclick="validasi('<?= $data['wali_kelas']->kode_kelas ?>')" class="btn btn-success btn-sm tombol3" title="Validasi jadwal"><i class="fa fa-check"></i> &nbsp;Validasi Jadwal</a>
-                     <a href="javascript:void(0)" onclick="kosongkan('<?= $data['wali_kelas']->kode_kelas ?>')" class="btn btn-danger btn-sm tombol3" title="Hapus semua jadwal"><i class="fa fa-trash"></i> &nbsp;Kosongkan Jadwal</a>
-               </div>
-            <?php } ?>
-         <?php } else { ?>
             <?php
-            if (isset($data['wali_kelas']) && is_object($data['wali_kelas'])) {
-               if ($data['wali_kelas']->validasi_oleh == 'admin') {
+            if (isset($data['wali_kelas']) && is_object($data['wali_kelas']) && $data['wali_kelas']->validasi != '1') {
+               ?>
+               <span style="font-weight:bold; color:red" class="blink">Jadwal Belum di validasi</span>
+               <br />
+               <?php
+               if ((isset($d) && isset($d->wali_kelas) && $d->wali_kelas == $_SESSION['nik']) || (Middleware::admin('kurikulum'))) {
+                  ?>
+                  <div class="mt-1">
+                     <a href="javascript:void(0)" onclick="validasi('<?= $data['wali_kelas']->kode_kelas ?>')"
+                        class="btn btn-success btn-sm tombol3" title="Validasi jadwal"><i class="fa fa-check"></i> &nbsp;Validasi
+                        Jadwal</a>
+                     <a href="javascript:void(0)" onclick="kosongkan('<?= $data['wali_kelas']->kode_kelas ?>')"
+                        class="btn btn-danger btn-sm tombol3" title="Hapus semua jadwal"><i class="fa fa-trash"></i>
+                        &nbsp;Kosongkan Jadwal</a>
+                  </div>
+               <?php } ?>
+            <?php } else { ?>
+               <?php
+               if (isset($data['wali_kelas']) && is_object($data['wali_kelas'])) {
+                  if ($data['wali_kelas']->validasi_oleh == 'admin') {
                      $validator = 'Administrator';
-               } else {
+                  } else {
                      $ambil = $this->Mjadwal->ambil_nama($data['wali_kelas']->validasi_oleh);
                      $validator = isset($ambil->nama) ? $ambil->nama : 'Tidak Diketahui';
-               }
-            ?>
-               <span style="font-weight:bold; color:green" class="blink">
+                  }
+                  ?>
+                  <span style="font-weight:bold; color:green" class="blink">
                      Jadwal Sudah di validasi oleh : <?= $validator ?><br />
                      Divalidasi pada tanggal : <?= dateID($data['wali_kelas']->tanggal_validasi) ?>
                      <br />
-               </span>
-               <?php 
-               if ((isset($d) && isset($d->wali_kelas) && $d->wali_kelas == $_SESSION['nik']) || (Middleware::admin('kurikulum'))) { 
-               ?>
+                  </span>
+                  <?php
+                  if ((isset($d) && isset($d->wali_kelas) && $d->wali_kelas == $_SESSION['nik']) || (Middleware::admin('kurikulum'))) {
+                     ?>
                      <div class="mt-2">
-                        <a href="javascript:void(0)" onclick="kosongkan('<?= $data['wali_kelas']->kode_kelas ?>')" class="btn btn-danger btn-sm tombol3" title="Hapus semua jadwal"><i class="fa fa-trash"></i> &nbsp;Kosongkan Jadwal</a>
+                        <a href="javascript:void(0)" onclick="kosongkan('<?= $data['wali_kelas']->kode_kelas ?>')"
+                           class="btn btn-danger btn-sm tombol3" title="Hapus semua jadwal"><i class="fa fa-trash"></i>
+                           &nbsp;Kosongkan Jadwal</a>
                      </div>
+                  <?php } ?>
                <?php } ?>
             <?php } ?>
-         <?php } ?>
          </div>
       <?php } else {
          $this->view('jadwal/ringkasan', $data);
@@ -411,7 +455,7 @@
                url: '<?= URLROOT ?>/jadwal/validasi_jadwal?id=' + id,
                type: 'POST',
                dataType: 'json',
-               success: function(response) {
+               success: function (response) {
                   if (response.status == 'success') {
                      Swal.fire({
                         title: 'Sukses!',
@@ -451,7 +495,7 @@
                url: '<?= URLROOT ?>/jadwal/kosongkan_jadwal?id=' + id,
                type: 'POST',
                dataType: 'json',
-               success: function(response) {
+               success: function (response) {
                   if (response.status == 'success') {
                      Swal.fire({
                         title: 'Sukses!',
@@ -475,7 +519,8 @@
 </script>
 
 
-<div class="modal fade" id="wali_kelas<?= $data['wali_kelas']->id_jadwal_lengkap ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="wali_kelas<?= $data['wali_kelas']->id_jadwal_lengkap ?>" tabindex="-1"
+   aria-labelledby="exampleModalLabel" aria-hidden="true">
    <div class="modal-dialog">
       <div class="modal-content p-4">
          <form method="POST" action="<?= URLROOT ?>/jadwal/simpan_wali_kelas">
@@ -487,18 +532,19 @@
                <select name="wali_kelas" class="text-pahdi" style="width:300px">
                   <option value="">Pilih</option>
                   <?php
-                  foreach ($data['guru'] as $g) :
-                  ?>
+                  foreach ($data['guru'] as $g):
+                     ?>
                      <option value="<?= $g->nik ?>" <?= ($g->nik === $data['wali_kelas']->wali_kelas) ? 'selected' : '' ?>>
                         <?= $g->nama ?>
                      </option>
-                  <?php
+                     <?php
                   endforeach;
                   ?>
                </select>
             </div>
             <div style="text-align:right">
-               <button type="button" class="btn btn-danger btn-sm tombol3" data-dismiss="modal"><i class="fa fa-undo"></i> Close</button>
+               <button type="button" class="btn btn-danger btn-sm tombol3" data-dismiss="modal"><i
+                     class="fa fa-undo"></i> Close</button>
                <button type="submit" class="btn btn-success  btn-sm tombol3"><i class="fa fa-save"></i> Simpan</button>
             </div>
          </form>

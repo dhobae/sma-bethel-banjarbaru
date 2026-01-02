@@ -968,9 +968,13 @@ class Mpresensi
     //---------------------------------
     public function nama_rekap_cuti($tahun)
     {
-        $sql = "SELECT pegawai.nik, pegawai.nama FROM pegawai where nama!= '' AND absen='Aktif' ORDER BY pegawai.nama";
+        $sql = "SELECT pegawai.nik, pegawai.nama 
+                FROM pegawai 
+                where nama!= '' 
+                AND absen='Aktif' 
+                ORDER BY pegawai.nama";
         $this->db->query($sql);
-        $this->db->bind('tahun', $tahun);
+        // $this->db->bind('tahun', $tahun);
         return $this->db->resultSet();
     }
 

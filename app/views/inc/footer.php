@@ -131,6 +131,10 @@
         placeholder: "~ Pilih Mata Pelajaran ~"
     });
 
+    $('.pilihkelas').select2({
+        placeholder: "~ Pilih Kelas ~"
+    });
+
     $('.pilihguru').select2({
         placeholder: "~ Pilih Guru ~"
     });

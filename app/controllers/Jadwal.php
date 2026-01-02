@@ -74,16 +74,6 @@ class Jadwal extends Controller
       $data['belum_ada_guru'] = $this->Mjadwal->belum_ada_guru();
       $data['list_jadwal_setting'] = $this->Mjadwal->get_all_jadwal_setting();
 
-      // echo "<pre>";
-
-
-      // var_dump($data['jadwal_setting']);
-
-      // echo "</pre>";
-
-      // exit;
-
-
       require APPROOT . '/views/inc/header.php';
       $this->view('jadwal/jadwal', $data);
       require APPROOT . '/views/inc/footer.php';
