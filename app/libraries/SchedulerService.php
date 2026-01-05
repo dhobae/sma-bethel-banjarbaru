@@ -29,7 +29,7 @@ class SchedulerService
 
     private function loadDataFromDatabase()
     {
-        error_log("SchedulerService: Memuat data dari database...");
+        // error_log("SchedulerService: Memuat data dari database...");
 
         // Load data guru
         $this->db->query("SELECT * FROM pegawai WHERE mengajar = 'Ya' AND hapus_pegawai = 0 AND jabatan = 'Guru'");
@@ -38,7 +38,7 @@ class SchedulerService
             $this->teachers[$teacher->nik] = $teacher;
             $this->teacherLoad[$teacher->nik] = 0; // Inisialisasi beban mengajar
         }
-        error_log("SchedulerService: " . count($this->teachers) . " guru dimuat.");
+        // error_log("SchedulerService: " . count($this->teachers) . " guru dimuat.");
 
         // Load data mata pelajaran
         $this->db->query("SELECT * FROM m_pelajaran");
@@ -46,7 +46,7 @@ class SchedulerService
         foreach ($subjects as $subject) {
             $this->subjects[$subject->id_pelajaran] = $subject;
         }
-        error_log("SchedulerService: " . count($this->subjects) . " mata pelajaran dimuat.");
+        // error_log("SchedulerService: " . count($this->subjects) . " mata pelajaran dimuat.");
 
         // Load data kelas dari tabel jadwal - PERBAIKAN DI SINI
         $this->db->query("SELECT DISTINCT kelas, ruang FROM jadwal WHERE kelas IS NOT NULL ORDER BY kelas, ruang");
@@ -58,7 +58,7 @@ class SchedulerService
                 'ruang' => $class->ruang
             ];
         }
-        error_log("SchedulerService: " . count($this->classes) . " kelas dimuat dari tabel jadwal.");
+        // error_log("SchedulerService: " . count($this->classes) . " kelas dimuat dari tabel jadwal.");
     }
 
     private function initializeTimeSlots()
@@ -75,7 +75,7 @@ class SchedulerService
             }
         }
 
-        error_log("SchedulerService: " . count($this->timeSlots) . " slot waktu tersedia.");
+        // error_log("SchedulerService: " . count($this->timeSlots) . " slot waktu tersedia.");
     }
 
     /**
@@ -84,13 +84,13 @@ class SchedulerService
      */
     public function loadWaliKelas($waliKelasLama = null)
     {
-        error_log("SchedulerService: Memuat wali kelas...");
+        // error_log("SchedulerService: Memuat wali kelas...");
 
         // Parse wali kelas lama jika ada
         $waliKelasLamaMap = [];
         if (!empty($waliKelasLama)) {
             $waliKelasLamaMap = $waliKelasLama;
-            error_log("SchedulerService: " . count($waliKelasLamaMap) . " wali kelas lama ditemukan.");
+            // error_log("SchedulerService: " . count($waliKelasLamaMap) . " wali kelas lama ditemukan.");
         }
 
         // Load guru yang tersedia untuk wali kelas
@@ -98,7 +98,7 @@ class SchedulerService
         $guruList = $this->db->resultSet();
 
         if (empty($guruList)) {
-            error_log("SchedulerService: WARNING - Tidak ada guru tersedia untuk wali kelas.");
+            // error_log("SchedulerService: WARNING - Tidak ada guru tersedia untuk wali kelas.");
             return;
         }
 
@@ -123,52 +123,52 @@ class SchedulerService
                 // Gunakan wali kelas lama
                 $this->waliKelas[$kelasKey] = $waliKelasLamaMap[$kelasKey];
                 $assignedTeachers[] = $waliKelasLamaMap[$kelasKey]; // Track assigned teacher
-                error_log("SchedulerService: Kelas $kelasKey menggunakan wali kelas lama: " . $waliKelasLamaMap[$kelasKey]);
+                // error_log("SchedulerService: Kelas $kelasKey menggunakan wali kelas lama: " . $waliKelasLamaMap[$kelasKey]);
             } else {
                 // Assign wali kelas baru secara acak, pastikan tidak duplikat
                 $availableTeachers = array_diff($guruNikList, $assignedTeachers);
 
                 if (empty($availableTeachers)) {
                     // Jika tidak ada guru tersedia (semua sudah di-assign), ambil dari guruNikList lagi
-                    error_log("SchedulerService: WARNING - Tidak ada guru tersedia untuk kelas $kelasKey. Menggunakan guru yang sudah di-assign.");
+                    // error_log("SchedulerService: WARNING - Tidak ada guru tersedia untuk kelas $kelasKey. Menggunakan guru yang sudah di-assign.");
                     $availableTeachers = $guruNikList;
                 }
 
                 $teacher = $availableTeachers[array_rand($availableTeachers)];
                 $this->waliKelas[$kelasKey] = $teacher;
                 $assignedTeachers[] = $teacher;
-                error_log("SchedulerService: Kelas $kelasKey di-assign wali kelas baru: " . $teacher);
+                // error_log("SchedulerService: Kelas $kelasKey di-assign wali kelas baru: " . $teacher);
             }
         }
 
-        error_log("SchedulerService: Total " . count($this->waliKelas) . " wali kelas dimuat (lama + baru).");
+        // error_log("SchedulerService: Total " . count($this->waliKelas) . " wali kelas dimuat (lama + baru).");
     }
 
     public function generateSchedule()
     {
-        error_log("SchedulerService: generateSchedule() dimulai dengan CSP + GA Hybrid.");
+        // error_log("SchedulerService: generateSchedule() dimulai dengan CSP + GA Hybrid.");
 
         if (empty($this->teachers) || empty($this->subjects) || empty($this->classes)) {
-            error_log("SchedulerService: ERROR - Data guru, mata pelajaran, atau kelas kosong.");
+            // error_log("SchedulerService: ERROR - Data guru, mata pelajaran, atau kelas kosong.");
             return [];
         }
 
         if (empty($this->waliKelas)) {
-            error_log("SchedulerService: ERROR - Wali kelas belum dimuat. Panggil loadWaliKelas() terlebih dahulu.");
+            // error_log("SchedulerService: ERROR - Wali kelas belum dimuat. Panggil loadWaliKelas() terlebih dahulu.");
             return [];
         }
 
         // Fase 1: CSP - Generate jadwal yang memenuhi hard constraint
-        error_log("SchedulerService: Fase 1 - Menerapkan CSP untuk hard constraint...");
-        $baseSchedule = $this->generateCSPSchedule();
+        // error_log("SchedulerService: Fase 1 - Menerapkan CSP untuk hard constraint...");
+        // $baseSchedule = $this->generateCSPSchedule();
 
         if (empty($baseSchedule)) {
-            error_log("SchedulerService: ERROR - CSP gagal menghasilkan jadwal valid.");
+            // error_log("SchedulerService: ERROR - CSP gagal menghasilkan jadwal valid.");
             return [];
         }
 
         // Fase 2: GA - Optimasi untuk soft constraint (keseimbangan beban guru)
-        error_log("SchedulerService: Fase 2 - Optimasi dengan GA untuk soft constraint...");
+        // error_log("SchedulerService: Fase 2 - Optimasi dengan GA untuk soft constraint...");
         $population = $this->initializePopulationFromCSP($baseSchedule);
 
         // Evolusi untuk mencari distribusi beban guru yang optimal
@@ -183,14 +183,14 @@ class SchedulerService
 
             if ($generation % 10 == 0) {
                 $loadBalance = $this->calculateLoadBalance($population[0]);
-                error_log("SchedulerService: Gen " . $generation . " - Fitness: " .
-                    number_format($fitnessScores[0], 4) . " - Load Balance: " .
-                    number_format($loadBalance, 4));
+                // error_log("SchedulerService: Gen " . $generation . " - Fitness: " .
+                //     number_format($fitnessScores[0], 4) . " - Load Balance: " .
+                //     number_format($loadBalance, 4));
             }
 
             // Jika sudah optimal (fitness > 0.95 dan load balance baik)
             if ($fitnessScores[0] >= 0.95) {
-                error_log("SchedulerService: Solusi optimal ditemukan di generasi " . $generation);
+                // error_log("SchedulerService: Solusi optimal ditemukan di generasi " . $generation);
                 break;
             }
 
@@ -224,7 +224,7 @@ class SchedulerService
         }
 
         $bestSchedule = $population[0];
-        error_log("SchedulerService: Evolusi selesai. Mendekode kromosom terbaik...");
+        // error_log("SchedulerService: Evolusi selesai. Mendekode kromosom terbaik...");
 
         return $this->decodeChromosome($bestSchedule);
     }
@@ -311,26 +311,19 @@ class SchedulerService
 
 
     /**
-     * Method untuk mendapatkan daftar mata pelajaran yang tersedia untuk kelas tertentu
-     * 
      * LOGIKA BARU: 
      * - Setiap kelas punya daftar mata pelajaran KHUSUS yang HANYA ada di kelas tersebut
      * - Mata pelajaran umum = semua mapel KECUALI mapel khusus kelas lain
-     * 
-     * Contoh:
-     * - Jika EKO, BIO khusus untuk X -> Kelas X dapat EKO+BIO+mapel umum, XI dan XII TIDAK dapat EKO+BIO
-     * - Jika FIS, KIM khusus untuk XII -> Kelas XII dapat FIS+KIM+mapel umum, X dan XI TIDAK dapat FIS+KIM
-     * 
      * @param string $kelasPrefix - Prefix kelas (X, XI, XII)
      * @param string $kelasLengkap - Kelas lengkap dengan ruang (XA, XB, XIA, XIB)
      */
     private function getAvailableSubjectsForClass($kelasPrefix, $kelasLengkap = '')
     {
-        error_log("SchedulerService: Memeriksa mapel untuk kelas $kelasLengkap (prefix: $kelasPrefix)");
+        // error_log("SchedulerService: Memeriksa mapel untuk kelas $kelasLengkap (prefix: $kelasPrefix)");
 
         // Jika tidak ada pengecualian sama sekali, return semua mata pelajaran
         if (empty($this->pengecualian)) {
-            error_log("SchedulerService: Tidak ada pengecualian, semua mapel tersedia");
+            // error_log("SchedulerService: Tidak ada pengecualian, semua mapel tersedia");
             return $this->subjects;
         }
 
@@ -368,11 +361,11 @@ class SchedulerService
         $jumlahMapelTotal = count($availableSubjects);
         $jumlahMapelExclude = count($mapelKhususKelasLain);
 
-        if ($jumlahMapelKhusus > 0) {
-            error_log("SchedulerService: ✅ Kelas $kelasLengkap dapat $jumlahMapelTotal mapel (termasuk $jumlahMapelKhusus mapel khusus kelas ini, exclude $jumlahMapelExclude mapel khusus kelas lain)");
-        } else {
-            error_log("SchedulerService: ℹ️ Kelas $kelasLengkap dapat $jumlahMapelTotal mapel umum (exclude $jumlahMapelExclude mapel khusus kelas lain)");
-        }
+        // if ($jumlahMapelKhusus > 0) {
+        //     error_log("SchedulerService: ✅ Kelas $kelasLengkap dapat $jumlahMapelTotal mapel (termasuk $jumlahMapelKhusus mapel khusus kelas ini, exclude $jumlahMapelExclude mapel khusus kelas lain)");
+        // } else {
+        //     error_log("SchedulerService: ℹ️ Kelas $kelasLengkap dapat $jumlahMapelTotal mapel umum (exclude $jumlahMapelExclude mapel khusus kelas lain)");
+        // }
 
         return $availableSubjects;
     }
@@ -658,29 +651,34 @@ class SchedulerService
 
     private function decodeChromosome($chromosome)
     {
-        return $chromosome; // Sudah dalam format yang benar
+        return $chromosome; // Sudah dalam format yang benar??
     }
 
     public function saveScheduleToDatabase($schedule, $berlakuJadwalDari)
     {
-        error_log("SchedulerService: saveScheduleToDatabase() dimulai.");
+        // error_log("SchedulerService: saveScheduleToDatabase() dimulai.");
 
         if (empty($schedule)) {
-            error_log("SchedulerService: ERROR - Jadwal kosong.");
+            // error_log("SchedulerService: ERROR - Jadwal kosong.");
             return false;
         }
 
-        $waliKelasTersedia = []; // untuk menampung wali_kelas unik
+        // ambil kepala sekolah
+        $this->db->query("SELECT nip_pegawai FROM admin WHERE id = :id AND hak_akses = :hak_akses");
+        $this->db->bind(':id', 1);
+        $this->db->bind(':hak_akses', 'kepala_sekolah');
+        $kepala_sekolah = $this->db->single();
+
+        $waliKelasTersedia = []; 
         $insertCount = 0;
 
         foreach ($schedule as $daySchedule) {
             $kode_kelas = $daySchedule['kelas'] . $daySchedule['ruang'];
             $waliKelasId = $daySchedule['wali_kelas'];
 
-            // Simpan hanya jika belum ada dalam array
             if (!in_array($waliKelasId, $waliKelasTersedia)) {
                 $waliKelasTersedia[] = $waliKelasId;
-                error_log("SchedulerService: Wali kelas untuk kelas " . $daySchedule['kelas'] . ": " . $waliKelasId);
+                // error_log("SchedulerService: Wali kelas untuk kelas " . $daySchedule['kelas'] . ": " . $waliKelasId);
             }
 
             $data = [
@@ -691,14 +689,13 @@ class SchedulerService
                 'wali_kelas' => $daySchedule['wali_kelas'],
                 'prodi' => 'SMABETHEL',
                 'validasi' => 1,
-                'validasi_oleh' => 1700024,
+                'validasi_oleh' => $kepala_sekolah->nip_pegawai ?? NULL,
                 'tanggal_validasi' => date('Y-m-d'),
                 'berlaku_jadwal_dari' => $berlakuJadwalDari,
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
             ];
 
-            // Isi mp1-mp10 dan guru1-guru10 (sekarang 10 jam untuk semua hari)
             for ($jam = 1; $jam <= 10; $jam++) {
                 $mpField = 'mp' . $jam;
                 $guruField = 'guru' . $jam;
@@ -729,9 +726,8 @@ class SchedulerService
             }
         }
 
-        error_log("SchedulerService: Wali kelas tersedia: " . implode(", ", $waliKelasTersedia));
+        // error_log("SchedulerService: Wali kelas tersedia: " . implode(", ", $waliKelasTersedia));
 
-        // Update tabel admin dengan wali kelas
         if (!empty($waliKelasTersedia)) {
             $nipPegawaiString = implode(",", $waliKelasTersedia);
 
@@ -739,11 +735,11 @@ class SchedulerService
             $this->db->query($updateQuery);
             $this->db->bind(':nip_pegawai', $nipPegawaiString);
 
-            if ($this->db->execute()) {
-                error_log("SchedulerService: UPDATE admin berhasil: $nipPegawaiString");
-            } else {
-                error_log("SchedulerService: Gagal update admin wali_kelas");
-            }
+            // if ($this->db->execute()) {
+            //     error_log("SchedulerService: UPDATE admin berhasil: $nipPegawaiString");
+            // } else {
+            //     error_log("SchedulerService: Gagal update admin wali_kelas");
+            // }
         }
 
         error_log("SchedulerService: " . $insertCount . " baris berhasil disimpan.");

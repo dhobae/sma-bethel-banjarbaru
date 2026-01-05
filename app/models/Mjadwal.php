@@ -6,11 +6,6 @@ class Mjadwal
         $this->db = new Database;
     }
 
-    // TAMBAHKAN 4 METHOD BARU INI DI MODEL
-
-
-
-    // 1. Ambil semua jadwal setting
     public function get_all_jadwal_setting()
     {
         $sql = "SELECT * FROM jadwal_setting ORDER BY id_tahun_ajaran DESC, semester DESC, blok DESC";
@@ -18,7 +13,6 @@ class Mjadwal
         return $this->db->resultSet();
     }
 
-    // 2. Ambil jadwal setting by ID
     public function get_jadwal_setting_by_id($id)
     {
         $sql = "SELECT * FROM jadwal_setting WHERE id_jadwal_setting = :id";
@@ -27,7 +21,6 @@ class Mjadwal
         return $this->db->single();
     }
 
-    // 3. Nonaktifkan semua jadwal setting
     public function nonaktifkan_semua_jadwal_setting()
     {
         $sql = "UPDATE jadwal_setting SET status = 0";
@@ -35,7 +28,6 @@ class Mjadwal
         return $this->db->execute();
     }
 
-    // 4. Aktifkan jadwal setting tertentu
     public function aktifkan_jadwal_setting($id)
     {
         $sql = "UPDATE jadwal_setting SET status = 1, tanggal_dirubah = :tanggal WHERE id_jadwal_setting = :id";
@@ -45,7 +37,6 @@ class Mjadwal
         return $this->db->execute();
     }
 
-    // Nonaktifkan semua tahun ajaran
     public function nonaktifkan_semua_tahun_ajaran()
     {
         $sql = "UPDATE m_tahun_ajaran SET status = :status";
@@ -72,7 +63,6 @@ class Mjadwal
     //     return $this->db->execute();
     // }
 
-    // TAMBAHKAN 4 METHOD BARU INI DI MODEL
 
     public function jadwal()
     {

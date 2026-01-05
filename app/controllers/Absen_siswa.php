@@ -25,9 +25,8 @@ class Absen_siswa extends Controller
 
     private function getStatus() {
         $jamKerja = $this->Mabsen_siswa->ambil_jam_sekolah();
-        $jam_masuk  = $jamKerja->masuk;   // 07:30:00
-        $jam_pulang = $jamKerja->pulang;  // 16:00:00
-        // VALIDASI JAM MASUK DAN PULANG (Toleransi masuk : 30 menit sebelum, 15 menit sesudah) , (pulang : 15 menit sebelum, 1 jam sesudah)
+        $jam_masuk  = $jamKerja->masuk;   
+        $jam_pulang = $jamKerja->pulang;  
         $hasil = validasi_waktu_rfid($jam_masuk, $jam_pulang);
         return $hasil['status'];
     }
@@ -90,11 +89,9 @@ class Absen_siswa extends Controller
         $nama = $siswa->nama_siswa ?? 'Siswa';
         $kelas = $siswa->kelas_siswa ?? '-';
 
-        // Cek status absen hari ini
         $cek_absen = $this->Mabsen_siswa->cek_absen_hari_ini($nis);
 
         if (!$cek_absen) {
-            // BELUM ABSEN MASUK - Lakukan absen masuk
             $keterangan = $this->getStatus() == 'terlambat' ? ' (Terlambat)' : '';
             if ($this->Mabsen_siswa->hadir_rfid_siswa($_POST)) {
                 echo json_encode([
@@ -113,13 +110,10 @@ class Absen_siswa extends Controller
                 ]);
             }
         } else {
-            // SUDAH ABSEN MASUK - Cek apakah sudah absen pulang
             if (empty($cek_absen->jam_pulang_ahs) || $cek_absen->jam_pulang_ahs == null) {
-                // BELUM ABSEN PULANG - Lakukan absen pulang
                 if($this->getStatus() == 'pulang') {
 
                 if ($this->Mabsen_siswa->pulang_rfid_siswa($_POST)) {
-                    // Hitung durasi kehadiran
                     $jam_masuk = strtotime($cek_absen->jam_masuk_ahs);
                     $jam_pulang = strtotime(date('H:i:s'));
                     $durasi = $jam_pulang - $jam_masuk;
@@ -151,7 +145,6 @@ class Absen_siswa extends Controller
             }
 
             } else {
-                // SUDAH ABSEN MASUK DAN PULANG
                 echo json_encode([
                     'status' => 'warning',
                     'message' => 'Anda sudah melakukan presensi MASUK dan PULANG hari ini.',

@@ -144,9 +144,7 @@ class Absen_pegawai extends Controller
                 ]);
             }
         } else {
-            // SUDAH ABSEN MASUK - Cek apakah sudah absen pulang
             if (empty($cek_absen->jam_pulang) || $cek_absen->jam_pulang == null) {
-                // BELUM ABSEN PULANG - Lakukan absen pulang
 
                 if ($this->getStatus() == 'pulang') {
 
@@ -158,14 +156,12 @@ class Absen_pegawai extends Controller
                         'keterangan' => 'Absen pulang via RFID',
                     ];
 
-                    // masih perlu diperbaiki
                     if ($this->Mabsen_pegawai->absen_pulang($data_absen)) {
-                        // Hitung durasi kehadiran
                         $jam_masuk = strtotime($cek_absen->jam_masuk);
                         $jam_pulang = strtotime(date('H:i:s'));
                         $durasi = $jam_pulang - $jam_masuk;
 
-                        // Kurangi 1 jam (3600 detik)
+                        // Kurangi 1 jam (3600 detik) istirahat
                         $durasi = max(0, $durasi - 3600);
 
                         $jam = floor($durasi / 3600);
@@ -200,7 +196,6 @@ class Absen_pegawai extends Controller
                 }
 
             } else {
-                // SUDAH ABSEN MASUK DAN PULANG
                 echo json_encode([
                     'status' => 'warning',
                     'message' => 'Anda sudah melakukan presensi MASUK dan PULANG hari ini.',
