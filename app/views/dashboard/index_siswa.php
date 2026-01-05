@@ -378,7 +378,7 @@ $days = [
                         $absen = isset($data['absensi_by_date'][$tanggal3]) ? $data['absensi_by_date'][$tanggal3] : null;
                         $status = $absen ? $absen->status_ahs : '-';
                         $jam_hadir = $absen ? $absen->jam_masuk_ahs : '';
-                        $catatan = ($jam_hadir && strtotime($jam_hadir) > strtotime('07:45:00')) ? 'Telat' : '';
+                        $catatan = ($jam_hadir && strtotime($jam_hadir) > strtotime('07:30:00')) ? 'Telat' : '';
                      ?>
                         <tr>
                            <?php

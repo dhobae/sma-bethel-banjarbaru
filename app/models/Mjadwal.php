@@ -8,7 +8,7 @@ class Mjadwal
 
     // TAMBAHKAN 4 METHOD BARU INI DI MODEL
 
-    
+
 
     // 1. Ambil semua jadwal setting
     public function get_all_jadwal_setting()
@@ -72,7 +72,7 @@ class Mjadwal
     //     return $this->db->execute();
     // }
 
-        // TAMBAHKAN 4 METHOD BARU INI DI MODEL
+    // TAMBAHKAN 4 METHOD BARU INI DI MODEL
 
     public function jadwal()
     {
@@ -83,7 +83,7 @@ class Mjadwal
     }
 
     public function jadwal_kelas($kelas)
-    {   
+    {
         // Ambil jadwal_setting yang aktif (status = 1)
         $sql = "SELECT 
                     jadwal_lengkap.*,
@@ -150,11 +150,11 @@ class Mjadwal
                         LIMIT 1
                     )
                 ORDER BY id_jadwal_lengkap";
-    
+
         $this->db->query($sql);
         $this->db->bind('kode_kelas', $kelas);
         return $this->db->resultSet();
-    }    
+    }
 
     public function wali_kelas($kelas)
     {
@@ -466,12 +466,12 @@ class Mjadwal
                 WHERE pegawai.mengajar = :mengajar
                 GROUP BY pegawai.nik
                 ORDER BY pegawai.nama";
-    
+
         $this->db->query($sql);
         $this->db->bind('mengajar', $status);
         return $this->db->resultSet();
     }
-    
+
 
     public function status_mengajar_non($id)
     {
@@ -597,18 +597,18 @@ class Mjadwal
                         WHERE status = 1 
                         LIMIT 1
                   )";
-    
+
         $this->db->query($sql);
         $result = $this->db->resultSet();
-    
+
         $array_guru = array();
         foreach ($result as $row) {
             $array_guru[] = $row->ringkasan_x;
         }
-    
+
         return implode(', ', $array_guru);
     }
-    
+
     public function ringkasan_xi()
     {
         $sql = "SELECT 
@@ -621,18 +621,18 @@ class Mjadwal
                         WHERE status = 1 
                         LIMIT 1
                   )";
-    
+
         $this->db->query($sql);
         $result = $this->db->resultSet();
-    
+
         $array_guru = array();
         foreach ($result as $row) {
             $array_guru[] = $row->ringkasan_xi;
         }
-    
+
         return implode(', ', $array_guru);
     }
-    
+
     public function ringkasan_xii()
     {
         $sql = "SELECT 
@@ -645,18 +645,18 @@ class Mjadwal
                         WHERE status = 1 
                         LIMIT 1
                   )";
-    
+
         $this->db->query($sql);
         $result = $this->db->resultSet();
-    
+
         $array_guru = array();
         foreach ($result as $row) {
             $array_guru[] = $row->ringkasan_xii;
         }
-    
+
         return implode(', ', $array_guru);
     }
-    
+
 
     public function tahun_ajaran()
     {
@@ -805,7 +805,87 @@ class Mjadwal
         ];
     }
 
-   //  revisi mengurutkan berdasarkan hari
+    //  revisi mengurutkan berdasarkan hari
+//     public function mata_pelajaran_ringkasan($nik)
+//     {
+//         $sql = "SELECT * from (SELECT j.id_jadwal_lengkap, j.hari, j.kode_kelas, j.kelas, j.ruang, p.mata_pelajaran AS mp, SUBSTRING_INDEX(SUBSTRING_INDEX(j.guru1, ',', numbers.n), ',', -1) AS guru, 1 AS jam
+//    FROM jadwal_lengkap j
+//    INNER JOIN m_pelajaran p ON j.mp1 = p.id_pelajaran
+//    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
+//    ON CHAR_LENGTH(j.guru1) - CHAR_LENGTH(REPLACE(j.guru1, ',', '')) >= numbers.n - 1
+//    UNION ALL
+//    SELECT j.id_jadwal_lengkap, j.hari, j.kode_kelas, j.kelas, j.ruang, p.mata_pelajaran AS mp, SUBSTRING_INDEX(SUBSTRING_INDEX(j.guru2, ',', numbers.n), ',', -1) AS guru, 2 AS jam
+//    FROM jadwal_lengkap j
+//    INNER JOIN m_pelajaran p ON j.mp2 = p.id_pelajaran
+//    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
+//    ON CHAR_LENGTH(j.guru2) - CHAR_LENGTH(REPLACE(j.guru2, ',', '')) >= numbers.n - 1
+//    UNION ALL
+//    SELECT j.id_jadwal_lengkap, j.hari, j.kode_kelas, j.kelas, j.ruang, p.mata_pelajaran AS mp, SUBSTRING_INDEX(SUBSTRING_INDEX(j.guru3, ',', numbers.n), ',', -1) AS guru, 3 AS jam
+//    FROM jadwal_lengkap j
+//    INNER JOIN m_pelajaran p ON j.mp3 = p.id_pelajaran
+//    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
+//    ON CHAR_LENGTH(j.guru3) - CHAR_LENGTH(REPLACE(j.guru3, ',', '')) >= numbers.n - 1
+//    UNION ALL
+//    SELECT j.id_jadwal_lengkap, j.hari, j.kode_kelas, j.kelas, j.ruang, p.mata_pelajaran AS mp, SUBSTRING_INDEX(SUBSTRING_INDEX(j.guru4, ',', numbers.n), ',', -1) AS guru, 4 AS jam
+//    FROM jadwal_lengkap j
+//    INNER JOIN m_pelajaran p ON j.mp4 = p.id_pelajaran
+//    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
+//    ON CHAR_LENGTH(j.guru4) - CHAR_LENGTH(REPLACE(j.guru4, ',', '')) >= numbers.n - 1
+//    UNION ALL
+//    SELECT j.id_jadwal_lengkap, j.hari, j.kode_kelas, j.kelas, j.ruang, p.mata_pelajaran AS mp, SUBSTRING_INDEX(SUBSTRING_INDEX(j.guru5, ',', numbers.n), ',', -1) AS guru, 5 AS jam
+//    FROM jadwal_lengkap j
+//    INNER JOIN m_pelajaran p ON j.mp5 = p.id_pelajaran
+//    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
+//    ON CHAR_LENGTH(j.guru5) - CHAR_LENGTH(REPLACE(j.guru5, ',', '')) >= numbers.n - 1
+//    UNION ALL
+//    SELECT j.id_jadwal_lengkap, j.hari, j.kode_kelas, j.kelas, j.ruang, p.mata_pelajaran AS mp, SUBSTRING_INDEX(SUBSTRING_INDEX(j.guru6, ',', numbers.n), ',', -1) AS guru, 6 AS jam
+//    FROM jadwal_lengkap j
+//    INNER JOIN m_pelajaran p ON j.mp6 = p.id_pelajaran
+//    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
+//    ON CHAR_LENGTH(j.guru6) - CHAR_LENGTH(REPLACE(j.guru6, ',', '')) >= numbers.n - 1
+//    UNION ALL
+//    SELECT j.id_jadwal_lengkap, j.hari, j.kode_kelas, j.kelas, j.ruang, p.mata_pelajaran AS mp, SUBSTRING_INDEX(SUBSTRING_INDEX(j.guru7, ',', numbers.n), ',', -1) AS guru, 7 AS jam
+//    FROM jadwal_lengkap j
+//    INNER JOIN m_pelajaran p ON j.mp7 = p.id_pelajaran
+//    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
+//    ON CHAR_LENGTH(j.guru7) - CHAR_LENGTH(REPLACE(j.guru7, ',', '')) >= numbers.n - 1
+//    UNION ALL
+//    SELECT j.id_jadwal_lengkap, j.hari, j.kode_kelas, j.kelas, j.ruang, p.mata_pelajaran AS mp, SUBSTRING_INDEX(SUBSTRING_INDEX(j.guru8, ',', numbers.n), ',', -1) AS guru, 8 AS jam
+//    FROM jadwal_lengkap j
+//    INNER JOIN m_pelajaran p ON j.mp8 = p.id_pelajaran
+//    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
+//    ON CHAR_LENGTH(j.guru8) - CHAR_LENGTH(REPLACE(j.guru8, ',', '')) >= numbers.n - 1
+//    UNION ALL
+//    SELECT j.id_jadwal_lengkap, j.hari, j.kode_kelas, j.kelas, j.ruang, p.mata_pelajaran AS mp, SUBSTRING_INDEX(SUBSTRING_INDEX(j.guru9, ',', numbers.n), ',', -1) AS guru, 9 AS jam
+//    FROM jadwal_lengkap j
+//    INNER JOIN m_pelajaran p ON j.mp9 = p.id_pelajaran
+//    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
+//    ON CHAR_LENGTH(j.guru9) - CHAR_LENGTH(REPLACE(j.guru9, ',', '')) >= numbers.n - 1
+//    UNION ALL
+//    SELECT j.id_jadwal_lengkap, j.hari, j.kode_kelas, j.kelas, j.ruang, p.mata_pelajaran AS mp, SUBSTRING_INDEX(SUBSTRING_INDEX(j.guru10, ',', numbers.n), ',', -1) AS guru, 10 AS jam
+//    FROM jadwal_lengkap j
+//    INNER JOIN m_pelajaran p ON j.mp10 = p.id_pelajaran
+//    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
+//    ON CHAR_LENGTH(j.guru10) - CHAR_LENGTH(REPLACE(j.guru10, ',', '')) >= numbers.n - 1) as result
+//    WHERE guru=:gurunya
+//    ORDER BY
+//       CASE hari
+//          WHEN 'Senin' THEN 1
+//          WHEN 'Selasa' THEN 2
+//          WHEN 'Rabu' THEN 3
+//          WHEN 'Kamis' THEN 4
+//          WHEN 'Jumat' THEN 5
+//          WHEN 'Sabtu' THEN 6
+//          WHEN 'Minggu' THEN 7
+//       END,
+//       id_jadwal_lengkap, kelas, ruang, jam ";
+//         $this->db->query($sql);
+//         $this->db->bind(':gurunya', $nik);
+//         return $this->db->resultSet();
+//     }
+
+    //disini errornya
+
     public function mata_pelajaran_ringkasan($nik)
     {
         $sql = "SELECT * from (SELECT j.id_jadwal_lengkap, j.hari, j.kode_kelas, j.kelas, j.ruang, p.mata_pelajaran AS mp, SUBSTRING_INDEX(SUBSTRING_INDEX(j.guru1, ',', numbers.n), ',', -1) AS guru, 1 AS jam
@@ -813,60 +893,120 @@ class Mjadwal
    INNER JOIN m_pelajaran p ON j.mp1 = p.id_pelajaran
    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
    ON CHAR_LENGTH(j.guru1) - CHAR_LENGTH(REPLACE(j.guru1, ',', '')) >= numbers.n - 1
+   INNER JOIN (
+        SELECT berlaku_dari 
+        FROM jadwal_setting 
+        WHERE status = 1 
+        LIMIT 1
+   ) js ON j.berlaku_jadwal_dari = js.berlaku_dari
    UNION ALL
    SELECT j.id_jadwal_lengkap, j.hari, j.kode_kelas, j.kelas, j.ruang, p.mata_pelajaran AS mp, SUBSTRING_INDEX(SUBSTRING_INDEX(j.guru2, ',', numbers.n), ',', -1) AS guru, 2 AS jam
    FROM jadwal_lengkap j
    INNER JOIN m_pelajaran p ON j.mp2 = p.id_pelajaran
    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
    ON CHAR_LENGTH(j.guru2) - CHAR_LENGTH(REPLACE(j.guru2, ',', '')) >= numbers.n - 1
+   INNER JOIN (
+        SELECT berlaku_dari 
+        FROM jadwal_setting 
+        WHERE status = 1 
+        LIMIT 1
+   ) js ON j.berlaku_jadwal_dari = js.berlaku_dari
    UNION ALL
    SELECT j.id_jadwal_lengkap, j.hari, j.kode_kelas, j.kelas, j.ruang, p.mata_pelajaran AS mp, SUBSTRING_INDEX(SUBSTRING_INDEX(j.guru3, ',', numbers.n), ',', -1) AS guru, 3 AS jam
    FROM jadwal_lengkap j
    INNER JOIN m_pelajaran p ON j.mp3 = p.id_pelajaran
    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
    ON CHAR_LENGTH(j.guru3) - CHAR_LENGTH(REPLACE(j.guru3, ',', '')) >= numbers.n - 1
+   INNER JOIN (
+        SELECT berlaku_dari 
+        FROM jadwal_setting 
+        WHERE status = 1 
+        LIMIT 1
+   ) js ON j.berlaku_jadwal_dari = js.berlaku_dari
    UNION ALL
    SELECT j.id_jadwal_lengkap, j.hari, j.kode_kelas, j.kelas, j.ruang, p.mata_pelajaran AS mp, SUBSTRING_INDEX(SUBSTRING_INDEX(j.guru4, ',', numbers.n), ',', -1) AS guru, 4 AS jam
    FROM jadwal_lengkap j
    INNER JOIN m_pelajaran p ON j.mp4 = p.id_pelajaran
    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
    ON CHAR_LENGTH(j.guru4) - CHAR_LENGTH(REPLACE(j.guru4, ',', '')) >= numbers.n - 1
+   INNER JOIN (
+        SELECT berlaku_dari 
+        FROM jadwal_setting 
+        WHERE status = 1 
+        LIMIT 1
+   ) js ON j.berlaku_jadwal_dari = js.berlaku_dari
    UNION ALL
    SELECT j.id_jadwal_lengkap, j.hari, j.kode_kelas, j.kelas, j.ruang, p.mata_pelajaran AS mp, SUBSTRING_INDEX(SUBSTRING_INDEX(j.guru5, ',', numbers.n), ',', -1) AS guru, 5 AS jam
    FROM jadwal_lengkap j
    INNER JOIN m_pelajaran p ON j.mp5 = p.id_pelajaran
    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
    ON CHAR_LENGTH(j.guru5) - CHAR_LENGTH(REPLACE(j.guru5, ',', '')) >= numbers.n - 1
+   INNER JOIN (
+        SELECT berlaku_dari 
+        FROM jadwal_setting 
+        WHERE status = 1 
+        LIMIT 1
+   ) js ON j.berlaku_jadwal_dari = js.berlaku_dari
    UNION ALL
    SELECT j.id_jadwal_lengkap, j.hari, j.kode_kelas, j.kelas, j.ruang, p.mata_pelajaran AS mp, SUBSTRING_INDEX(SUBSTRING_INDEX(j.guru6, ',', numbers.n), ',', -1) AS guru, 6 AS jam
    FROM jadwal_lengkap j
    INNER JOIN m_pelajaran p ON j.mp6 = p.id_pelajaran
    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
    ON CHAR_LENGTH(j.guru6) - CHAR_LENGTH(REPLACE(j.guru6, ',', '')) >= numbers.n - 1
+   INNER JOIN (
+        SELECT berlaku_dari 
+        FROM jadwal_setting 
+        WHERE status = 1 
+        LIMIT 1
+   ) js ON j.berlaku_jadwal_dari = js.berlaku_dari
    UNION ALL
    SELECT j.id_jadwal_lengkap, j.hari, j.kode_kelas, j.kelas, j.ruang, p.mata_pelajaran AS mp, SUBSTRING_INDEX(SUBSTRING_INDEX(j.guru7, ',', numbers.n), ',', -1) AS guru, 7 AS jam
    FROM jadwal_lengkap j
    INNER JOIN m_pelajaran p ON j.mp7 = p.id_pelajaran
    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
    ON CHAR_LENGTH(j.guru7) - CHAR_LENGTH(REPLACE(j.guru7, ',', '')) >= numbers.n - 1
+   INNER JOIN (
+        SELECT berlaku_dari 
+        FROM jadwal_setting 
+        WHERE status = 1 
+        LIMIT 1
+   ) js ON j.berlaku_jadwal_dari = js.berlaku_dari
    UNION ALL
    SELECT j.id_jadwal_lengkap, j.hari, j.kode_kelas, j.kelas, j.ruang, p.mata_pelajaran AS mp, SUBSTRING_INDEX(SUBSTRING_INDEX(j.guru8, ',', numbers.n), ',', -1) AS guru, 8 AS jam
    FROM jadwal_lengkap j
    INNER JOIN m_pelajaran p ON j.mp8 = p.id_pelajaran
    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
    ON CHAR_LENGTH(j.guru8) - CHAR_LENGTH(REPLACE(j.guru8, ',', '')) >= numbers.n - 1
+   INNER JOIN (
+        SELECT berlaku_dari 
+        FROM jadwal_setting 
+        WHERE status = 1 
+        LIMIT 1
+   ) js ON j.berlaku_jadwal_dari = js.berlaku_dari
    UNION ALL
    SELECT j.id_jadwal_lengkap, j.hari, j.kode_kelas, j.kelas, j.ruang, p.mata_pelajaran AS mp, SUBSTRING_INDEX(SUBSTRING_INDEX(j.guru9, ',', numbers.n), ',', -1) AS guru, 9 AS jam
    FROM jadwal_lengkap j
    INNER JOIN m_pelajaran p ON j.mp9 = p.id_pelajaran
    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
    ON CHAR_LENGTH(j.guru9) - CHAR_LENGTH(REPLACE(j.guru9, ',', '')) >= numbers.n - 1
+   INNER JOIN (
+        SELECT berlaku_dari 
+        FROM jadwal_setting 
+        WHERE status = 1 
+        LIMIT 1
+   ) js ON j.berlaku_jadwal_dari = js.berlaku_dari
    UNION ALL
    SELECT j.id_jadwal_lengkap, j.hari, j.kode_kelas, j.kelas, j.ruang, p.mata_pelajaran AS mp, SUBSTRING_INDEX(SUBSTRING_INDEX(j.guru10, ',', numbers.n), ',', -1) AS guru, 10 AS jam
    FROM jadwal_lengkap j
    INNER JOIN m_pelajaran p ON j.mp10 = p.id_pelajaran
    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
-   ON CHAR_LENGTH(j.guru10) - CHAR_LENGTH(REPLACE(j.guru10, ',', '')) >= numbers.n - 1) as result
+   ON CHAR_LENGTH(j.guru10) - CHAR_LENGTH(REPLACE(j.guru10, ',', '')) >= numbers.n - 1
+   INNER JOIN (
+        SELECT berlaku_dari 
+        FROM jadwal_setting 
+        WHERE status = 1 
+        LIMIT 1
+   ) js ON j.berlaku_jadwal_dari = js.berlaku_dari) as result
    WHERE guru=:gurunya
    ORDER BY
       CASE hari

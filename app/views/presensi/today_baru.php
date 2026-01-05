@@ -108,7 +108,7 @@ if ($tanggal2 > date('Y-m-d')) {
                               } else {
                                  $loc_pulang = '<button type="submit" name="submit" class="btn btn-warning tombollokasi" onClick="showLoc(\'' . preg_replace('/\s+/', '', $field2->loc_pulang) . '\')">Lokasi</button>';
                               }
-                              if ($field2->jam_masuk > '08:00:00') {
+                              if ($field2->jam_masuk > '07:30:00') {
                                  $statustelat = 'Telat';
                                  $warna = 'red';
                               } else {

@@ -263,6 +263,8 @@ class Presensi extends Controller
         $data['rekap_jam_kerja_nik'] = $this->Mpresensi->rekap_jam_kerja_nik($bulan, $tahun);
         $data['jumlah_libur'] = $this->Mpresensi->jumlah_libur($bulan, $tahun);
 
+        // intip_data($data);
+
         require APPROOT . '/views/inc/header.php';
         $this->view('presensi/rekap_jam_kerja_baru', $data);
         require APPROOT . '/views/inc/footer.php';

@@ -161,7 +161,7 @@ $bulanindo = array('01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' 
                                                 $totallibur = $totallibur + $ttllbur;
                                             } else {
                                                 //-- Jika normal ------------------------------------------- --
-                                                if ($field2->jam_masuk > '08:00:00') {
+                                                if ($field2->jam_masuk > '07:30:00') {
                                                     $statustelat = 'Telat';
                                                 } else {
                                                     $statustelat = 'On Time';
