@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jan 05, 2026 at 11:24 PM
+-- Generation Time: Jan 06, 2026 at 11:19 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.0.30
 
@@ -80,7 +80,8 @@ CREATE TABLE `absen_harian_siswa` (
 --
 
 INSERT INTO `absen_harian_siswa` (`id_ahs`, `nis_ahs`, `tgl_ahs`, `status_ahs`, `jam_masuk_ahs`, `jam_pulang_ahs`, `id_libur`, `kelas_ahs`, `wali_kelas_ahs`, `id_jadwal_setting_ahs`) VALUES
-(1, '232314', '2026-01-05', 'Hadir', '07:11:07', NULL, NULL, NULL, NULL, NULL);
+(1, '232314', '2026-01-05', 'Hadir', '07:11:07', NULL, NULL, NULL, NULL, NULL),
+(2, '242352', '2026-01-07', 'Hadir', '07:16:36', NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -998,7 +999,8 @@ INSERT INTO `pengunjung` (`id`, `ip`, `npk`, `dari`, `tanggal`, `hits`, `online`
 (15, '192.168.1.4', '21960012', 'WFO', '2026-01-05', 1, '1767600522'),
 (16, '192.168.1.4', '17760062', 'WFO', '2026-01-05', 1, '1767622183'),
 (17, '192.168.1.4', '17760062', 'WFO', '2026-01-06', 1, '1767698701'),
-(18, '192.168.1.4', 'rfid', 'WFO', '2026-01-06', 1, '1767712146');
+(18, '192.168.1.4', 'rfid', 'WFO', '2026-01-06', 1, '1767712146'),
+(19, '192.168.1.4', 'rfid', 'WFO', '2026-01-07', 1, '1767755775');
 
 -- --------------------------------------------------------
 
@@ -1159,19 +1161,19 @@ INSERT INTO `siswa` (`id_siswa`, `nis`, `nama_siswa`, `tahun_masuk`, `prodi`, `k
 (15, '232337', 'Nita Ayu\n', 2023, '1', 'XIIB', 'B', 'Perempuan', '0071991508', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, '3355979482', '2024-07-08 07:48:20', '2024-07-08 07:48:20'),
 (16, '232338', 'Tribayu Yoyada\n', 2023, '1', 'XIIB', 'B', 'Laki-laki', '0079548169', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, NULL, '2024-07-08 07:48:20', '2024-07-08 07:48:20'),
 (21, '252367', 'Iskal Munasir\n', 2025, '1', 'XA', 'A', 'Laki-laki', '0105873200\n', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, '3356615898', '2024-07-08 07:48:20', '2024-07-08 07:48:20'),
-(22, '252365', 'Desti Flora Andrea\n', 2025, '1', 'XA', 'A', 'Perempuan', '0097776558\n', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, NULL, '2024-07-08 07:48:20', '2024-07-08 07:48:20'),
+(22, '252365', 'Desti Flora Andrea\n', 2025, '1', 'XA', 'A', 'Perempuan', '0097776558\n', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, '3358149226', '2024-07-08 07:48:20', '2024-07-08 07:48:20'),
 (23, '252364', 'Gloria Paulida\n', 2025, '1', 'XA', 'A', 'Perempuan', '0037813579\n', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, '3371564490', '2024-07-08 07:48:20', '2024-07-08 07:48:20'),
-(24, '252363', 'Marsil\n', 2025, '1', 'XA', 'A', 'Laki-laki', '0103265335\n', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, NULL, '2024-07-08 07:48:20', '2024-07-08 07:48:20'),
-(25, '252362', 'Junia Andini Saputri', 2025, '1', 'XA', 'A', 'Perempuan', '0104537344', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, NULL, '2024-07-08 07:48:20', '2024-07-08 07:48:20'),
-(26, '252361', 'Aulia Ulfah', 2025, '1', 'XA', 'A', 'Perempuan', '0098805934\n', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, NULL, '2024-07-08 07:48:20', '2024-07-08 07:48:20'),
-(27, '252358', 'Adytya Wijayanto', 2025, '1', 'XA', 'A', 'Laki-laki', '0108331880\n', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, NULL, '2024-07-08 07:48:20', '2024-07-08 07:48:20'),
-(28, '242354', 'Nikita Felly Hirmandani\n', 2024, '1', 'XIA', 'A', 'Perempuan', '0092710638', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, NULL, '2024-07-08 07:48:20', '2024-07-08 07:48:20'),
+(24, '252363', 'Marsil\n', 2025, '1', 'XA', 'A', 'Laki-laki', '0103265335\n', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, '3358625898', '2024-07-08 07:48:20', '2024-07-08 07:48:20'),
+(25, '252362', 'Junia Andini Saputri', 2025, '1', 'XA', 'A', 'Perempuan', '0104537344', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, '3367971786', '2024-07-08 07:48:20', '2024-07-08 07:48:20'),
+(26, '252361', 'Aulia Ulfah', 2025, '1', 'XA', 'A', 'Perempuan', '0098805934\n', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, '3364635178', '2024-07-08 07:48:20', '2024-07-08 07:48:20'),
+(27, '252358', 'Adytya Wijayanto', 2025, '1', 'XA', 'A', 'Laki-laki', '0108331880\n', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, '3360906922', '2024-07-08 07:48:20', '2024-07-08 07:48:20'),
+(28, '242354', 'Nikita Felly Hirmandani\n', 2024, '1', 'XIA', 'A', 'Perempuan', '0092710638', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, '3363713162', '2024-07-08 07:48:20', '2024-07-08 07:48:20'),
 (29, '252366', 'Yehuda Ferdiansyah\n', 2024, '1', 'XIA', 'A', 'Laki-laki', '0082601392', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, '3367325066', '2024-07-08 07:48:20', '2024-07-08 07:48:20'),
-(30, '242352', 'Refli\n', 2024, '1', 'XIA', 'A', 'Laki-laki', '0081800912', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, NULL, '2024-07-08 07:48:20', '2024-07-08 07:48:20'),
+(30, '242352', 'Refli\n', 2024, '1', 'XIA', 'A', 'Laki-laki', '0081800912', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, '3357634170', '2024-07-08 07:48:20', '2024-07-08 07:48:20'),
 (31, '242350', 'Melisa\n', 2024, '1', 'XIA', 'A', 'Perempuan', '0089526035', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, '2391091351', '2024-07-08 07:48:20', '2024-07-08 07:48:20'),
-(32, '242349', 'Priskila Novia\n', 2024, '1', 'XIA', 'A', 'Perempuan', '0086465334', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, NULL, '2024-07-08 07:48:20', '2024-07-08 07:48:20'),
-(33, '242344', 'Richi Kasih Karuniani\n', 2024, '1', 'XIA', 'A', 'Perempuan', '0092935094', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, NULL, '2024-07-08 07:48:20', '2024-07-08 07:48:20'),
-(34, '242343', 'Azis Maulana Saputra', 2024, '1', 'XIA', 'A', 'Laki-laki', '0087237940', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, NULL, '2024-07-08 07:48:20', '2024-07-08 07:48:20'),
+(32, '242349', 'Priskila Novia\n', 2024, '1', 'XIA', 'A', 'Perempuan', '0086465334', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, '3368811930', '2024-07-08 07:48:20', '2024-07-08 07:48:20'),
+(33, '242344', 'Richi Kasih Karuniani\n', 2024, '1', 'XIA', 'A', 'Perempuan', '0092935094', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, '3366323322', '2024-07-08 07:48:20', '2024-07-08 07:48:20'),
+(34, '242343', 'Azis Maulana Saputra', 2024, '1', 'XIA', 'A', 'Laki-laki', '0087237940', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, '2398673575', '2024-07-08 07:48:20', '2024-07-08 07:48:20'),
 (35, '242342', 'Andator Ady Putra\n', 2024, '1', 'XIA', 'A', 'Laki-laki', '0095371217', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, NULL, '2024-07-08 07:48:20', '2024-07-08 07:48:20'),
 (36, '242355', 'GIDEON ALFREDO ZHERAVINO PUADJOLE', 2024, '1', 'XIA', 'A', 'Laki-laki', '0095618265', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, NULL, '2024-07-08 07:48:20', '2024-07-08 07:48:20'),
 (106, '242341', 'Agata Vidia Calbie\n', 2024, '1', 'XIA', 'A', 'Perempuan', '0092710638', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Aktif', NULL, NULL, '2024-07-08 07:48:20', '2024-07-08 07:48:20');
@@ -9463,7 +9465,7 @@ ALTER TABLE `absen`
 -- AUTO_INCREMENT for table `absen_harian_siswa`
 --
 ALTER TABLE `absen_harian_siswa`
-  MODIFY `id_ahs` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_ahs` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `absen_izin`
@@ -9643,7 +9645,7 @@ ALTER TABLE `pendapat`
 -- AUTO_INCREMENT for table `pengunjung`
 --
 ALTER TABLE `pengunjung`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `prestasi`
