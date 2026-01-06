@@ -17,10 +17,10 @@
    <div class="card-body box-profile">
 
       <div class="tengah mb-1">
-         <img src="<?= URLROOT ?>/skatel/img/ts.png" width="120px">
+         <img src="<?= URLROOT ?>/smabethel/img/icon.png" width="80px">
       </div>
       <div class="huruf1 tengah" style="font-size:20px; font-weight:bold">
-         Tambah Data Siswa Skatel Banjarbaru
+         Tambah Data Siswa SMA Bethel Banjarbaru
       </div>
    </div>
 </div>
@@ -38,7 +38,7 @@
       <div class="col-lg-4">
          <div class="card card-primary card-outline" style="margin-top:10px;">
             <div class="card-body box-profile tengah">
-               <img src="<?= URLROOT ?>/skatel/avatar/foto1.jpg" width="150px">
+               <img src="<?= URLROOT ?>/smabethel/avatar/foto1.jpg" width="150px">
                <br /><br />
                <div class="divtujuh mb-2" style="text-align:right">
                   <input type="file" class="text1" name="avatar" accept=".jpg, .jpeg, .png">
@@ -66,7 +66,7 @@
 
                <div class="form-group">
                   <label class="label1">Password (default)</label>
-                  <input type="text" name="password" class="form-control text1" style="width:100%" value="SKATEL" readonly>
+                  <input type="text" name="password" class="form-control text1" style="width:100%" value="SMABETHEL" readonly>
                </div>
             </div>
          </div>
