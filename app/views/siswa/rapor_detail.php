@@ -5,12 +5,15 @@
     <div class="card card-primary">
         <div class="card-header">
             <h3 class="card-title">
-                <i class="fas fa-graduation-cap"></i> 
+                <i class="fas fa-graduation-cap"></i>
                 E-Rapor - <?= htmlspecialchars($data['siswa']->nama_siswa) ?>
             </h3>
+
             <div class="card-tools">
-                <a href="<?= URLROOT ?>/siswa/rapor" class="btn btn-tool">
-                    <i class="fas fa-arrow-left"></i> Kembali
+                <a href="<?= URLROOT ?>/siswa/cetak_rapor_wali/<?= $data['siswa']->id_siswa ?>?semester=<?= $data['semester_dipilih'] ?>"
+                   class="btn btn-success btn-sm"
+                   target="_blank">
+                    <i class="fas fa-print"></i> Cetak Rapor
                 </a>
             </div>
         </div>
@@ -530,4 +533,13 @@ document.getElementById('formRapor').addEventListener('submit', function(e) {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+.card-header .card-title {
+    line-height: 1.8;
+}
+
+.card-header .card-tools {
+    margin-top: 2px;
+}
+
 </style>

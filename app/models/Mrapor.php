@@ -849,4 +849,36 @@ public function cek_kelengkapan_rapor($id_jadwal, $id_siswa)
       
       return $result ? round($result->rata_rata, 2) : 0;
   }
+
+//   fitur cetak
+public function ambil_data_wali_kelas($nik)
+{
+    $sql = "SELECT 
+              p.nik,
+              p.nama,
+              p.jabatan
+            FROM pegawai p
+            WHERE p.nik = :nik
+            LIMIT 1";
+    
+    $this->db->query($sql);
+    $this->db->bind('nik', $nik);
+    return $this->db->single();
 }
+
+// Ambil data kepala sekolah
+public function ambil_kepala_sekolah()
+{
+    $sql = "SELECT 
+              p.nik,
+              p.nama,
+              p.jabatan
+            FROM pegawai p
+            WHERE p.jabatan LIKE '%KS%'
+            LIMIT 1";
+    
+    $this->db->query($sql);
+    return $this->db->single();
+}
+}
+

@@ -759,6 +759,87 @@ public function simpan_rapor()
         redirect('siswa/rapor');
     }
 }
+
+// Method untuk halaman cetak rapor
+public function cetak_rapor_wali($id_siswa = null)
+{
+    if (!Middleware::admin('wali_kelas')) {
+        setFlash('Akses ditolak! Hanya wali kelas yang bisa mengakses halaman ini.', 'error');
+        return redirect('siswa/rapor');
+    }
+
+    if (!$id_siswa) {
+        setFlash('ID siswa tidak valid', 'error');
+        return redirect('siswa/rapor');
+    }
+
+    // Ambil data siswa
+    $siswa = $this->Mrapor->ambil_siswa_by_id($id_siswa);
+    
+    if (!$siswa) {
+        setFlash('Data siswa tidak ditemukan', 'error');
+        return redirect('siswa/rapor');
+    }
+
+    // Verifikasi apakah siswa ini di kelas wali kelas yang login
+    $siswa_wali = $this->Mrapor->ambil_siswa_berdasarkan_wali_kelas($_SESSION['nik']);
+    $found = false;
+    foreach ($siswa_wali as $s) {
+        if ($s->id_siswa == $id_siswa) {
+            $found = true;
+            break;
+        }
+    }
+
+    if (!$found) {
+        setFlash('Anda tidak berhak mengakses data siswa ini', 'error');
+        return redirect('siswa/rapor');
+    }
+
+    // Ambil semester yang dipilih
+    $id_jadwal_pilihan = isset($_GET['semester']) ? (int)$_GET['semester'] : null;
+    
+    // Ambil semua jadwal
+    $data['semua_jadwal'] = $this->Mrapor->ambil_semua_jadwal_setting();
+    $data['jadwal_aktif'] = $this->Mrapor->ambil_jadwal_aktif();
+    
+    // Tentukan jadwal yang digunakan
+    if ($id_jadwal_pilihan) {
+        $jadwal_dipilih = null;
+        foreach ($data['semua_jadwal'] as $js) {
+            if ($js->id_jadwal_setting == $id_jadwal_pilihan) {
+                $jadwal_dipilih = $js;
+                break;
+            }
+        }
+        $jadwal = $jadwal_dipilih ?: $data['jadwal_aktif'];
+    } else {
+        $jadwal = $data['jadwal_aktif'];
+    }
+
+    if (!$jadwal) {
+        setFlash('Jadwal tidak ditemukan', 'error');
+        return redirect('siswa/rapor');
+    }
+
+    // Ambil semua data rapor
+    $data['siswa'] = $siswa;
+    $data['jadwal'] = $jadwal;
+    $data['semester_dipilih'] = $jadwal->id_jadwal_setting;
+    $data['pelajaran'] = $this->Mrapor->ambil_mata_pelajaran_kelas($siswa->kelas_siswa, $jadwal->id_jadwal_setting);
+    $data['nilai_pelajaran'] = $this->Mrapor->ambil_nilai_pelajaran($jadwal->id_jadwal_setting, $id_siswa);
+    $data['nilai_sikap'] = $this->Mrapor->ambil_nilai_sikap($jadwal->id_jadwal_setting, $id_siswa);
+    $data['ekskul'] = $this->Mrapor->ambil_ekstrakurikuler($jadwal->id_jadwal_setting, $id_siswa);
+    $data['prestasi'] = $this->Mrapor->ambil_prestasi($jadwal->id_jadwal_setting, $id_siswa);
+    $data['catatan'] = $this->Mrapor->ambil_catatan_wali($jadwal->id_jadwal_setting, $id_siswa);
+    $data['rata_rata'] = $this->Mrapor->hitung_rata_rata_nilai($id_siswa, $jadwal->id_jadwal_setting);
+    
+    $data['wali_kelas'] = $this->Mrapor->ambil_data_wali_kelas($_SESSION['nik']);
+    
+    $data['kepala_sekolah'] = $this->Mrapor->ambil_kepala_sekolah();
+
+    $this->view('siswa/rapor_cetak_walikelas', $data);
+}
    // wali kelas
 
 
