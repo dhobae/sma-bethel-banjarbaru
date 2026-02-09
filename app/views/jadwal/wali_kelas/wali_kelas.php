@@ -54,7 +54,16 @@
    </div>
 </div>
 
+<?php
 
+// foreach ($data['wali_kelas'] as $d){
+//     echo '<pre>';
+//     print_r($d);
+//     echo '</pre>';
+// }
+
+
+?>
 
 
 <?php
@@ -68,7 +77,8 @@ foreach ($data['wali_kelas'] as $d) :
                   <div style="font-weight:bold" class="mb-3">
                      Edit Data Kelas &nbsp;:&nbsp; <?= $d->kode_kelas ?>
                   </div>
-
+                  
+                  <input type="hidden" name="wali_kelas_lama" value="<?= $d->wali_kelas ?>">
                   <input type="hidden" name="kode_kelas" value="<?= $d->kode_kelas ?>">
 
                   <div class="form-group">

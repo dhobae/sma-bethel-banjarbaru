@@ -63,7 +63,6 @@ class Mjadwal
     //     return $this->db->execute();
     // }
 
-
     public function jadwal()
     {
         $sql = "SELECT * from pegawai where absen=:absen order by nama";
@@ -75,7 +74,7 @@ class Mjadwal
     public function jadwal_kelas($kelas)
     {
         // Ambil jadwal_setting yang aktif (status = 1)
-        $sql = "SELECT 
+        $sql = "SELECT
                     jadwal_lengkap.*,
                     pegawai1.nama as nama1,
                     pegawai2.nama as nama2,
@@ -108,7 +107,7 @@ class Mjadwal
                     m_pelajaran10.mata_pelajaran as mata_pelajaran10,
                     m_pelajaran10.singkatan as singkatan10
                 FROM jadwal_lengkap
-    
+
                 LEFT JOIN pegawai AS pegawai1 ON jadwal_lengkap.guru1 = pegawai1.nik
                 LEFT JOIN pegawai AS pegawai2 ON jadwal_lengkap.guru2 = pegawai2.nik
                 LEFT JOIN pegawai AS pegawai3 ON jadwal_lengkap.guru3 = pegawai3.nik
@@ -119,7 +118,7 @@ class Mjadwal
                 LEFT JOIN pegawai AS pegawai8 ON jadwal_lengkap.guru8 = pegawai8.nik
                 LEFT JOIN pegawai AS pegawai9 ON jadwal_lengkap.guru9 = pegawai9.nik
                 LEFT JOIN pegawai AS pegawai10 ON jadwal_lengkap.guru10 = pegawai10.nik
-    
+
                 LEFT JOIN m_pelajaran AS m_pelajaran1 ON jadwal_lengkap.mp1 = m_pelajaran1.id_pelajaran
                 LEFT JOIN m_pelajaran AS m_pelajaran2 ON jadwal_lengkap.mp2 = m_pelajaran2.id_pelajaran
                 LEFT JOIN m_pelajaran AS m_pelajaran3 ON jadwal_lengkap.mp3 = m_pelajaran3.id_pelajaran
@@ -130,13 +129,13 @@ class Mjadwal
                 LEFT JOIN m_pelajaran AS m_pelajaran8 ON jadwal_lengkap.mp8 = m_pelajaran8.id_pelajaran
                 LEFT JOIN m_pelajaran AS m_pelajaran9 ON jadwal_lengkap.mp9 = m_pelajaran9.id_pelajaran
                 LEFT JOIN m_pelajaran AS m_pelajaran10 ON jadwal_lengkap.mp10 = m_pelajaran10.id_pelajaran
-    
-                WHERE 
+
+                WHERE
                     jadwal_lengkap.kode_kelas = :kode_kelas
                     AND jadwal_lengkap.berlaku_jadwal_dari = (
-                        SELECT berlaku_dari 
-                        FROM jadwal_setting 
-                        WHERE status = 1 
+                        SELECT berlaku_dari
+                        FROM jadwal_setting
+                        WHERE status = 1
                         LIMIT 1
                     )
                 ORDER BY id_jadwal_lengkap";
@@ -160,6 +159,13 @@ class Mjadwal
         $this->db->query($sql);
         $this->db->bind('wali_kelas', null);
         $this->db->execute();
+
+        $sql = "UPDATE admin SET nip_pegawai = :nip WHERE hak_akses = 'wali_kelas'";
+        $this->db->query($sql);
+        $this->db->bind('nip', null); 
+        $this->db->execute();
+
+
         return true;
     }
 
@@ -359,11 +365,11 @@ class Mjadwal
       left join m_pelajaran as m_pelajaran8 on jadwal_lengkap.mp8 = m_pelajaran8.id_pelajaran
       left join m_pelajaran as m_pelajaran9 on jadwal_lengkap.mp9 = m_pelajaran9.id_pelajaran
       left join m_pelajaran as m_pelajaran10 on jadwal_lengkap.mp10 = m_pelajaran10.id_pelajaran
-      where hari=:hari 
+      where hari=:hari
       AND jadwal_lengkap.berlaku_jadwal_dari = (
-      SELECT berlaku_dari 
-      FROM jadwal_setting 
-      WHERE status = 1 
+      SELECT berlaku_dari
+      FROM jadwal_setting
+      WHERE status = 1
       LIMIT 1)
       order by id_jadwal_lengkap";
         $this->db->query($sql);
@@ -435,16 +441,38 @@ class Mjadwal
         $this->db->bind('wali_kelas', $data['wali_kelas']);
         $this->db->bind('kode_kelas', $data['kode_kelas']);
         $this->db->execute();
+
         return true;
     }
+
+    public function update_admin_table($data) {
+        $sql = "
+        UPDATE admin
+        SET nip_pegawai = TRIM(BOTH ',' FROM 
+            REPLACE(
+                CONCAT(',', nip_pegawai, ','),
+                CONCAT(',', :lama, ','),
+                CONCAT(',', :baru, ',')
+            )
+        )
+        WHERE FIND_IN_SET(:lama, nip_pegawai)
+        ";
+
+        $this->db->query($sql);
+        $this->db->bind('lama', $data['wali_kelas_lama']); 
+        $this->db->bind('baru', $data['wali_kelas']);   
+        $this->db->execute();
+        return true;
+    }
+
     public function guru_aktif($status)
     {
-        $sql = "SELECT 
-                    pegawai.*, 
+        $sql = "SELECT
+                    pegawai.*,
                     jadwal_lengkap.*
                 FROM pegawai
-    
-                LEFT JOIN jadwal_lengkap 
+
+                LEFT JOIN jadwal_lengkap
                     ON pegawai.nik = jadwal_lengkap.wali_kelas
                     AND jadwal_lengkap.berlaku_jadwal_dari = (
                         SELECT berlaku_dari
@@ -452,7 +480,7 @@ class Mjadwal
                         WHERE status = 1
                         LIMIT 1
                     )
-    
+
                 WHERE pegawai.mengajar = :mengajar
                 GROUP BY pegawai.nik
                 ORDER BY pegawai.nama";
@@ -461,7 +489,6 @@ class Mjadwal
         $this->db->bind('mengajar', $status);
         return $this->db->resultSet();
     }
-
 
     public function status_mengajar_non($id)
     {
@@ -528,11 +555,11 @@ class Mjadwal
       left join m_pelajaran as m_pelajaran7 on jadwal_lengkap.mp7 = m_pelajaran7.id_pelajaran
       left join m_pelajaran as m_pelajaran8 on jadwal_lengkap.mp8 = m_pelajaran8.id_pelajaran
       left join m_pelajaran as m_pelajaran9 on jadwal_lengkap.mp9 = m_pelajaran9.id_pelajaran
-      left join m_pelajaran as m_pelajaran10 on jadwal_lengkap.mp10 = m_pelajaran10.id_pelajaran 
-      where wali_kelas=:wali_kelas 
-      AND jadwal_lengkap.berlaku_jadwal_dari = 
-      ( SELECT berlaku_dari 
-        FROM jadwal_setting 
+      left join m_pelajaran as m_pelajaran10 on jadwal_lengkap.mp10 = m_pelajaran10.id_pelajaran
+      where wali_kelas=:wali_kelas
+      AND jadwal_lengkap.berlaku_jadwal_dari =
+      ( SELECT berlaku_dari
+        FROM jadwal_setting
         WHERE status = 1)
       order by id_jadwal_lengkap";
         $this->db->query($sql);
@@ -577,21 +604,21 @@ class Mjadwal
 
     public function ringkasan_x()
     {
-        $sql = "SELECT 
+        $sql = "SELECT
                     CONCAT_WS(', ', guru1, guru2, guru3, guru4, guru5, guru6, guru7, guru8, guru9, guru10) AS ringkasan_x
                 FROM jadwal_lengkap
                 WHERE kelas = 'X'
                   AND berlaku_jadwal_dari = (
-                        SELECT berlaku_dari 
-                        FROM jadwal_setting 
-                        WHERE status = 1 
+                        SELECT berlaku_dari
+                        FROM jadwal_setting
+                        WHERE status = 1
                         LIMIT 1
                   )";
 
         $this->db->query($sql);
         $result = $this->db->resultSet();
 
-        $array_guru = array();
+        $array_guru = [];
         foreach ($result as $row) {
             $array_guru[] = $row->ringkasan_x;
         }
@@ -601,21 +628,21 @@ class Mjadwal
 
     public function ringkasan_xi()
     {
-        $sql = "SELECT 
+        $sql = "SELECT
                     CONCAT_WS(', ', guru1, guru2, guru3, guru4, guru5, guru6, guru7, guru8, guru9, guru10) AS ringkasan_xi
                 FROM jadwal_lengkap
                 WHERE kelas = 'XI'
                   AND berlaku_jadwal_dari = (
-                        SELECT berlaku_dari 
-                        FROM jadwal_setting 
-                        WHERE status = 1 
+                        SELECT berlaku_dari
+                        FROM jadwal_setting
+                        WHERE status = 1
                         LIMIT 1
                   )";
 
         $this->db->query($sql);
         $result = $this->db->resultSet();
 
-        $array_guru = array();
+        $array_guru = [];
         foreach ($result as $row) {
             $array_guru[] = $row->ringkasan_xi;
         }
@@ -625,28 +652,27 @@ class Mjadwal
 
     public function ringkasan_xii()
     {
-        $sql = "SELECT 
+        $sql = "SELECT
                     CONCAT_WS(', ', guru1, guru2, guru3, guru4, guru5, guru6, guru7, guru8, guru9, guru10) AS ringkasan_xii
                 FROM jadwal_lengkap
                 WHERE kelas = 'XII'
                   AND berlaku_jadwal_dari = (
-                        SELECT berlaku_dari 
-                        FROM jadwal_setting 
-                        WHERE status = 1 
+                        SELECT berlaku_dari
+                        FROM jadwal_setting
+                        WHERE status = 1
                         LIMIT 1
                   )";
 
         $this->db->query($sql);
         $result = $this->db->resultSet();
 
-        $array_guru = array();
+        $array_guru = [];
         foreach ($result as $row) {
             $array_guru[] = $row->ringkasan_xii;
         }
 
         return implode(', ', $array_guru);
     }
-
 
     public function tahun_ajaran()
     {
@@ -781,16 +807,16 @@ class Mjadwal
         $belum_ada_guru = $satu->satu + $dua->dua + $tiga->tiga + $empat->empat + $lima->lima + $enam->enam + $tujuh->tujuh + $delapan->delapan + $sembilan->sembilan + $sepuluh->sepuluh;
 
         return [
-            'jsatu' => $satu->satu,
-            'jdua' => $dua->dua,
-            'jtiga' => $tiga->tiga,
-            'jempat' => $empat->empat,
-            'jlima' => $lima->lima,
-            'jenam' => $enam->enam,
-            'jtujuh' => $tujuh->tujuh,
-            'jdelapan' => $delapan->delapan,
-            'jsembilan' => $sembilan->sembilan,
-            'jsepuluh' => $sepuluh->sepuluh,
+            'jsatu'          => $satu->satu,
+            'jdua'           => $dua->dua,
+            'jtiga'          => $tiga->tiga,
+            'jempat'         => $empat->empat,
+            'jlima'          => $lima->lima,
+            'jenam'          => $enam->enam,
+            'jtujuh'         => $tujuh->tujuh,
+            'jdelapan'       => $delapan->delapan,
+            'jsembilan'      => $sembilan->sembilan,
+            'jsepuluh'       => $sepuluh->sepuluh,
             'belum_ada_guru' => $belum_ada_guru,
         ];
     }
@@ -884,9 +910,9 @@ class Mjadwal
    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
    ON CHAR_LENGTH(j.guru1) - CHAR_LENGTH(REPLACE(j.guru1, ',', '')) >= numbers.n - 1
    INNER JOIN (
-        SELECT berlaku_dari 
-        FROM jadwal_setting 
-        WHERE status = 1 
+        SELECT berlaku_dari
+        FROM jadwal_setting
+        WHERE status = 1
         LIMIT 1
    ) js ON j.berlaku_jadwal_dari = js.berlaku_dari
    UNION ALL
@@ -896,9 +922,9 @@ class Mjadwal
    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
    ON CHAR_LENGTH(j.guru2) - CHAR_LENGTH(REPLACE(j.guru2, ',', '')) >= numbers.n - 1
    INNER JOIN (
-        SELECT berlaku_dari 
-        FROM jadwal_setting 
-        WHERE status = 1 
+        SELECT berlaku_dari
+        FROM jadwal_setting
+        WHERE status = 1
         LIMIT 1
    ) js ON j.berlaku_jadwal_dari = js.berlaku_dari
    UNION ALL
@@ -908,9 +934,9 @@ class Mjadwal
    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
    ON CHAR_LENGTH(j.guru3) - CHAR_LENGTH(REPLACE(j.guru3, ',', '')) >= numbers.n - 1
    INNER JOIN (
-        SELECT berlaku_dari 
-        FROM jadwal_setting 
-        WHERE status = 1 
+        SELECT berlaku_dari
+        FROM jadwal_setting
+        WHERE status = 1
         LIMIT 1
    ) js ON j.berlaku_jadwal_dari = js.berlaku_dari
    UNION ALL
@@ -920,9 +946,9 @@ class Mjadwal
    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
    ON CHAR_LENGTH(j.guru4) - CHAR_LENGTH(REPLACE(j.guru4, ',', '')) >= numbers.n - 1
    INNER JOIN (
-        SELECT berlaku_dari 
-        FROM jadwal_setting 
-        WHERE status = 1 
+        SELECT berlaku_dari
+        FROM jadwal_setting
+        WHERE status = 1
         LIMIT 1
    ) js ON j.berlaku_jadwal_dari = js.berlaku_dari
    UNION ALL
@@ -932,9 +958,9 @@ class Mjadwal
    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
    ON CHAR_LENGTH(j.guru5) - CHAR_LENGTH(REPLACE(j.guru5, ',', '')) >= numbers.n - 1
    INNER JOIN (
-        SELECT berlaku_dari 
-        FROM jadwal_setting 
-        WHERE status = 1 
+        SELECT berlaku_dari
+        FROM jadwal_setting
+        WHERE status = 1
         LIMIT 1
    ) js ON j.berlaku_jadwal_dari = js.berlaku_dari
    UNION ALL
@@ -944,9 +970,9 @@ class Mjadwal
    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
    ON CHAR_LENGTH(j.guru6) - CHAR_LENGTH(REPLACE(j.guru6, ',', '')) >= numbers.n - 1
    INNER JOIN (
-        SELECT berlaku_dari 
-        FROM jadwal_setting 
-        WHERE status = 1 
+        SELECT berlaku_dari
+        FROM jadwal_setting
+        WHERE status = 1
         LIMIT 1
    ) js ON j.berlaku_jadwal_dari = js.berlaku_dari
    UNION ALL
@@ -956,9 +982,9 @@ class Mjadwal
    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
    ON CHAR_LENGTH(j.guru7) - CHAR_LENGTH(REPLACE(j.guru7, ',', '')) >= numbers.n - 1
    INNER JOIN (
-        SELECT berlaku_dari 
-        FROM jadwal_setting 
-        WHERE status = 1 
+        SELECT berlaku_dari
+        FROM jadwal_setting
+        WHERE status = 1
         LIMIT 1
    ) js ON j.berlaku_jadwal_dari = js.berlaku_dari
    UNION ALL
@@ -968,9 +994,9 @@ class Mjadwal
    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
    ON CHAR_LENGTH(j.guru8) - CHAR_LENGTH(REPLACE(j.guru8, ',', '')) >= numbers.n - 1
    INNER JOIN (
-        SELECT berlaku_dari 
-        FROM jadwal_setting 
-        WHERE status = 1 
+        SELECT berlaku_dari
+        FROM jadwal_setting
+        WHERE status = 1
         LIMIT 1
    ) js ON j.berlaku_jadwal_dari = js.berlaku_dari
    UNION ALL
@@ -980,9 +1006,9 @@ class Mjadwal
    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
    ON CHAR_LENGTH(j.guru9) - CHAR_LENGTH(REPLACE(j.guru9, ',', '')) >= numbers.n - 1
    INNER JOIN (
-        SELECT berlaku_dari 
-        FROM jadwal_setting 
-        WHERE status = 1 
+        SELECT berlaku_dari
+        FROM jadwal_setting
+        WHERE status = 1
         LIMIT 1
    ) js ON j.berlaku_jadwal_dari = js.berlaku_dari
    UNION ALL
@@ -992,9 +1018,9 @@ class Mjadwal
    INNER JOIN(SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3) numbers
    ON CHAR_LENGTH(j.guru10) - CHAR_LENGTH(REPLACE(j.guru10, ',', '')) >= numbers.n - 1
    INNER JOIN (
-        SELECT berlaku_dari 
-        FROM jadwal_setting 
-        WHERE status = 1 
+        SELECT berlaku_dari
+        FROM jadwal_setting
+        WHERE status = 1
         LIMIT 1
    ) js ON j.berlaku_jadwal_dari = js.berlaku_dari) as result
    WHERE guru=:gurunya
@@ -1107,7 +1133,7 @@ class Mjadwal
         $result = $this->db->single();
 
         $singkatan = $result->singkatan;
-        $panjang = $result->mata_pelajaran;
+        $panjang   = $result->mata_pelajaran;
 
         $sql = "INSERT into absen_kelas (id_absen_kelas, nik_absen_kelas, tgl_absen_kelas, kelas_absen_kelas, ruang_absen_kelas, jam_absen_kelas, mata_pelajaran, mata_pelajaran_lengkap, materi_pelajaran, wali_kelas_absen) values (:id_absen_kelas, :nik_absen_kelas, :tgl_absen_kelas, :kelas_absen_kelas, :ruang_absen_kelas, :jam_absen_kelas, :mata_pelajaran, :mata_pelajaran_lengkap, :materi_pelajaran, :wali_kelas)";
         $this->db->query($sql);
@@ -1126,7 +1152,7 @@ class Mjadwal
         $id_terakhir = $this->db->lastInsertId();
 
         $jumlah_siswa = $data['jumlah_siswa'];
-        $jam = $data['jam'];
+        $jam          = $data['jam'];
 
         for ($a = 0; $a < $jumlah_siswa; $a++) {
             $sql_cari = "SELECT * from absen_kelas_siswa where tgl_aks=:tgl_aks and nis_aks=:nis_aks";
@@ -1153,7 +1179,7 @@ class Mjadwal
                 $this->db->bind('wali_kelas_aks', $data['wali_kelas']);
 
                 for ($i = 1; $i <= 10; $i++) {
-                    $id_jam_param = 'id_jam' . $i;
+                    $id_jam_param    = 'id_jam' . $i;
                     $absen_jam_param = 'absen_jam' . $i;
 
                     if ($i == $jam) {
@@ -1210,7 +1236,7 @@ class Mjadwal
 
     public function absen_kelas_byid($id, $jam)
     {
-        $id_jam = 'id_jam' . $jam;
+        $id_jam    = 'id_jam' . $jam;
         $absen_jam = 'absen_jam' . $jam;
 
         $sql_cari = "SELECT absen_kelas_siswa.nis_aks, absen_kelas_siswa.$absen_jam, siswa.nama_siswa from absen_kelas_siswa left join siswa on absen_kelas_siswa.nis_aks=siswa.nis where $id_jam=:id order by nama_siswa";

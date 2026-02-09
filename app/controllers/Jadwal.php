@@ -314,9 +314,12 @@ class Jadwal extends Controller
    }
 
    public function edit_wali_kelas()
-   {
+   {  
       $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
       if ($this->Mjadwal->edit_wali_kelas($_POST)) {
+         if($_POST['wali_kelas_lama'] !== $_POST['wali_kelas']) {
+            $this->Mjadwal->update_admin_table($_POST);
+         }
          setFlash('Berhasil disimpan.', 'success');
          return redirect('jadwal/wali_kelas');
       } else {
@@ -562,5 +565,41 @@ class Jadwal extends Controller
       require APPROOT . '/views/inc/header.php';
       $this->view('jadwal/jadwal_siswa', $data);
       require APPROOT . '/views/inc/footer.php';
+   }
+
+
+   // excel
+   public function export_excel() 
+   {
+      if (!isset($_GET['kelas'])) {
+         header('Location: ' . URLROOT . '/jadwal');
+         exit;
+      }
+      
+      $kelas = $_GET['kelas'];
+      
+      $data['jadwal'] = $this->Mjadwal->jadwal_kelas($kelas);
+      $data['jadwal_setting'] = $this->Mjadwal->jadwal_setting();
+      $data['wali_kelas'] = $this->Mjadwal->wali_kelas($kelas);
+      $data['kelas'] = $kelas;
+      
+      if (empty($data['jadwal'])) {
+         die('Data jadwal tidak ditemukan');
+      }
+      
+      $th = $this->Mjadwal->tahun_ajaran_byid($data['jadwal_setting']->id_tahun_ajaran);
+      $data['tahun_ajaran'] = $th;
+      
+      $filename = "Jadwal_Kelas_" . $kelas . "_" . date('Y-m-d') . ".xls";
+      
+      header("Content-Type: application/vnd.ms-excel; charset=utf-8");
+      header("Content-Disposition: attachment; filename=\"$filename\"");
+      header("Pragma: no-cache");
+      header("Expires: 0");
+      
+      echo "\xEF\xBB\xBF";
+      
+      require_once '../app/views/jadwal/export_excel.php';
+      exit;
    }
 }

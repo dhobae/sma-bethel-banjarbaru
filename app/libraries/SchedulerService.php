@@ -4,24 +4,24 @@ class SchedulerService
     private $db;
     private $populationSize = 50;
     private $maxGenerations = 100;
-    private $mutationRate = 0.15;
-    private $crossoverRate = 0.8;
-    private $eliteSize = 5;
+    private $mutationRate   = 0.15;
+    private $crossoverRate  = 0.8;
+    private $eliteSize      = 5;
 
     // Data dari database
-    private $teachers = [];
-    private $subjects = [];
-    private $classes = [];
+    private $teachers  = [];
+    private $subjects  = [];
+    private $classes   = [];
     private $waliKelas = [];
 
     // CSP Domain
-    private $timeSlots = [];
-    private $teacherLoad = []; // Tracking beban mengajar guru
+    private $timeSlots    = [];
+    private $teacherLoad  = []; // Tracking beban mengajar guru
     private $pengecualian = [];
 
     public function __construct($db, $pengecualian = [])
     {
-        $this->db = $db;
+        $this->db           = $db;
         $this->pengecualian = $pengecualian;
         $this->loadDataFromDatabase();
         $this->initializeTimeSlots();
@@ -35,7 +35,7 @@ class SchedulerService
         $this->db->query("SELECT * FROM pegawai WHERE mengajar = 'Ya' AND hapus_pegawai = 0 AND jabatan = 'Guru'");
         $teachers = $this->db->resultSet();
         foreach ($teachers as $teacher) {
-            $this->teachers[$teacher->nik] = $teacher;
+            $this->teachers[$teacher->nik]    = $teacher;
             $this->teacherLoad[$teacher->nik] = 0; // Inisialisasi beban mengajar
         }
         // error_log("SchedulerService: " . count($this->teachers) . " guru dimuat.");
@@ -55,7 +55,7 @@ class SchedulerService
             // Simpan sebagai kombinasi kelas dan ruang
             $this->classes[] = [
                 'kelas' => $class->kelas,
-                'ruang' => $class->ruang
+                'ruang' => $class->ruang,
             ];
         }
         // error_log("SchedulerService: " . count($this->classes) . " kelas dimuat dari tabel jadwal.");
@@ -70,7 +70,7 @@ class SchedulerService
             for ($jam = 1; $jam <= 10; $jam++) {
                 $this->timeSlots[] = [
                     'hari' => $hari,
-                    'jam' => $jam
+                    'jam'  => $jam,
                 ];
             }
         }
@@ -88,7 +88,7 @@ class SchedulerService
 
         // Parse wali kelas lama jika ada
         $waliKelasLamaMap = [];
-        if (!empty($waliKelasLama)) {
+        if (! empty($waliKelasLama)) {
             $waliKelasLamaMap = $waliKelasLama;
             // error_log("SchedulerService: " . count($waliKelasLamaMap) . " wali kelas lama ditemukan.");
         }
@@ -109,7 +109,7 @@ class SchedulerService
         // Shuffle untuk guru baru yang perlu di-assign
         shuffle($guruNikList);
 
-        // Assign wali kelas untuk setiap kelas
+                                // Assign wali kelas untuk setiap kelas
         $assignedTeachers = []; // Track teachers that have been assigned
         foreach ($this->classes as $class) {
             $kelasName = $class['kelas'];
@@ -122,8 +122,8 @@ class SchedulerService
             if (isset($waliKelasLamaMap[$kelasKey])) {
                 // Gunakan wali kelas lama
                 $this->waliKelas[$kelasKey] = $waliKelasLamaMap[$kelasKey];
-                $assignedTeachers[] = $waliKelasLamaMap[$kelasKey]; // Track assigned teacher
-                // error_log("SchedulerService: Kelas $kelasKey menggunakan wali kelas lama: " . $waliKelasLamaMap[$kelasKey]);
+                $assignedTeachers[]         = $waliKelasLamaMap[$kelasKey]; // Track assigned teacher
+                                                                            // error_log("SchedulerService: Kelas $kelasKey menggunakan wali kelas lama: " . $waliKelasLamaMap[$kelasKey]);
             } else {
                 // Assign wali kelas baru secara acak, pastikan tidak duplikat
                 $availableTeachers = array_diff($guruNikList, $assignedTeachers);
@@ -134,9 +134,9 @@ class SchedulerService
                     $availableTeachers = $guruNikList;
                 }
 
-                $teacher = $availableTeachers[array_rand($availableTeachers)];
+                $teacher                    = $availableTeachers[array_rand($availableTeachers)];
                 $this->waliKelas[$kelasKey] = $teacher;
-                $assignedTeachers[] = $teacher;
+                $assignedTeachers[]         = $teacher;
                 // error_log("SchedulerService: Kelas $kelasKey di-assign wali kelas baru: " . $teacher);
             }
         }
@@ -160,7 +160,7 @@ class SchedulerService
 
         // Fase 1: CSP - Generate jadwal yang memenuhi hard constraint
         // error_log("SchedulerService: Fase 1 - Menerapkan CSP untuk hard constraint...");
-        // $baseSchedule = $this->generateCSPSchedule();
+        $baseSchedule = $this->generateCSPSchedule();
 
         if (empty($baseSchedule)) {
             // error_log("SchedulerService: ERROR - CSP gagal menghasilkan jadwal valid.");
@@ -175,7 +175,7 @@ class SchedulerService
         for ($generation = 0; $generation < $this->maxGenerations; $generation++) {
             $fitnessScores = [];
             foreach ($population as $index => $chromosome) {
-                $fitness = $this->calculateFitness($chromosome);
+                $fitness         = $this->calculateFitness($chromosome);
                 $fitnessScores[] = $fitness;
             }
 
@@ -231,9 +231,61 @@ class SchedulerService
 
     private function generateCSPSchedule()
     {
-        $schedule = [];
+        $schedule           = [];
         $teacherAssignments = [];
-        $classAssignments = [];
+        $classAssignments   = [];
+        // Cari ID mata pelajaran Upacara dan Ibadah
+        $upacaraSubjectId = null;
+        $ibadahJumatSubjectId = null;
+
+        foreach ($this->subjects as $subjectId => $subject) {
+            // Pencarian case-insensitive (huruf besar/kecil tidak masalah)
+            if (strtolower($subject->mata_pelajaran) === 'upacara') {
+                $upacaraSubjectId = $subjectId;
+            } elseif (strtolower($subject->mata_pelajaran) === 'ibadah/jumat bersih') {
+                $ibadahJumatSubjectId = $subjectId;
+            }
+        }
+
+        // Jika Upacara tidak ditemukan, buat baru
+        if (!$upacaraSubjectId) {
+            $sql = "INSERT INTO m_pelajaran (mata_pelajaran, singkatan, prodi) VALUES (:mata_pelajaran, :singkatan, :prodi)";
+            $this->db->query($sql);
+            $this->db->bind('mata_pelajaran', "UPACARA");
+            $this->db->bind('singkatan', "UPA");
+            $this->db->bind('prodi', "SMABETHEL");
+            
+            if ($this->db->execute()) {
+                $upacaraSubjectId = $this->db->lastInsertId();
+                // Masukkan ke memory agar bisa dipakai saat looping
+                $this->subjects[$upacaraSubjectId] = (object)[
+                    'id_pelajaran' => $upacaraSubjectId, 
+                    'mata_pelajaran' => 'UPACARA', 
+                    'singkatan' => 'UPA', 
+                    'prodi' => 'SMABETHEL'
+                ];
+            }
+        }
+
+        // Jika Ibadah tidak ditemukan, buat baru
+        if (!$ibadahJumatSubjectId) {
+            $sql = "INSERT INTO m_pelajaran (mata_pelajaran, singkatan, prodi) VALUES (:mata_pelajaran, :singkatan, :prodi)";
+            $this->db->query($sql);
+            $this->db->bind('mata_pelajaran', "IBADAH/JUMAT BERSIH");
+            $this->db->bind('singkatan', "IBD");
+            $this->db->bind('prodi', "SMABETHEL");
+            
+            if ($this->db->execute()) {
+                $ibadahJumatSubjectId = $this->db->lastInsertId();
+                // Masukkan ke memory agar bisa dipakai saat looping
+                $this->subjects[$ibadahJumatSubjectId] = (object)[
+                    'id_pelajaran' => $ibadahJumatSubjectId, 
+                    'mata_pelajaran' => 'IBADAH/JUMAT BERSIH', 
+                    'singkatan' => 'IBD', 
+                    'prodi' => 'SMABETHEL'
+                ];
+            }
+        }
 
         $hariList = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
 
@@ -241,22 +293,30 @@ class SchedulerService
             $kelasName = $class['kelas'];
             $ruangName = $class['ruang'];
 
-            // PERBAIKAN: Gabungkan kelas dan ruang untuk identifikasi unik
-            $kelasLengkap = $kelasName . $ruangName; // Misal: XA, XB, XIA, XIB
-            $kelasPrefix = substr($kelasName, 0, strlen($kelasName)); // Ambil hanya angka romawi (X, XI, XII)
+                                                                       // PERBAIKAN: Gabungkan kelas dan ruang untuk identifikasi unik
+            $kelasLengkap = $kelasName . $ruangName;                   // Misal: XA, XB, XIA, XIB
+            $kelasPrefix  = substr($kelasName, 0, strlen($kelasName)); // Ambil hanya angka romawi (X, XI, XII)
 
             foreach ($hariList as $hari) {
                 $scheduleEntry = [
-                    'hari' => $hari,
-                    'kelas' => $class['kelas'],
-                    'ruang' => $class['ruang'],
+                    'hari'       => $hari,
+                    'kelas'      => $class['kelas'],
+                    'ruang'      => $class['ruang'],
                     'wali_kelas' => $this->waliKelas[str_replace(' ', '', $kelasLengkap)] ?? '',
-                    'prodi' => 'SMABETHEL',
-                    'jam_ke' => [],
+                    'prodi'      => 'SMABETHEL',
+                    'jam_ke'     => [],
                 ];
 
                 // PERBAIKAN: Pass kelasLengkap untuk pengecekan yang lebih spesifik
                 $availableSubjects = $this->getAvailableSubjectsForClass($kelasPrefix, $kelasLengkap);
+
+                if ($upacaraSubjectId && isset($availableSubjects[$upacaraSubjectId])) {
+                    unset($availableSubjects[$upacaraSubjectId]);
+                }
+
+                if ($ibadahJumatSubjectId && isset($availableSubjects[$ibadahJumatSubjectId])) {
+                    unset($availableSubjects[$ibadahJumatSubjectId]);
+                }
 
                 // Semua hari memiliki 10 jam pelajaran (1-10)
                 for ($jam = 1; $jam <= 10; $jam++) {
@@ -266,16 +326,16 @@ class SchedulerService
                     // Terapkan aturan spesial (Senin jam 1 dan Jumat jam 1)
                     if ($hari == 'Senin' && $jam === 1) {
                         // Aturan spesial: Senin jam 1 harus UPACARA
-                        $subjectId = null;
+                        $subjectId = $upacaraSubjectId;
                         $teacherId = null;
                     } elseif ($hari == 'Jumat' && $jam === 1) {
                         // Aturan spesial: Jumat jam 1 harus IBADAH/JUMAT BERSIH
-                        $subjectId = null;
+                        $subjectId = $ibadahJumatSubjectId;
                         $teacherId = null;
                     }
                     // Untuk slot lainnya, pilih mata pelajaran secara acak
                     else {
-                        if (!empty($availableSubjects)) {
+                        if (! empty($availableSubjects)) {
                             $subjectId = array_rand($availableSubjects);
                             $teacherId = $this->getAvailableTeacher($hari, $jam, $teacherAssignments);
                         }
@@ -284,18 +344,18 @@ class SchedulerService
                     // Assign ke jadwal
                     $scheduleEntry['jam_ke'][$jam] = [
                         'mata_pelajaran' => $subjectId,
-                        'guru' => $teacherId,
+                        'guru'           => $teacherId,
                     ];
 
                     // Assign guru ke slot ini (hanya untuk mata pelajaran reguler)
                     if ($teacherId) {
-                        if (!isset($teacherAssignments[$hari][$jam])) {
+                        if (! isset($teacherAssignments[$hari][$jam])) {
                             $teacherAssignments[$hari][$jam] = [];
                         }
                         $teacherAssignments[$hari][$jam][$teacherId] = true;
 
                         // Mark kelas sudah terisi
-                        if (!isset($classAssignments[$hari][$jam])) {
+                        if (! isset($classAssignments[$hari][$jam])) {
                             $classAssignments[$hari][$jam] = [];
                         }
                         $classAssignments[$hari][$jam][str_replace(' ', '', $kelasLengkap)] = true;
@@ -309,9 +369,8 @@ class SchedulerService
         return $schedule;
     }
 
-
     /**
-     * LOGIKA BARU: 
+     * LOGIKA BARU:
      * - Setiap kelas punya daftar mata pelajaran KHUSUS yang HANYA ada di kelas tersebut
      * - Mata pelajaran umum = semua mapel KECUALI mapel khusus kelas lain
      * @param string $kelasPrefix - Prefix kelas (X, XI, XII)
@@ -330,7 +389,7 @@ class SchedulerService
         // Kumpulkan semua mata pelajaran khusus dari kelas lain
         $mapelKhususKelasLain = [];
         foreach ($this->pengecualian as $kelas => $mapelKhusus) {
-            if ($kelas != $kelasPrefix && !empty($mapelKhusus)) {
+            if ($kelas != $kelasPrefix && ! empty($mapelKhusus)) {
                 $mapelKhususKelasLain = array_merge($mapelKhususKelasLain, $mapelKhusus);
             }
         }
@@ -348,19 +407,18 @@ class SchedulerService
             // 1. Mapel adalah mapel khusus untuk kelas ini, ATAU
             // 2. Mapel BUKAN mapel khusus kelas lain (mapel umum)
 
-            $isMapelKhususKelasIni = in_array($subjectId, $mapelKhususKelasIni);
+            $isMapelKhususKelasIni  = in_array($subjectId, $mapelKhususKelasIni);
             $isMapelKhususKelasLain = in_array($subjectId, $mapelKhususKelasLain);
 
-            if ($isMapelKhususKelasIni || !$isMapelKhususKelasLain) {
+            if ($isMapelKhususKelasIni || ! $isMapelKhususKelasLain) {
                 $availableSubjects[$subjectId] = $subject;
             }
         }
 
         // Logging
-        $jumlahMapelKhusus = count($mapelKhususKelasIni);
-        $jumlahMapelTotal = count($availableSubjects);
-        $jumlahMapelExclude = count($mapelKhususKelasLain);
-
+        // $jumlahMapelKhusus  = count($mapelKhususKelasIni);
+        // $jumlahMapelTotal   = count($availableSubjects);
+        // $jumlahMapelExclude = count($mapelKhususKelasLain);
         // if ($jumlahMapelKhusus > 0) {
         //     error_log("SchedulerService: ✅ Kelas $kelasLengkap dapat $jumlahMapelTotal mapel (termasuk $jumlahMapelKhusus mapel khusus kelas ini, exclude $jumlahMapelExclude mapel khusus kelas lain)");
         // } else {
@@ -369,7 +427,6 @@ class SchedulerService
 
         return $availableSubjects;
     }
-
 
     /**
      * CSP Helper: Dapatkan guru yang tersedia (belum mengajar di slot ini)
@@ -383,12 +440,12 @@ class SchedulerService
         $availableTeachers = [];
         foreach (array_keys($this->teachers) as $teacherId) {
             // Cek apakah guru sudah mengajar di slot ini
-            if (!isset($teacherAssignments[$hari][$jam][$teacherId])) {
+            if (! isset($teacherAssignments[$hari][$jam][$teacherId])) {
                 $availableTeachers[] = $teacherId;
             }
         }
 
-        if (!empty($availableTeachers)) {
+        if (! empty($availableTeachers)) {
             return $availableTeachers[array_rand($availableTeachers)];
         }
 
@@ -407,7 +464,7 @@ class SchedulerService
 
         // Buat variasi dari base schedule
         for ($i = 1; $i < $this->populationSize; $i++) {
-            $variant = $this->createVariant($baseSchedule);
+            $variant      = $this->createVariant($baseSchedule);
             $population[] = $variant;
         }
 
@@ -429,18 +486,19 @@ class SchedulerService
             $idx1 = array_rand($variant);
             $idx2 = array_rand($variant);
 
-            if ($idx1 == $idx2)
+            if ($idx1 == $idx2) {
                 continue;
+            }
 
             $entry1 = &$variant[$idx1];
             $entry2 = &$variant[$idx2];
 
             // Pilih jam secara acak
-            if (!empty($entry1['jam_ke']) && !empty($entry2['jam_ke'])) {
+            if (! empty($entry1['jam_ke']) && ! empty($entry2['jam_ke'])) {
                 $jamList1 = array_keys($entry1['jam_ke']);
                 $jamList2 = array_keys($entry2['jam_ke']);
 
-                if (!empty($jamList1) && !empty($jamList2)) {
+                if (! empty($jamList1) && ! empty($jamList2)) {
                     $jam1 = $jamList1[array_rand($jamList1)];
                     $jam2 = $jamList2[array_rand($jamList2)];
 
@@ -451,7 +509,7 @@ class SchedulerService
                             isset($entry1['jam_ke'][$jam1]['guru']) &&
                             isset($entry2['jam_ke'][$jam2]['guru'])
                         ) {
-                            $temp = $entry1['jam_ke'][$jam1]['guru'];
+                            $temp                            = $entry1['jam_ke'][$jam1]['guru'];
                             $entry1['jam_ke'][$jam1]['guru'] = $entry2['jam_ke'][$jam2]['guru'];
                             $entry2['jam_ke'][$jam2]['guru'] = $temp;
                         }
@@ -470,7 +528,7 @@ class SchedulerService
      */
     private function calculateFitness($chromosome)
     {
-        $totalSlots = 0;
+        $totalSlots    = 0;
         $hardConflicts = 0;
 
         // Reset teacher load
@@ -481,10 +539,10 @@ class SchedulerService
 
         // Check hard constraints
         $teacherSchedule = [];
-        $classSchedule = [];
+        $classSchedule   = [];
 
         foreach ($chromosome as $daySchedule) {
-            $hari = $daySchedule['hari'];
+            $hari  = $daySchedule['hari'];
             $kelas = $daySchedule['kelas'];
 
             foreach ($daySchedule['jam_ke'] as $jam => $jamSchedule) {
@@ -545,7 +603,7 @@ class SchedulerService
 
         foreach ($chromosome as $daySchedule) {
             foreach ($daySchedule['jam_ke'] as $jam => $jamSchedule) {
-                if (!empty($jamSchedule['guru'])) {
+                if (! empty($jamSchedule['guru'])) {
                     $teacherId = $jamSchedule['guru'];
                     if (isset($teacherLoad[$teacherId])) {
                         $teacherLoad[$teacherId]++;
@@ -556,14 +614,14 @@ class SchedulerService
 
         // Hitung mean dan standar deviasi
         $loads = array_values($teacherLoad);
-        $mean = array_sum($loads) / count($loads);
+        $mean  = array_sum($loads) / count($loads);
 
         $variance = 0;
         foreach ($loads as $load) {
             $variance += pow($load - $mean, 2);
         }
         $variance /= count($loads);
-        $stdDev = sqrt($variance);
+        $stdDev   = sqrt($variance);
 
         // Normalisasi: semakin kecil stdDev, semakin baik (score tinggi)
         // Gunakan fungsi sigmoid untuk normalisasi ke [0,1]
@@ -575,14 +633,14 @@ class SchedulerService
     private function selection($population, $fitnessScores)
     {
         $tournamentSize = 5;
-        $bestIndex = -1;
-        $bestFitness = -1;
+        $bestIndex      = -1;
+        $bestFitness    = -1;
 
         for ($i = 0; $i < $tournamentSize; $i++) {
             $randomIndex = array_rand($population);
             if ($fitnessScores[$randomIndex] > $bestFitness) {
                 $bestFitness = $fitnessScores[$randomIndex];
-                $bestIndex = $randomIndex;
+                $bestIndex   = $randomIndex;
             }
         }
 
@@ -592,7 +650,7 @@ class SchedulerService
     private function crossover($parent1, $parent2)
     {
         $crossoverPoint = rand(1, count($parent1) - 1);
-        $offspring = [];
+        $offspring      = [];
 
         for ($i = 0; $i < count($parent1); $i++) {
             if ($i < $crossoverPoint) {
@@ -622,11 +680,11 @@ class SchedulerService
         $entry2 = &$chromosome[$idx2];
 
         // Pilih jam secara acak
-        if (!empty($entry1['jam_ke']) && !empty($entry2['jam_ke'])) {
+        if (! empty($entry1['jam_ke']) && ! empty($entry2['jam_ke'])) {
             $jamList1 = array_keys($entry1['jam_ke']);
             $jamList2 = array_keys($entry2['jam_ke']);
 
-            if (!empty($jamList1) && !empty($jamList2)) {
+            if (! empty($jamList1) && ! empty($jamList2)) {
                 $jam1 = $jamList1[array_rand($jamList1)];
                 $jam2 = $jamList2[array_rand($jamList2)];
 
@@ -638,7 +696,7 @@ class SchedulerService
                     ) {
 
                         // Swap guru
-                        $temp = $entry1['jam_ke'][$jam1]['guru'];
+                        $temp                            = $entry1['jam_ke'][$jam1]['guru'];
                         $entry1['jam_ke'][$jam1]['guru'] = $entry2['jam_ke'][$jam2]['guru'];
                         $entry2['jam_ke'][$jam2]['guru'] = $temp;
                     }
@@ -656,7 +714,7 @@ class SchedulerService
 
     public function saveScheduleToDatabase($schedule, $berlakuJadwalDari)
     {
-        // error_log("SchedulerService: saveScheduleToDatabase() dimulai.");
+        error_log("SchedulerService: saveScheduleToDatabase() dimulai.");
 
         if (empty($schedule)) {
             // error_log("SchedulerService: ERROR - Jadwal kosong.");
@@ -669,49 +727,60 @@ class SchedulerService
         $this->db->bind(':hak_akses', 'kepala_sekolah');
         $kepala_sekolah = $this->db->single();
 
-        $waliKelasTersedia = []; 
-        $insertCount = 0;
+        // if ($kepala_sekolah) {
+        //     error_log("Kepala sekolah ADA, NIP: " . $kepala_sekolah->nip_pegawai);
+        // } else {
+        //     error_log("Kepala sekolah TIDAK ADA");
+        // }
+
+
+        $waliKelasTersedia = [];
+        $insertCount       = 0;
 
         foreach ($schedule as $daySchedule) {
-            $kode_kelas = $daySchedule['kelas'] . $daySchedule['ruang'];
+            $kode_kelas  = $daySchedule['kelas'] . $daySchedule['ruang'];
             $waliKelasId = $daySchedule['wali_kelas'];
 
             if (!in_array($waliKelasId, $waliKelasTersedia)) {
                 $waliKelasTersedia[] = $waliKelasId;
-                // error_log("SchedulerService: Wali kelas untuk kelas " . $daySchedule['kelas'] . ": " . $waliKelasId);
+                error_log("SchedulerService: Wali kelas untuk kelas " . $daySchedule['kelas'] . $daySchedule['ruang'] . ": " . $waliKelasId);
             }
 
             $data = [
-                'hari' => $daySchedule['hari'],
-                'kode_kelas' => $kode_kelas,
-                'kelas' => substr($daySchedule['kelas'], 0, 3),
-                'ruang' => $daySchedule['ruang'],
-                'wali_kelas' => $daySchedule['wali_kelas'],
-                'prodi' => 'SMABETHEL',
-                'validasi' => 1,
-                'validasi_oleh' => $kepala_sekolah->nip_pegawai ?? NULL,
-                'tanggal_validasi' => date('Y-m-d'),
+                'hari'                => $daySchedule['hari'],
+                'kode_kelas'          => $kode_kelas,
+                'kelas'               => substr($daySchedule['kelas'], 0, 3),
+                'ruang'               => $daySchedule['ruang'],
+                'wali_kelas'          => $daySchedule['wali_kelas'],
+                'prodi'               => 'SMABETHEL',
+                'validasi'            => 1,
+                // 'validasi'            => 0,
+                'validasi_oleh'       => $kepala_sekolah->nip_pegawai ?? null,
+                // 'validasi_oleh'       => null,
+                'tanggal_validasi'    => date('Y-m-d'),
+                // 'tanggal_validasi'    => null,
                 'berlaku_jadwal_dari' => $berlakuJadwalDari,
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
+                // 'berlaku_jadwal_dari' => null,
+                'created_at'          => date('Y-m-d H:i:s'),
+                'updated_at'          => date('Y-m-d H:i:s'),
             ];
 
             for ($jam = 1; $jam <= 10; $jam++) {
-                $mpField = 'mp' . $jam;
+                $mpField   = 'mp' . $jam;
                 $guruField = 'guru' . $jam;
 
                 if (isset($daySchedule['jam_ke'][$jam]) && is_array($daySchedule['jam_ke'][$jam])) {
-                    $data[$mpField] = $daySchedule['jam_ke'][$jam]['mata_pelajaran'] ?? null;
+                    $data[$mpField]   = $daySchedule['jam_ke'][$jam]['mata_pelajaran'] ?? null;
                     $data[$guruField] = $daySchedule['jam_ke'][$jam]['guru'] ?? null;
                 } else {
-                    $data[$mpField] = null;
+                    $data[$mpField]   = null;
                     $data[$guruField] = null;
                 }
             }
 
-            $columns = implode(", ", array_keys($data));
+            $columns      = implode(", ", array_keys($data));
             $placeholders = implode(", ", array_fill(0, count($data), "?"));
-            $query = "INSERT INTO jadwal_lengkap ($columns) VALUES ($placeholders)";
+            $query        = "INSERT INTO jadwal_lengkap ($columns) VALUES ($placeholders)";
 
             $this->db->query($query);
 
@@ -734,7 +803,7 @@ class SchedulerService
             $updateQuery = "UPDATE admin SET nip_pegawai = :nip_pegawai WHERE id = 3 AND hak_akses = 'wali_kelas'";
             $this->db->query($updateQuery);
             $this->db->bind(':nip_pegawai', $nipPegawaiString);
-
+            $this->db->execute();
             // if ($this->db->execute()) {
             //     error_log("SchedulerService: UPDATE admin berhasil: $nipPegawaiString");
             // } else {
@@ -742,7 +811,7 @@ class SchedulerService
             // }
         }
 
-        error_log("SchedulerService: " . $insertCount . " baris berhasil disimpan.");
+        // error_log("SchedulerService: " . $insertCount . " baris berhasil disimpan.");
 
         return $insertCount > 0;
     }

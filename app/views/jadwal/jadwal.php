@@ -83,6 +83,15 @@
             &nbsp;|&nbsp;
             Mulai dari : <?= date3ID($data['jadwal_setting']->berlaku_dari) ?>
          </div>
+           <!-- Tombol Print dan Download Excel -->
+         <div class="text-right mb-2 no-print">
+            <button onclick="printJadwal()" class="btn btn-info btn-sm tombol3">
+               <i class="fa fa-print"></i> Print
+            </button>
+            <a href="<?= URLROOT ?>/jadwal/export_excel?kelas=<?= $kelas ?>" class="btn btn-success btn-sm tombol3">
+                  <i class="fa fa-file-excel"></i> Download Excel
+            </a>
+         </div>
          <div class="text-center" style="font-size:1.6em">
             <b>Kelas <?= $kelas ?></b>
          </div>
@@ -434,10 +443,76 @@
    .container1 {
       display: flex;
    }
+
+   .lebar {
+      width: 47px !important;
+      border-radius: 12px 12px 0px 0px !important;
+      font-weight: bold;
+      margin-left: -1px !important;
+      margin-right: -1px !important;
+   }
+
+   .lebar2 {
+      width: 90px !important;
+      border-radius: 12px 12px 0px 0px !important;
+      font-weight: bold;
+      margin-left: -1px !important;
+      margin-right: -1px !important;
+   }
+
+   .container1 {
+      display: flex;
+   }
+   
+   /* Print Styles */
+   @media print {
+      .no-print {
+         display: none !important;
+      }
+      
+      .card {
+         box-shadow: none !important;
+         border: none !important;
+      }
+      
+      .container1, .btn, .fa-edit, a[href*="edit"] {
+         display: none !important;
+      }
+      
+      table {
+         page-break-inside: avoid;
+         width: 100%;
+      }
+      
+      thead {
+         display: table-header-group;
+      }
+      
+      tr {
+         page-break-inside: avoid;
+      }
+      
+      body {
+         margin: 0;
+         padding: 15px;
+      }
+      
+      @page {
+         size: landscape;
+         margin: 1cm;
+      }
+   }
 </style>
 
 
 <script>
+   function printJadwal() { window.print();}
+
+   // function downloadExcel() {
+   //    var kelas = '<?= $kelas ?>';
+   //    window.location.href = '<?= URLROOT ?>/jadwal/download_excel?kelas=' + kelas;
+   // }
+
    function validasi(id) {
       //console.log('URL: ' + '<?= URLROOT ?>/presensi/karyawan_hapus/' + id);
       Swal.fire({

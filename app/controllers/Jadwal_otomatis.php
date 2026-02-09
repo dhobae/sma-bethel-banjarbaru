@@ -26,7 +26,6 @@ class Jadwal_otomatis extends Controller
         return $year . '/' . $nextYear;
     }
 
-    // VALIDASI
     private function validasiTanggal($tanggal)
     {
         $sql = "SELECT COUNT(*) as total_rows 
@@ -88,7 +87,6 @@ class Jadwal_otomatis extends Controller
         // ini_set('display_errors', 0);
         // Ubah ke 0 agar error tidak merusak JSON response
 
-        // Ambil input dari form
         $berlakuJadwalDari = $_POST['berlaku_jadwal_dari'] ?? null;
         $semester = $_POST['semester'] ?? null;
         $blok = $_POST['blok'] ?? null;
@@ -225,7 +223,7 @@ class Jadwal_otomatis extends Controller
 
             // error_log("CONTROLLER: SUCCESS - Jadwal berhasil dibuat");
 
-            $message = 'Jadwal berhasil dibuat dengan algoritma genetika!';
+            $message = 'Jadwal berhasil dibuat dengan algoritma!';
             $message .= " (Tahun Ajaran: $tahunAjaran, Semester: $semester, Blok: $blok)";
             if ($waliKelasLama) {
                 $message .= ' Wali kelas lama dipertahankan.';
