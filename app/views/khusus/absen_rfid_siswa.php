@@ -2,8 +2,8 @@
     <title>
         Presensi Siswa SMA Bethel Banjarbaru
     </title>
-    <link rel="stylesheet" href="<?=URLROOT?>/dist/lib/pahdi.css">
-    <link rel="shortcut icon" href="<?=URLROOT;?>/smabethel/img/icon.png">
+    <link rel="stylesheet" href="<?php echo URLROOT?>/dist/lib/pahdi.css">
+    <link rel="shortcut icon" href="<?php echo URLROOT;?>/smabethel/img/icon.png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet"
@@ -21,7 +21,7 @@
     <input type="password" id="inputUsername" onchange="isi(this.value)" class="transparan">
 
     <div style="margin-bottom:20px" class="text-center">
-        <img src="<?=URLROOT;?>/smabethel/img/icon.png" alt="smabethel" style="width: 80px;height: auto;" /></a>
+        <img src="<?php echo URLROOT;?>/smabethel/img/icon.png" alt="smabethel" style="width: 80px;height: auto;" /></a>
     </div>
     <div style="font-family: 'courier new'; font-size:2em; margin-bottom:-10px">
         <b>~ Presensi Siswa SMA Bethel Banjarbaru ~</b>
@@ -36,7 +36,7 @@
 <div class="modal fade" id="modal_absen">
     <div class="modal-dialog">
         <div class="modal-content warna_modal">
-            <form method="post" action="<?=URLROOT?>/dashboard/hadir_rfid">
+            <form method="post" action="<?php echo URLROOT?>/dashboard/hadir_rfid">
 
                 <div class="modal-body">
                     <div id="konten_absen">
@@ -52,7 +52,7 @@
 <!-- End Modal -->
 
 
-<script src="<?=URLROOT?>/dist/plugins/sweetalert2/sweetalert2.min.js"></script>
+<script src="<?php echo URLROOT?>/dist/plugins/sweetalert2/sweetalert2.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -63,7 +63,7 @@
 <script>
 // function processInput(isinya) {
 //     $.ajax({
-//         url: '<?=URLROOT?>/absen_siswa/isi_absen_by_rfid',
+//         url: '<?php echo URLROOT?>/absen_siswa/isi_absen_by_rfid',
 //         method: 'POST',
 //         data: {
 //             isi: isinya
@@ -93,7 +93,7 @@
 
 function isi(isinya) {
     $.ajax({
-        url: '<?=URLROOT?>/absen_siswa/isi_absen_by_rfid',
+        url: '<?php echo URLROOT?>/absen_siswa/isi_absen_by_rfid',
         method: 'POST',
         data: {
             isi: isinya
@@ -256,7 +256,7 @@ document.addEventListener('click', function(event) {
 }
 
 body {
-    background: url(<?=URLROOT?>/smabethel/img/gambarsmabethel2.jpg) no-repeat center center fixed;
+    background: url(<?php echo URLROOT?>/smabethel/img/gambarsmabethel2.jpg) no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -265,8 +265,16 @@ body {
     text-align: center;
 }
 
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: -1;
+}
+
 .full-page-wrapper.wrapper {
-    background: url(<?=URLROOT?>/smabethel/img/gambarsmabethel2.jpg) no-repeat center center fixed;
+    background: url(<?php echo URLROOT?>/smabethel/img/gambarsmabethel2.jpg) no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;

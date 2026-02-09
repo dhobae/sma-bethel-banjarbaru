@@ -12,7 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <?php sflash2()?>
 
-    <input type="password" id="inputRFID" onchange="prosesAbsen(this.value)" class="transparan">
+    <!-- <input type="password" id="inputRFID" onchange="prosesAbsen(this.value)" class="transparan"> -->
 
     <div style="margin-bottom:20px" class="text-center">
         <img src="<?=URLROOT;?>/smabethel/img/icon.png" alt="smabethel" style="width: 80px;height: auto;" />
@@ -47,6 +47,14 @@ body {
     color: #cccccc;
     text-align: center;
     padding-top: 2rem;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6); 
+    z-index: -1;
 }
 
 @keyframes blink {

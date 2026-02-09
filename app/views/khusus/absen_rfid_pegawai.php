@@ -1,7 +1,7 @@
 <head>
     <title>Presensi Pegawai SMA Bethel Banjarbaru</title>
-    <link rel="stylesheet" href="<?=URLROOT?>/dist/lib/pahdi.css">
-    <link rel="shortcut icon" href="<?=URLROOT;?>/smabethel/img/icon.png">
+    <link rel="stylesheet" href="<?php echo URLROOT?>/dist/lib/pahdi.css">
+    <link rel="shortcut icon" href="<?php echo URLROOT;?>/smabethel/img/icon.png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet"
@@ -9,14 +9,14 @@
 </head>
 
 <body>
- 
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <?php sflash2()?>
 
     <input type="password" id="inputRFID" onchange="prosesAbsen(this.value)" class="transparan">
 
     <div style="margin-bottom:20px" class="text-center">
-        <img src="<?=URLROOT;?>/smabethel/img/icon.png" alt="smabethel" style="width: 80px;height: auto;" />
+        <img src="<?php echo URLROOT;?>/smabethel/img/icon.png" alt="smabethel" style="width: 80px;height: auto;" />
     </div>
     <div style="font-family: 'courier new'; font-size:2em; margin-bottom:-10px">
         <b>~ Presensi Pegawai SMA Bethel Banjarbaru ~</b>
@@ -30,7 +30,7 @@
 
 </body>
 
-<script src="<?=URLROOT?>/dist/plugins/sweetalert2/sweetalert2.min.js"></script>
+<script src="<?php echo URLROOT?>/dist/plugins/sweetalert2/sweetalert2.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -71,7 +71,7 @@ function getLocation() {
 function prosesAbsen(rfidValue) {
     // Kirim data absen dengan koordinat
     $.ajax({
-        url: '<?=URLROOT?>/absen_pegawai/isi_absen_by_rfid',
+        url: '<?php echo URLROOT?>/absen_pegawai/isi_absen_by_rfid',
         method: 'POST',
         data: {
             isi: rfidValue,
@@ -166,7 +166,6 @@ function prosesAbsen(rfidValue) {
                     }
                 });
              } else {
-                // KESALAHAN
                 Swal.fire({
                     icon: 'error',
                     title: 'Terjadi Kesalahan',
@@ -207,19 +206,16 @@ function refreshPage() {
     }, 500);
 }
 
-// Auto-focus dan get location saat halaman dimuat
 window.onload = function() {
     document.getElementById("inputRFID").value = "";
     document.getElementById("inputRFID").focus();
-    getLocation(); // Ambil lokasi GPS
+    getLocation(); 
 };
 
-// Maintain focus pada input field
 $(document).ready(function() {
     $('#inputRFID').focus();
 });
 
-// Return focus saat klik di mana saja
 document.addEventListener('click', function(event) {
     const rfidInput = document.getElementById('inputRFID');
     if (event.target !== rfidInput) {
@@ -260,7 +256,7 @@ document.addEventListener('click', function(event) {
 }
 
 body {
-    background: url(<?=URLROOT?>/smabethel/img/gambarsmabethel2.jpg) no-repeat center center fixed;
+    background: url(<?php echo URLROOT?>/smabethel/img/gambarsmabethel2.jpg) no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -268,6 +264,14 @@ body {
     color: #cccccc;
     text-align: center;
     padding-top: 2rem;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6); 
+    z-index: -1;
 }
 
 @keyframes blink {
