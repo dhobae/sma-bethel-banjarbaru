@@ -24,9 +24,9 @@
     <div style="font-family: 'courier new'; font-size:2.2em; margin-bottom:10px" class="blinking">
         <b>Tempelkan Kartu Presensi Anda</b>
     </div>
-    <div style="font-family: 'courier new'; font-size:1.2em; color: #ffeb3b;" class="mb-3">
+    <!-- <div style="font-family: 'courier new'; font-size:1.2em; color: #ffeb3b;" class="mb-3">
         <i class="fa fa-map-marker"></i> <span id="statusLokasi">Mendeteksi lokasi...</span>
-    </div>
+    </div> -->
 
 </body>
 
@@ -41,32 +41,32 @@ let userLatitude = null;
 let userLongitude = null;
 
 // Fungsi untuk mendapatkan lokasi GPS
-function getLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            function(position) {
-                userLatitude = position.coords.latitude;
-                userLongitude = position.coords.longitude;
-                $('#statusLokasi').html('<i class="fa fa-check-circle"></i> Lokasi terdeteksi');
-                console.log('Koordinat: ' + userLatitude + ', ' + userLongitude);
-            },
-            function(error) {
-                console.error('Error mendapatkan lokasi: ', error);
-                $('#statusLokasi').html('<i class="fa fa-exclamation-triangle"></i> Lokasi tidak terdeteksi');
-                // Tetap bisa absen meski tanpa koordinat
-                userLatitude = null;
-                userLongitude = null;
-            }, {
-                enableHighAccuracy: true,
-                timeout: 5000,
-                maximumAge: 0
-            }
-        );
-    } else {
-        $('#statusLokasi').html('<i class="fa fa-times-circle"></i> Browser tidak mendukung GPS');
-        console.log("Geolocation tidak didukung oleh browser ini.");
-    }
-}
+// function getLocation() {
+//     if (navigator.geolocation) {
+//         navigator.geolocation.getCurrentPosition(
+//             function(position) {
+//                 userLatitude = position.coords.latitude;
+//                 userLongitude = position.coords.longitude;
+//                 $('#statusLokasi').html('<i class="fa fa-check-circle"></i> Lokasi terdeteksi');
+//                 console.log('Koordinat: ' + userLatitude + ', ' + userLongitude);
+//             },
+//             function(error) {
+//                 console.error('Error mendapatkan lokasi: ', error);
+//                 $('#statusLokasi').html('<i class="fa fa-exclamation-triangle"></i> Lokasi tidak terdeteksi');
+//                 // Tetap bisa absen meski tanpa koordinat
+//                 userLatitude = null;
+//                 userLongitude = null;
+//             }, {
+//                 enableHighAccuracy: true,
+//                 timeout: 5000,
+//                 maximumAge: 0
+//             }
+//         );
+//     } else {
+//         $('#statusLokasi').html('<i class="fa fa-times-circle"></i> Browser tidak mendukung GPS');
+//         console.log("Geolocation tidak didukung oleh browser ini.");
+//     }
+// }
 
 function prosesAbsen(rfidValue) {
     // Kirim data absen dengan koordinat
