@@ -96,7 +96,7 @@ function prosesAbsen(rfidValue) {
                             </div>
                         `,
                         showConfirmButton: false,
-                        timer: 7000,
+                        timer: 1200,
                         timerProgressBar: true
                     }).then(() => {
                         refreshPage();
@@ -120,7 +120,7 @@ function prosesAbsen(rfidValue) {
                             </div>
                         `,
                         showConfirmButton: false,
-                        timer: 7000,
+                        timer: 1200,
                         timerProgressBar: true
                     }).then(() => {
                         refreshPage();
@@ -146,7 +146,7 @@ function prosesAbsen(rfidValue) {
                     showConfirmButton: true,
                     confirmButtonText: 'OK',
                     confirmButtonColor: '#ffc107',
-                    timer: 5000,
+                    timer: 1200,
                     timerProgressBar: true
                 }).then(() => {
                     refreshPage();
@@ -158,7 +158,7 @@ function prosesAbsen(rfidValue) {
                     title: 'Presensi Gagal',
                     text: response.message,
                     confirmButtonText: 'OK',
-                    timer: 5000,
+                    timer: 1200,
                     timerProgressBar: true
                 }).then((result) => {
                     if (result.isConfirmed) {
@@ -171,7 +171,7 @@ function prosesAbsen(rfidValue) {
                     title: 'Terjadi Kesalahan',
                     text: response.message,
                     confirmButtonText: 'OK',
-                    timer: 5000,
+                    timer: 1200,
                     timerProgressBar: true
                 }).then((result) => {
                     if (result.isConfirmed) {

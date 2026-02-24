@@ -116,7 +116,7 @@ function isi(isinya) {
                             </div>
                         `,
                         showConfirmButton: false,
-                        timer: 7000,
+                        timer: 1200,
                         timerProgressBar: true
                     }).then(() => {
                         refreshPage();
@@ -140,7 +140,7 @@ function isi(isinya) {
                             </div>
                         `,
                         showConfirmButton: false,
-                        timer: 7000,
+                        timer: 2000,
                         timerProgressBar: true
                     }).then(() => {
                         refreshPage();
@@ -166,7 +166,7 @@ function isi(isinya) {
                     showConfirmButton: true,
                     confirmButtonText: 'OK',
                     confirmButtonColor: '#ffc107',
-                    timer: 5000,
+                    timer: 1200,
                     timerProgressBar: true
                 }).then(() => {
                     refreshPage();
@@ -177,7 +177,7 @@ function isi(isinya) {
                     title: 'Presensi Gagal',
                     text: response.message,
                     confirmButtonText: 'OK',
-                    timer: 5000,
+                    timer: 1200,
                     timerProgressBar: true
                 }).then((result) => {
                     if (result.isConfirmed) {
@@ -190,7 +190,7 @@ function isi(isinya) {
                     title: 'Terjadi Kesalahan',
                     text: response.message,
                     confirmButtonText: 'OK',
-                    timer: 5000,
+                    timer: 1200,
                     timerProgressBar: true
                 }).then((result) => {
                     if (result.isConfirmed) {

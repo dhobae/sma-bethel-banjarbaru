@@ -1,7 +1,7 @@
 <head>
     <title>Presensi Pegawai SMA Bethel Banjarbaru</title>
-    <link rel="stylesheet" href="<?=URLROOT?>/dist/lib/pahdi.css">
-    <link rel="shortcut icon" href="<?=URLROOT;?>/smabethel/img/icon.png">
+    <link rel="stylesheet" href="<?php echo URLROOT?>/dist/lib/pahdi.css">
+    <link rel="shortcut icon" href="<?php echo URLROOT;?>/smabethel/img/icon.png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet"
@@ -15,18 +15,32 @@
     <!-- <input type="password" id="inputRFID" onchange="prosesAbsen(this.value)" class="transparan"> -->
 
     <div style="margin-bottom:20px" class="text-center">
-        <img src="<?=URLROOT;?>/smabethel/img/icon.png" alt="smabethel" style="width: 80px;height: auto;" />
+        <img src="<?php echo URLROOT;?>/smabethel/img/icon.png" alt="smabethel" style="width: 80px;height: auto;" />
     </div>
     <div style="font-family: 'courier new'; font-size:2em; margin-bottom:-10px">
         <b>~ Pilih Opsi Absen ~</b>
     </div>
-    <div style="font-family: 'courier new'; gap:8px;" 
+    <div style="font-family: 'courier new'; gap:8px;"
     class="d-flex justify-content-center align-items-center mt-5">
-        <a style="font-size:1rem; font-weight: bold;" href="<?= URLROOT ?>/absen_pegawai" class="btn btn-primary ">Absen RFID Pegawai</a>
-        <a style="font-size:1rem; font-weight: bold;" href="<?= URLROOT ?>/absen_siswa" class="btn btn-secondary">Absen RFID Siswa</a>
+        <a style="font-size:1rem; font-weight: bold;" href="<?php echo URLROOT ?>/absen_pegawai" class="btn btn-primary ">Absen RFID Pegawai</a>
+        <a style="font-size:1rem; font-weight: bold;" href="<?php echo URLROOT ?>/absen_siswa" class="btn btn-secondary">Absen RFID Siswa</a>
     </div>
 </body>
 
+<script>
+     Swal.fire({
+                    icon: 'info',
+                    title: 'Presensi Gagal',
+                    text: 'testing',
+                    confirmButtonText: 'OK',
+                    timer: 1200,
+                    timerProgressBar: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        refreshPage();
+                    }
+                });
+</script>
 
 <style>
 
@@ -39,7 +53,7 @@
 }
 
 body {
-    background: url(<?=URLROOT?>/smabethel/img/gambarsmabethel2.jpg) no-repeat center center fixed;
+    background: url(<?php echo URLROOT?>/smabethel/img/gambarsmabethel2.jpg) no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -53,7 +67,7 @@ body::before {
     content: "";
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.6); 
+    background: rgba(0, 0, 0, 0.6);
     z-index: -1;
 }
 
