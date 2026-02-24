@@ -27,21 +27,6 @@
     </div>
 </body>
 
-<script>
-     Swal.fire({
-                    icon: 'info',
-                    title: 'Presensi Gagal',
-                    text: 'testing',
-                    confirmButtonText: 'OK',
-                    timer: 1200,
-                    timerProgressBar: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        refreshPage();
-                    }
-                });
-</script>
-
 <style>
 
 .transparan {
