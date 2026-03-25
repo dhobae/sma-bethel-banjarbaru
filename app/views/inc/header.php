@@ -100,7 +100,7 @@
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo -->
         <a href="<?= URLROOT ?>" class="brand-link">
-            <img src="<?= URLROOT; ?>/smabethel/img/icon.png" alt="AdminLTE Logo" class="brand-image"
+            <img src="<?= URLROOT; ?>/smabethel/img/icon.png" alt="SMA Bethel Logo" class="brand-image"
                 style="opacity: 1">
             <span class="brand-text" style="color:#6a1212; font-weight:bold">SMA BETHEL BJB</span>
         </a>

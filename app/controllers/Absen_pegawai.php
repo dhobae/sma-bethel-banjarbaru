@@ -15,18 +15,17 @@ class Absen_pegawai extends Controller
             return redirect('');
         }
 
-
         $this->Mabsen_pegawai = $this->model('Mabsen_pegawai');
-        $this->Mdashboard = $this->model('Mdashboard');
-        $this->Mpresensi = $this->model('Mpresensi');
+        $this->Mdashboard     = $this->model('Mdashboard');
+        $this->Mpresensi      = $this->model('Mpresensi');
     }
 
     private function getStatus()
     {
-        $jamKerja = $this->Mabsen_pegawai->ambil_jam_kerja();
+        $jamKerja  = $this->Mabsen_pegawai->ambil_jam_kerja();
         $jam_masuk = $jamKerja->masuk;   // 07:30:00
         $jam_pulang = $jamKerja->pulang;  // 16:00:00
-        $hasil = validasi_waktu_rfid($jam_masuk, $jam_pulang);
+        $hasil     = validasi_waktu_rfid($jam_masuk, $jam_pulang);
         return $hasil['status'];
     }
 
@@ -41,7 +40,7 @@ class Absen_pegawai extends Controller
 
         if (date('D') == 'Sat' || date('D') == 'Sun') {
             echo json_encode([
-                'status' => 'error',
+                'status'  => 'error',
                 'message' => 'Hari Libur Tidak Dapat Melakukan Absensi',
             ]);
             return;
@@ -49,15 +48,15 @@ class Absen_pegawai extends Controller
 
         if ($this->getStatus() == 'ditutup') {
             echo json_encode([
-                'status' => 'error',
+                'status'  => 'error',
                 'message' => 'Perangkat RFID Ditutup',
             ]);
             return;
         }
 
-        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-        $rfid = $_POST['isi'];
-        $id_pengunjung = $_POST['id_pengunjung'];
+        $_POST          = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+        $rfid           = $_POST['isi'];
+        $id_pengunjung  = $_POST['id_pengunjung'];
         $lokasi_koordinat = $_POST['lokasi_koordinat'];
 
         // Cek apakah kartu RFID terdaftar
@@ -65,14 +64,14 @@ class Absen_pegawai extends Controller
 
         if (!$pegawai) {
             echo json_encode([
-                'status' => 'error',
+                'status'  => 'error',
                 'message' => 'Kartu RFID tidak terdaftar dalam sistem',
             ]);
             return;
         }
 
         $data['cek_absen'] = $this->Mabsen_pegawai->cek_absen($pegawai->nik);
-        $status_masuk = null;
+        $status_masuk      = null;
 
         if (!empty($data['cek_absen']) && isset($data['cek_absen'][0])) {
             $status_masuk = $data['cek_absen'][0]->status_masuk;
@@ -80,26 +79,26 @@ class Absen_pegawai extends Controller
 
         if ($status_masuk == 'Cuti1' || $status_masuk == 'Cuti2') {
             echo json_encode([
-                'status' => 'info',
+                'status'  => 'info',
                 'message' => 'Anda Sedang Izin Cuti',
             ]);
             return;
         } else if ($status_masuk == 'Sakit') {
             echo json_encode([
-                'status' => 'info',
+                'status'  => 'info',
                 'message' => 'Anda Sedang Izin Sakit',
             ]);
             return;
         } else if ($status_masuk == 'TL') {
             echo json_encode([
-                'status' => 'info',
+                'status'  => 'info',
                 'message' => 'Anda Sedang Izin Tugas Luar',
             ]);
             return;
         }
 
-        $nik = $pegawai->nik;
-        $nama = $pegawai->nama ?? 'Pegawai';
+        $nik     = $pegawai->nik;
+        $nama    = $pegawai->nama    ?? 'Pegawai';
         $jabatan = $pegawai->jabatan ?? '-';
 
         // Cek status absen hari ini
@@ -107,97 +106,107 @@ class Absen_pegawai extends Controller
 
         if (!$cek_absen) {
             // BELUM ABSEN MASUK - Lakukan absen masuk
-            $keterangan = 'Absen masuk via RFID' . ($this->getStatus() == 'terlambat' ? ' (Terlambat)' : '');
-            $data_absen = [
-                'nik' => $nik,
-                'rfid' => $rfid,
+            $keterangan  = 'Absen masuk via RFID' . ($this->getStatus() == 'terlambat' ? ' (Terlambat)' : '');
+            $data_absen  = [
+                'nik'        => $nik,
+                'rfid'       => $rfid,
                 'from_masuk' => 'WFO',
-                'loc_masuk' => $lokasi_koordinat,
+                'loc_masuk'  => $lokasi_koordinat,
                 'keterangan' => $keterangan,
-                'visitid' => $id_pengunjung,
+                'visitid'    => $id_pengunjung,
             ];
 
             if ($this->Mabsen_pegawai->absen_masuk($data_absen)) {
                 echo json_encode([
-                    'status' => 'success',
-                    'type' => 'masuk',
+                    'status'  => 'success',
+                    'type'    => 'masuk',
                     'message' => 'Selamat datang! Presensi MASUK berhasil dicatat. ' . $this->getStatus(),
-                    'nama' => $nama,
-                    'nik' => $nik,
+                    'nama'    => $nama,
+                    'nik'     => $nik,
                     'jabatan' => $jabatan,
-                    'waktu' => date('H:i:s'),
-                    'lokasi' => 'WFO',
+                    'waktu'   => date('H:i:s'),
+                    'lokasi'  => 'WFO',
                     'koordinat' => $lokasi_koordinat,
                 ]);
             } else {
                 echo json_encode([
-                    'status' => 'error',
+                    'status'  => 'error',
                     'message' => 'Gagal mencatat presensi masuk. Silakan coba lagi.',
                 ]);
             }
         } else {
-            if (empty($cek_absen->jam_pulang) || $cek_absen->jam_pulang == null || $cek_absen->jam_pulang == '00:00:00' || $cek_absen->jam_pulang == '-') {
+            $jam_pulang_db = $cek_absen->jam_pulang ?? null;
+            $belum_pulang  = empty($jam_pulang_db)
+                || $jam_pulang_db == null
+                || $jam_pulang_db == '00:00:00'
+                || $jam_pulang_db == '-';
 
+            if ($belum_pulang) {
                 if ($this->getStatus() == 'pulang') {
-
                     $data_absen = [
-                        'nik' => $nik,
-                        'rfid' => $rfid,
+                        'nik'         => $nik,
+                        'rfid'        => $rfid,
                         'from_pulang' => 'WFO',
-                        'loc_pulang' => $lokasi_koordinat,
-                        'keterangan' => 'Absen pulang via RFID',
-                        'visitid' => $id_pengunjung,
+                        'loc_pulang'  => $lokasi_koordinat,
+                        'keterangan'  => 'Absen pulang via RFID',
+                        'visitid'     => $id_pengunjung,
                     ];
 
                     if ($this->Mabsen_pegawai->absen_pulang($data_absen)) {
-                        $jam_masuk = strtotime($cek_absen->jam_masuk);
-                        $jam_pulang = strtotime(date('H:i:s'));
-                        $durasi = $jam_pulang - $jam_masuk;
+                        $waktu_pulang = date('H:i:s');
+                        $jam_masuk_ts = strtotime($cek_absen->jam_masuk);
+                        $jam_pulang_ts = strtotime($waktu_pulang);
+                        $durasi = $jam_pulang_ts - $jam_masuk_ts;
 
                         // Kurangi 1 jam (3600 detik) istirahat
                         $durasi = max(0, $durasi - 3600);
 
-                        $jam = floor($durasi / 3600);
+                        $jam   = floor($durasi / 3600);
                         $menit = floor(($durasi % 3600) / 60);
 
-
                         echo json_encode([
-                            'status' => 'success',
-                            'type' => 'pulang',
-                            'message' => 'Hati-hati di jalan! Presensi PULANG berhasil dicatat.',
-                            'nama' => $nama,
-                            'nik' => $nik,
-                            'jabatan' => $jabatan,
-                            'waktu' => date('H:i:s'),
-                            'jam_masuk' => $cek_absen->jam_masuk,
-                            'durasi' => "$jam jam $menit menit",
-                            'lokasi_masuk' => 'WFO',
+                            'status'        => 'success',
+                            'type'          => 'pulang',
+                            'message'       => 'Hati-hati di jalan! Presensi PULANG berhasil dicatat.',
+                            'nama'          => $nama,
+                            'nik'           => $nik,
+                            'jabatan'       => $jabatan,
+                            'jam_masuk'     => $cek_absen->jam_masuk,
+                            // FIX: jam_pulang sebelumnya tidak dikirim ke response
+                            'jam_pulang'    => $waktu_pulang,
+                            'waktu'         => $waktu_pulang,
+                            'durasi'        => "$jam jam $menit menit",
+                            'lokasi_masuk'  => 'WFO',
                             'lokasi_pulang' => 'WFO',
-                            'koordinat' => $lokasi_koordinat,
+                            'koordinat'     => $lokasi_koordinat,
                         ]);
                     } else {
                         echo json_encode([
-                            'status' => 'error',
+                            'status'  => 'error',
                             'message' => 'Gagal mencatat presensi pulang. Silakan coba lagi.',
                         ]);
                     }
                 } else {
                     echo json_encode([
-                        'status' => 'error',
+                        'status'  => 'error',
                         'message' => 'Gagal mencatat presensi pulang. Waktu Pulang belum terbuka.',
                     ]);
                 }
-
             } else {
+                // Sanitasi jam_pulang sebelum dikirim ke client
+                $jam_pulang_display = ($jam_pulang_db && $jam_pulang_db !== '00:00:00')
+                    ? $jam_pulang_db
+                    : '-';
+
                 echo json_encode([
-                    'status' => 'warning',
-                    'message' => 'Anda sudah melakukan presensi MASUK dan PULANG hari ini.',
-                    'nama' => $nama,
-                    'nik' => $nik,
-                    'jabatan' => $jabatan,
-                    'jam_masuk' => $cek_absen->jam_masuk,
-                    'jam_pulang' => $cek_absen->jam_pulang,
-                    'lokasi_masuk' => 'WFO',
+                    'status'        => 'warning',
+                    'message'       => 'Anda sudah melakukan presensi MASUK dan PULANG hari ini.',
+                    'nama'          => $nama,
+                    'nik'           => $nik,
+                    'jabatan'       => $jabatan,
+                    'jam_masuk'     => $cek_absen->jam_masuk,
+                    'jam_pulang'    => $jam_pulang_display,
+                    'lokasi_masuk'  => 'WFO',
                     'lokasi_pulang' => 'WFO',
                 ]);
             }

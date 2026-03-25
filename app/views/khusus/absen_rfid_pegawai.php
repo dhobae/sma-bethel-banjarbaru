@@ -14,9 +14,6 @@
     <?php sflash2() ?>
 
     <input type="password" id="inputRFID" onchange="prosesAbsen(this.value)" class="transparan">
-    <input type="hidden" name="loc_masuk" id="loc_masuk" />
-    <input type="hidden" value="" id="visitid" name="visitid">
-
     <div style="margin-bottom:20px" class="text-center">
         <img src="<?php echo URLROOT; ?>/smabethel/img/icon.png" alt="smabethel" style="width: 80px;height: auto;" />
     </div>
@@ -26,9 +23,6 @@
     <div style="font-family: 'courier new'; font-size:2.2em; margin-bottom:10px" class="blinking">
         <b>Tempelkan Kartu Presensi Anda</b>
     </div>
-    <!-- <div style="font-family: 'courier new'; font-size:1.2em; color: #ffeb3b;" class="mb-3">
-        <i class="fa fa-map-marker"></i> <span id="statusLokasi">Mendeteksi lokasi...</span>
-    </div> -->
     <div class="d-flex justify-content-center align-items-center mt-3">
         <button class="btn btn-outline-danger btn-sm" id="logout-khusus">Logout</button>
     </div>
@@ -58,7 +52,11 @@
                 console.log("✓ Visitor ID initialized: " + appState.visitorId);
             }).catch(error => {
                 console.error("Error getting visitor ID:", error);
+                appState.visitorId = 'unknown-' + Date.now();
             });
+        }).catch(error => {
+            console.error("Error loading FingerprintJS:", error);
+            appState.visitorId = 'unknown-' + Date.now();
         });
     }
 
@@ -69,7 +67,6 @@
                     appState.latitude = position.coords.latitude;
                     appState.longitude = position.coords.longitude;
                     appState.coordinateLocation = appState.latitude + ', ' + appState.longitude;
-                    
                     console.log("✓ Lokasi diperoleh: " + appState.coordinateLocation);
                     console.log("  Akurasi: " + Math.round(position.coords.accuracy) + 'm');
                 },
@@ -78,7 +75,7 @@
                     appState.latitude = null;
                     appState.longitude = null;
                     appState.coordinateLocation = null;
-                }, 
+                },
                 {
                     enableHighAccuracy: true,
                     timeout: 10000,
@@ -114,12 +111,20 @@
 
     function prosesAbsen(rfidValue) {
         if (appState.isProcessing || !rfidValue.trim()) return;
-        
+
         appState.isProcessing = true;
 
+        // FIX: Tambahkan timeout agar tidak infinite loop jika visitorId tidak pernah ready
+        let attempts = 0;
         const waitForVisitorId = setInterval(() => {
+            attempts++;
             if (appState.visitorId) {
                 clearInterval(waitForVisitorId);
+                sendAbsenRequest();
+            } else if (attempts > 50) { // Timeout 5 detik (50 x 100ms)
+                clearInterval(waitForVisitorId);
+                console.warn("VisitorId timeout, menggunakan fallback.");
+                appState.visitorId = 'unknown-' + Date.now();
                 sendAbsenRequest();
             }
         }, 100);
@@ -135,124 +140,135 @@
                 },
                 dataType: 'json',
                 success: function(response) {
-                if (response.status === 'success') {
-                    if (response.type === 'masuk') {
+                    if (response.status === 'success') {
+                        if (response.type === 'masuk') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '✓ PRESENSI MASUK',
+                                html: `
+                                <div style="font-size: 1.1em;">
+                                    <p style="font-size: 1.3em; margin: 10px 0;"><b>${response.nama}</b></p>
+                                    <p style="color: #666;">${response.nik} | ${response.jabatan}</p>
+                                    <hr style="margin: 15px 0;">
+                                    <p style="color: #28a745; font-size: 1.2em;"><b>⏰ ${response.waktu}</b></p>
+                                    <p style="color: #666; margin-top: 10px;">${response.message}</p>
+                                </div>
+                            `,
+                                showConfirmButton: false,
+                                timer: 1200,
+                                timerProgressBar: true
+                            }).then(() => {
+                                refreshPage();
+                            });
+                        } else if (response.type === 'pulang') {
+                            Swal.fire({
+                                icon: 'info',
+                                title: '✓ PRESENSI PULANG',
+                                html: `
+                                <div style="font-size: 1.1em;">
+                                    <p style="font-size: 1.3em; margin: 10px 0;"><b>${response.nama}</b></p>
+                                    <p style="color: #666;">${response.nik} | ${response.jabatan}</p>
+                                    <hr style="margin: 15px 0;">
+                                    <div style="background: #f0f8ff; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                                        <p style="margin: 5px 0;">Masuk: <b>${response.jam_masuk}</b></p>
+                                        <p style="margin: 5px 0;">Pulang: <b>${response.jam_pulang}</b></p>
+                                        <p style="margin: 5px 0; color: #007bff;">Durasi: <b>${response.durasi}</b></p>
+                                    </div>
+                                    <p style="color: #666; margin-top: 10px;">${response.message}</p>
+                                </div>
+                            `,
+                                showConfirmButton: false,
+                                timer: 1200,
+                                timerProgressBar: true
+                            }).then(() => {
+                                refreshPage();
+                            });
+                        }
+                    } else if (response.status === 'warning') {
+                        // Sanitasi tampilan jam_pulang jika nilainya tidak valid
+                        const jamPulangDisplay = (response.jam_pulang && response.jam_pulang !== '00:00:00')
+                            ? response.jam_pulang
+                            : '-';
+
                         Swal.fire({
-                            icon: 'success',
-                            title: '✓ PRESENSI MASUK',
+                            icon: 'warning',
+                            title: '⚠ Sudah Presensi Lengkap',
                             html: `
                             <div style="font-size: 1.1em;">
                                 <p style="font-size: 1.3em; margin: 10px 0;"><b>${response.nama}</b></p>
                                 <p style="color: #666;">${response.nik} | ${response.jabatan}</p>
                                 <hr style="margin: 15px 0;">
-                                <p style="color: #28a745; font-size: 1.2em;"><b>⏰ ${response.waktu}</b></p>
-                                <p style="color: #666; margin-top: 10px;">${response.message}</p>
+                                <div style="background: #fff3cd; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                                    <p style="margin: 5px 0;">✓ Masuk: <b>${response.jam_masuk}</b></p>
+                                    <p style="margin: 5px 0;">✓ Pulang: <b>${jamPulangDisplay}</b></p>
+                                </div>
+                                <p style="color: #856404; margin-top: 10px;">${response.message}</p>
                             </div>
                         `,
-                            showConfirmButton: false,
+                            showConfirmButton: true,
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#ffc107',
                             timer: 1200,
                             timerProgressBar: true
                         }).then(() => {
                             refreshPage();
                         });
-                    } else if (response.type === 'pulang') {
+                    } else if (response.status === 'info') {
+                        // FIX: Judul diperjelas — bukan "Presensi Gagal" karena ini kasus Cuti/Sakit/TL
                         Swal.fire({
                             icon: 'info',
-                            title: '✓ PRESENSI PULANG',
-                            html: `
-                            <div style="font-size: 1.1em;">
-                                <p style="font-size: 1.3em; margin: 10px 0;"><b>${response.nama}</b></p>
-                                <p style="color: #666;">${response.nik} | ${response.jabatan}</p>
-                                <hr style="margin: 15px 0;">
-                                <div style="background: #f0f8ff; padding: 10px; border-radius: 5px; margin: 10px 0;">
-                                    <p style="margin: 5px 0;">Masuk: <b>${response.jam_masuk}</b></p>
-                                    <p style="margin: 5px 0;">Pulang: <b>${response.waktu}</b></p>
-                                    <p style="margin: 5px 0; color: #007bff;">Durasi: <b>${response.durasi}</b></p>
-                                </div>
-                                <p style="color: #666; margin-top: 10px;">${response.message}</p>
-                            </div>
-                        `,
-                            showConfirmButton: false,
+                            title: 'Tidak Dapat Absen',
+                            text: response.message,
+                            showConfirmButton: true,
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#17a2b8',
                             timer: 1200,
                             timerProgressBar: true
-                        }).then(() => {
-                            refreshPage();
+                        }).then((result) => {
+                            if (result.isConfirmed || result.isDismissed) {
+                                refreshPage();
+                            }
+                        });
+                    } else {
+                        // FIX: Error TIDAK pakai timer — user harus baca dan konfirmasi sendiri
+                        console.log(response);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Terjadi Kesalahan',
+                            text: response.message,
+                            showConfirmButton: true,
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#dc3545'
+                        }).then((result) => {
+                            if (result.isConfirmed || result.isDismissed) {
+                                refreshPage();
+                            }
                         });
                     }
-                } else if (response.status === 'warning') {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: '⚠ Sudah Presensi Lengkap',
-                        html: `
-                        <div style="font-size: 1.1em;">
-                            <p style="font-size: 1.3em; margin: 10px 0;"><b>${response.nama}</b></p>
-                            <p style="color: #666;">${response.nik} | ${response.jabatan}</p>
-                            <hr style="margin: 15px 0;">
-                            <div style="background: #fff3cd; padding: 10px; border-radius: 5px; margin: 10px 0;">
-                                <p style="margin: 5px 0;">✓ Masuk: <b>${response.jam_masuk}</b></p>
-                                <p style="margin: 5px 0;">✓ Pulang: <b>${response.jam_pulang}</b></p>
-                            </div>
-                            <p style="color: #856404; margin-top: 10px;">${response.message}</p>
-                        </div>
-                    `,
-                        showConfirmButton: true,
-                        confirmButtonText: 'OK',
-                        confirmButtonColor: '#ffc107',
-                        timer: 1200,
-                        timerProgressBar: true
-                    }).then(() => {
-                        refreshPage();
-                    });
-                } else if (response.status === 'info') {
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'Presensi Gagal',
-                        text: response.message,
-                        confirmButtonText: 'OK',
-                        timer: 1200,
-                        timerProgressBar: true
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            refreshPage();
-                        }
-                    });
-                } else {
-                    console.log(response);
+                },
+                error: function(xhr, status, error) {
+                    // FIX: Hapus console.error duplikat
+                    console.error('AJAX Error: ', error);
+                    console.error('Response: ', xhr.responseText);
+
+                    // FIX: Error TIDAK pakai timer — user harus konfirmasi, baru refresh
                     Swal.fire({
                         icon: 'error',
                         title: 'Terjadi Kesalahan',
-                        text: response.message,
+                        text: 'Gagal menghubungi server. Silakan coba lagi atau hubungi administrator.',
+                        showConfirmButton: true,
                         confirmButtonText: 'OK',
-                        timer: 1200,
-                        timerProgressBar: true
+                        confirmButtonColor: '#dc3545'
                     }).then((result) => {
-                        if (result.isConfirmed) {
+                        // FIX: Hanya refresh setelah user klik OK atau dismiss
+                        if (result.isConfirmed || result.isDismissed) {
                             refreshPage();
                         }
                     });
+                },
+                complete: function() {
+                    appState.isProcessing = false;
                 }
-            },
-            error: function(xhr, status, error) {
-                console.error('AJAX Error: ', error);
-                console.error('Response: ', xhr.responseText);
-
-                console.error('AJAX Error: ', error);
-                console.error('Response: ', xhr.responseText);
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Terjadi Kesalahan',
-                    text: 'Gagal menghubungi server. Silakan coba lagi atau hubungi administrator.',
-                    showConfirmButton: true,
-                    confirmButtonText: 'OK',
-                    confirmButtonColor: '#dc3545'
-                }).then(() => {
-                    refreshPage();
-                });
-            },
-            complete: function() {
-                appState.isProcessing = false;
-            }
             });
         }
     }
@@ -275,15 +291,13 @@
 
     function setupEventListeners() {
         setupLogoutHandler();
-        
-        // Focus ke input RFID ketika klik di mana saja
+
         document.addEventListener('click', function(event) {
             if (event.target !== appState.rfidInput && appState.rfidInput) {
                 appState.rfidInput.focus();
             }
         });
 
-        // Focus otomatis saat page ready
         if (appState.rfidInput) {
             appState.rfidInput.focus();
         }
@@ -294,7 +308,6 @@
         setupEventListeners();
         initializeVisitorId();
         getLocationCoordinates();
-        // console.log("✓ Aplikasi siap digunakan");
     });
 
     $(document).ready(function() {
@@ -310,7 +323,6 @@
         --bg-url: url('<?php echo URLROOT ?>/smabethel/img/gambarsmabethel2.jpg');
     }
 
-    /* Force SweetAlert2 vertical layout */
     .swal2-popup {
         display: block !important;
     }
@@ -362,17 +374,9 @@
     }
 
     @keyframes blink {
-        0% {
-            opacity: 1;
-        }
-
-        50% {
-            opacity: 0.5;
-        }
-
-        100% {
-            opacity: 1;
-        }
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
     }
 
     .blinking {

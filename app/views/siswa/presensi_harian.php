@@ -63,16 +63,15 @@
          </div>
       </div>
 
-      <div class="text-center mb-1" style="font-size:0.95em">
-         <b>Wali Kelas &nbsp;:&nbsp;
-            <?php if ($data['wali_kelas']->wali_kelas) {
-               echo $data['wali_kelas']->nama;
-            } else {
-               echo "<span style='color:red'>~Wali kelas belum dipilih~</span>";
-            }
-            ?>
-         </b>
-      </div>
+   <div class="text-center mb-1" style="font-size:0.95em">
+      <b>Wali Kelas &nbsp;:&nbsp;
+         <?php if (!empty($data['wali_kelas']) && !empty($data['wali_kelas']->wali_kelas)) { ?>
+               <?= $data['wali_kelas']->nama ?>
+         <?php } else { ?>
+               <span style='color:red'>~Wali kelas belum dipilih~</span>
+         <?php } ?>
+      </b>
+   </div>
 
       <div class="mb-1">
          <select name="bulan" class="textini" id="bulan" onchange="submitForm()">

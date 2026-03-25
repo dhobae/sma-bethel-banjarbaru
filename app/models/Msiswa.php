@@ -525,7 +525,7 @@ class Msiswa
 
    public function cari_rfid($nomor_rfid)
    {
-      $sql = "SELECT nama_siswa from siswa where rfid=:rfid";
+      $sql = "SELECT nama_siswa,nis,kelas_siswa,rfid from siswa where rfid=:rfid";
       $this->db->query($sql);
       $this->db->bind('rfid', $nomor_rfid);
       return $this->db->single();

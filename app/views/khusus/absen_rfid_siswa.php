@@ -54,14 +54,10 @@
 <!-- End Modal -->
 
 
-<script src="<?php echo URLROOT ?>/dist/plugins/sweetalert2/sweetalert2.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 
-
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.getElementById('logout-khusus').addEventListener('click', function() {
         Swal.fire({
@@ -110,31 +106,33 @@
                         }).then(() => {
                             refreshPage();
                         });
-                    } else if (response.type === 'pulang') {
-                        Swal.fire({
-                            icon: 'info',
-                            title: '✓ PRESENSI PULANG',
-                            html: `
-                            <div style="font-size: 1.1em;">
-                                <p style="font-size: 1.3em; margin: 10px 0;"><b>${response.nama}</b></p>
-                                <p style="color: #666;">NIS: ${response.nis} | Kelas: ${response.kelas}</p>
-                                <hr style="margin: 15px 0;">
-                                <div style="background: #f0f8ff; padding: 10px; border-radius: 5px; margin: 10px 0;">
-                                    <p style="margin: 5px 0;">Masuk: <b>${response.jam_masuk}</b></p>
-                                    <p style="margin: 5px 0;">Pulang: <b>${response.waktu}</b></p>
-                                    <p style="margin: 5px 0; color: #007bff;">Durasi: <b>${response.durasi}</b></p>
-                                </div>
-                                <p style="color: #666; margin-top: 10px;">${response.message}</p>
-                            </div>
-                        `,
-                            showConfirmButton: false,
-                            timer: 2000,
-                            timerProgressBar: true
-                        }).then(() => {
-                            refreshPage();
-                        });
                     }
+                    //  else if (response.type === 'pulang') {
+                    //     Swal.fire({
+                    //         icon: 'info',
+                    //         title: '✓ PRESENSI PULANG',
+                    //         html: `
+                    //         <div style="font-size: 1.1em;">
+                    //             <p style="font-size: 1.3em; margin: 10px 0;"><b>${response.nama}</b></p>
+                    //             <p style="color: #666;">NIS: ${response.nis} | Kelas: ${response.kelas}</p>
+                    //             <hr style="margin: 15px 0;">
+                    //             <div style="background: #f0f8ff; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                    //                 <p style="margin: 5px 0;">Masuk: <b>${response.jam_masuk}</b></p>
+                    //                 <p style="margin: 5px 0;">Pulang: <b>${response.waktu}</b></p>
+                    //                 <p style="margin: 5px 0; color: #007bff;">Durasi: <b>${response.durasi}</b></p>
+                    //             </div>
+                    //             <p style="color: #666; margin-top: 10px;">${response.message}</p>
+                    //         </div>
+                    //     `,
+                    //         showConfirmButton: false,
+                    //         timer: 2000,
+                    //         timerProgressBar: true
+                    //     }).then(() => {
+                    //         refreshPage();
+                    //     });
+                    // }
                 } else if (response.status === 'warning') {
+                    //  <p style="margin: 5px 0;">✓ Pulang: <b>${response.jam_pulang}</b></p>
                     Swal.fire({
                         icon: 'warning',
                         title: '⚠ Sudah Presensi Lengkap',
@@ -145,7 +143,7 @@
                             <hr style="margin: 15px 0;">
                             <div style="background: #fff3cd; padding: 10px; border-radius: 5px; margin: 10px 0;">
                                 <p style="margin: 5px 0;">✓ Masuk: <b>${response.jam_masuk}</b></p>
-                                <p style="margin: 5px 0;">✓ Pulang: <b>${response.jam_pulang}</b></p>
+                               
                             </div>
                             <p style="color: #856404; margin-top: 10px;">${response.message}</p>
                         </div>
@@ -161,24 +159,30 @@
                 } else if (response.status === 'info') {
                     Swal.fire({
                         icon: 'info',
-                        title: 'Presensi Gagal',
+                        title: 'Tidak Dapat Absen',
                         text: response.message,
+                        showConfirmButton: true,
                         confirmButtonText: 'OK',
+                        confirmButtonColor: '#17a2b8',
                         timer: 1200,
                         timerProgressBar: true
-                    }).then(() => {
-                        refreshPage();
+                    }).then((result) => {
+                        if(result.isConfirmed || result.isDismissed) {
+                            refreshPage();
+                        }
                     });
                 } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'Terjadi Kesalahan',
                         text: response.message,
+                        showConfirmButton: true,
                         confirmButtonText: 'OK',
-                        timer: 1200,
-                        timerProgressBar: true
-                    }).then(() => {
-                        refreshPage();
+                        confirmButtonColor: '#dc3545'
+                    }).then((result) => {
+                        if (result.isConfirmed || result.isDismissed) {
+                                refreshPage();
+                        }
                     });
                 }
             },
@@ -193,8 +197,10 @@
                     showConfirmButton: true,
                     confirmButtonText: 'OK',
                     confirmButtonColor: '#dc3545'
-                }).then(() => {
-                    refreshPage();
+                }).then((result) => {
+                     if (result.isConfirmed || result.isDismissed) {
+                            refreshPage();
+                    }
                 });
             }
         });

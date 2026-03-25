@@ -250,50 +250,6 @@ class Dashboard extends Controller
         }
     }
 
-    // KHUSUS RFID --------------------------------
-    // public function ambil_pegawai_by_rfid()
-    // {
-    //     $isi = $_POST['isi'];
-    //     $data['ada_data'] = $this->Mdashboard->ambil_pegawai_by_rfid($isi);
-
-    //     if (!$data['ada_data']) {
-    //         echo "error";
-    //         return;
-    //     } else {
-    //         $nik = $data['ada_data']->nik;
-    //         $data['cek_absen'] = $this->Mdashboard->cek_absen_rfid($nik);
-    //         if (!$data['cek_absen']) {
-    //             $data['absen_datang'] = 'belum';
-    //         } else {
-    //             $data['absen_datang'] = 'sudah';
-    //         }
-    //     }
-
-    //     $this->view('dashboard/isi_form_absen', $data);
-    // }
-
-    // public function hadir_rfid()
-    // {
-    //     $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-    //     if ($_POST['absen_datang'] == 'belum') {
-    //         if ($this->Mdashboard->hadir_rfid($_POST)) {
-    //             setFlash('Presensi Hadir berhasil.', 'success');
-    //             return redirect('dashboard');
-    //         } else {
-    //             setFlash('Gagal melakukan presensi.', 'danger');
-    //             return redirect('dashboard');
-    //         }
-    //     } else {
-    //         if ($this->Mdashboard->pulang_rfid($_POST)) {
-    //             setFlash('Presensi Pulang berhasil.', 'success');
-    //             return redirect('dashboard');
-    //         } else {
-    //             setFlash('Gagal melakukan presensi.', 'danger');
-    //             return redirect('dashboard');
-    //         }
-    //     }
-    // }
-
     //---HADIR SISWA -----------------------------
     public function hadir_siswa()
     {
@@ -305,5 +261,44 @@ class Dashboard extends Controller
             setFlash('Gagal melakukan presensi.', 'danger');
             return redirect('dashboard');
         }
+    }
+
+    public function ganti_password()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $password_baru = $_POST['password_baru'] ?? '';
+            $konfirmasi = $_POST['konfirmasi_password'] ?? '';
+
+            if (empty($password_baru) || empty($konfirmasi)) {
+                echo json_encode(['success' => false, 'message' => 'Semua field harus diisi']);
+                return;
+            }
+
+            if (strlen($password_baru) < 6) {
+                echo json_encode(['success' => false, 'message' => 'Password minimal 6 karakter']);
+                return;
+            }
+
+            if ($password_baru !== $konfirmasi) {
+                echo json_encode(['success' => false, 'message' => 'Konfirmasi password tidak cocok']);
+                return;
+            }
+
+            $hashed_password = password_hash($password_baru, PASSWORD_DEFAULT);
+            $nik = $_SESSION['nik'];
+
+            if ($this->Mdashboard->update_password($nik, $hashed_password)) {
+                unset($_SESSION['password_change_required']);
+                echo json_encode(['success' => true, 'message' => 'Password berhasil diubah']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Gagal mengubah password']);
+            }
+        }
+    }
+
+    public function dismiss_password_popup()
+    {
+        unset($_SESSION['password_change_required']);
+        echo json_encode(['success' => true]);
     }
 }

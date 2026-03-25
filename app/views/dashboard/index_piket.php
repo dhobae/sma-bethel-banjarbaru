@@ -40,7 +40,7 @@ $hari_indonesia = array(
                         <?php
                         // ABSEN MASUK WFO ---------------------------- 
                         if ($field2->from_masuk == 'WFO') {
-                           if ($field2->jam_masuk > '08:00:00') {
+                           if ($field2->jam_masuk > '07:30:00') {
                               $warna = 'bg-danger';
                            } else {
                               $warna = 'bg-success';
@@ -77,7 +77,7 @@ $hari_indonesia = array(
                         } else
                         // ABSEN MASUK WFH ---------------------------- 
                         {
-                           if ($field2->jam_masuk > '08:00:00') {
+                           if ($field2->jam_masuk > '07:30:00') {
                               $warna = 'bg-danger';
                            } else {
                               $warna = 'bg-info';

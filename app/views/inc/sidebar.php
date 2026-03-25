@@ -233,7 +233,7 @@
       <?php if (Middleware::admin('kurikulum')) { ?>
          <li class="nav-item">
             <a href="<?= URLROOT ?>/siswa/cek_rfid" class="nav-link">
-               <i class="nav-icon fa fa-users" aria-hidden="true"></i>
+               <i class="nav-icon fas fa-id-card" aria-hidden="true"></i>
                <p>Cek Kartu RFID</p>
             </a>
          </li>
@@ -515,6 +515,15 @@
          <i class="nav-icon fas fa-users"></i>
          <p>
             Pegawai
+         </p>
+      </a>
+   </li>
+
+   <li class="nav-item">
+      <a href="<?= URLROOT ?>/pegawai/cek_rfid" class="nav-link">
+        <i class="nav-icon fas fa-id-card" aria-hidden="true"></i>
+         <p>
+            Cek Kartu RFID
          </p>
       </a>
    </li>

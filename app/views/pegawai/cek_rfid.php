@@ -2,7 +2,7 @@
    <div class="col">
       <div class="card card-outline card-primary" style="margin-top:15px">
          <div class="card-body tengah">
-            <form method="POST" action="<?= URLROOT ?>/siswa/cari_rfid" id="rfidForm">
+            <form method="POST" action="<?= URLROOT ?>/pegawai/cari_rfid" id="rfidForm">
                <div class="mb-4">
                   <b>Silahkan Scan RFID</b>
                </div>
@@ -17,7 +17,7 @@
                      placeholder="TEMPELKAN KARTU RFID">
                </div>
                <div class="mb-4">
-                  Halaman ini digunakan untuk mengetahui siapa pemilik kartu RFID<br />atau kartu RFID sudah terdaftar atau belum (KHUSUS SISWA)
+                  Halaman ini digunakan untuk mengetahui siapa pemilik kartu RFID<br />atau kartu RFID sudah terdaftar atau belum (KHUSUS PEGAWAI)
                </div>
             </form>
          </div>
@@ -69,7 +69,7 @@ $(document).ready(function() {
       if (isProcessing) return;
       isProcessing = true;
       $.ajax({
-         url: '<?= URLROOT ?>/siswa/cari_rfid',
+         url: '<?= URLROOT ?>/pegawai/cari_rfid',
          method: 'POST',
          data: form.serialize(),
 
@@ -80,11 +80,11 @@ $(document).ready(function() {
          if (response.status === 'success') {
             let data = response.data;
             Swal.fire({
-               title: 'Data Siswa',
+               title: 'Data Pegawai',
                html: `
-                  <b>Nama:</b> ${data.nama_siswa}<br>
-                  <b>NIS:</b> ${data.nis}<br>
-                  <b>Kelas & Ruang:</b> ${data.kelas_siswa}<br>
+                  <b>Nama:</b> ${data.nama}<br>
+                  <b>NIK:</b> ${data.nik}<br>
+                  <b>Jabatan:</b> ${data.jabatan}<br>
                   <b>Nomor RFID:</b> ${data.rfid}
                `,
                icon: 'success'

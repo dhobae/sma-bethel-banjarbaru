@@ -345,4 +345,31 @@ class Pegawai extends Controller
         }
         echo json_encode($response);
     }
+
+    public function cek_rfid()
+   {
+      require APPROOT . '/views/inc/header.php';
+      $this->view('pegawai/cek_rfid');
+      require APPROOT . '/views/inc/footer.php';
+   }
+
+   public function cari_rfid()
+   {
+      $nomor_rfid = trim($_POST['nomor_rfid']);
+      $hasil = $this->Mpegawai->cari_rfid($nomor_rfid);
+
+      header('Content-Type: application/json');
+
+      if ($hasil) {
+         echo json_encode([
+            'status' => 'success',
+            'data' => $hasil
+         ]);
+      } else {
+         echo json_encode([
+            'status' => 'error',
+            'message' => 'RFID tidak ditemukan atau belum terdaftar.'
+         ]);
+      }
+   }
 }

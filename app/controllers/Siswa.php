@@ -284,16 +284,22 @@ class Siswa extends Controller
 
    public function cari_rfid()
    {
-      $nomor_rfid = $_POST['nomor_rfid'];
+      $nomor_rfid = trim($_POST['nomor_rfid']);
       $hasil = $this->Msiswa->cari_rfid($nomor_rfid);
+
       header('Content-Type: application/json');
-      $response = [];
+
       if ($hasil) {
-         $response['nama_siswa'] = $hasil->nama_siswa;
+         echo json_encode([
+            'status' => 'success',
+            'data' => $hasil
+         ]);
       } else {
-         $response['nama_siswa'] = 'RFID tidak ditemukan atau belum terdaftar.';
+         echo json_encode([
+            'status' => 'error',
+            'message' => 'RFID tidak ditemukan atau belum terdaftar.'
+         ]);
       }
-      echo json_encode($response['nama_siswa']);
    }
 
    //------------------------------------------
@@ -555,7 +561,8 @@ class Siswa extends Controller
       $data['tahun'] = $tahun;
 
       $data['siswa_aktif'] = $this->Msiswa->siswa_aktif_kelas($kelas);
-      $data['wali_kelas'] = $this->Mjadwal->wali_kelas($kelas);
+      $data['wali_kelas'] = $this->Mjadwal->wali_kelas($kelas) ?: null; 
+      // intip_data($data['wali_kelas']);
       require APPROOT . '/views/inc/header.php';
       $this->view('siswa/presensi_harian', $data);
       require APPROOT . '/views/inc/footer.php';

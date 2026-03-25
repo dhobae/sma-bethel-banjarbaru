@@ -686,4 +686,13 @@ if ((date('H:i:s', time()) < $wfh_masuk) and ($from_masuk == 'WFH')) {
       $this->db->bind('tanggal_absen', $tanggal_absen);
       return $this->db->single();
    }
+   public function update_password($nik, $hashed_password)
+   {
+      $sql = "UPDATE users SET password=:password WHERE nik_user=:nik";
+      $this->db->query($sql);
+      $this->db->bind('password', $hashed_password);
+      $this->db->bind('nik', $nik);
+      $this->db->execute();
+      return true;
+   }
 }

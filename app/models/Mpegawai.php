@@ -434,4 +434,12 @@ class Mpegawai
       $this->db->execute();
       return true;
    }
+
+   public function cari_rfid($nomor_rfid)
+   {
+      $sql = "SELECT nama,nik,jabatan,rfid from pegawai where rfid=:rfid";
+      $this->db->query($sql);
+      $this->db->bind('rfid', $nomor_rfid);
+      return $this->db->single();
+   }
 }

@@ -112,7 +112,10 @@ class Auth extends Controller
       $_SESSION['kunci'] = bin2hex(random_bytes(16));
 
       if ($_SESSION['role'] != 'admin') {
-         $_SESSION['password_change_required'] = true;
+         // Cek apakah password masih default "user"
+         if (password_verify('user', $user->password)) {
+            $_SESSION['password_change_required'] = true;
+         }
       }
 
       if($_SESSION['role'] == 'siswa') {

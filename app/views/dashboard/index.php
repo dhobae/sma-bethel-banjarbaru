@@ -11,32 +11,137 @@ require APPROOT . '../../public/dist/lib/ip.php';
 
 <?php
 
-
-
 if ($_SESSION['role'] != 'admin') {
-   if (isset($_SESSION['password_change_required']) && $_SESSION['password_change_required'] === true) {
-      if ($data['notif']->status_notif == '1') {
-         echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>';
-         echo '<script>';
-         echo 'Swal.fire({
-               icon: "' . $data['notif']->icon . '",
-               title: "' . $data['notif']->title . '",
-               text: "' . $data['notif']->text . '",
-               confirmButtonText: "' . $data['notif']->isi_tombol . '",
-               confirmButtonColor: "' . $data['notif']->warna_tombol . '",
-               background: "' . $data['notif']->background . '",
-               customClass: {
-                  title: "warna-title",
-                  content: "warna-konten"
+   if (isset($_SESSION['password_change_required']) && $_SESSION['password_change_required'] === true) { ?>
+      <style>
+         @media (max-width: 768px) {
+            .swal2-popup { padding: 0.5em 0.3em !important; }
+            .swal2-popup .form-group { margin-bottom: 0.5rem !important; }
+         }
+      </style>
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+      <script>
+         function togglePassword(inputId, btn) {
+            var input = document.getElementById(inputId);
+            var icon = btn.querySelector('i');
+            if (input.type === 'password') {
+               input.type = 'text';
+               icon.classList.remove('fa-eye');
+               icon.classList.add('fa-eye-slash');
+            } else {
+               input.type = 'password';
+               icon.classList.remove('fa-eye-slash');
+               icon.classList.add('fa-eye');
+            }
+         }
+
+         function showChangePasswordPopup() {
+            Swal.fire({
+               position: 'top',
+               icon: 'warning',
+               title: 'Ganti Password',
+               html:
+                  '<p style="font-size:14px; margin-bottom:20px">Password Anda masih menggunakan password default.<br>Silakan ganti password untuk keamanan akun.</p>' +
+                  '<div style="max-width:400px; margin:0 auto; text-align:left;">' +
+                     '<div class="form-group mb-3">' +
+                        '<label for="swal-password-baru" style="font-weight:600; font-size:13px; margin-bottom:5px; display:block;">Password Baru</label>' +
+                        '<div class="input-group">' +
+                           '<div class="input-group-prepend"></div>' +
+                           '<input type="password" id="swal-password-baru" class="form-control" placeholder="Masukkan password baru">' +
+                           '<div class="input-group-append"><button class="btn btn-outline-secondary" type="button" onclick="togglePassword(\'swal-password-baru\', this)"><i class="fas fa-eye"></i></button></div>' +
+                        '</div>' +
+                     '</div>' +
+                     '<div class="form-group mb-2">' +
+                        '<label for="swal-konfirmasi-password" style="font-weight:600; font-size:13px; margin-bottom:5px; display:block;">Konfirmasi Password</label>' +
+                        '<div class="input-group">' +
+                           '<div class="input-group-prepend"></div>' +
+                           '<input type="password" id="swal-konfirmasi-password" class="form-control" placeholder="Ulangi password baru">' +
+                           '<div class="input-group-append"><button class="btn btn-outline-secondary" type="button" onclick="togglePassword(\'swal-konfirmasi-password\', this)"><i class="fas fa-eye"></i></button></div>' +
+                        '</div>' +
+                     '</div>' +
+                     '<small class="text-muted"><i class="fas fa-info-circle"></i> Minimal 6 karakter</small>' +
+                  '</div>',
+               confirmButtonText: '<i class="fas fa-save"></i> Simpan Password Baru',
+               confirmButtonColor: '#3085d6',
+               allowOutsideClick: true,
+               allowEscapeKey: true,
+               showCancelButton: true,
+               cancelButtonText: 'Nanti Saja',
+               cancelButtonColor: '#d33',
+               preConfirm: () => {
+                  const passwordBaru = document.getElementById('swal-password-baru').value;
+                  const konfirmasi = document.getElementById('swal-konfirmasi-password').value;
+
+                  if (!passwordBaru || !konfirmasi) {
+                     Swal.showValidationMessage('Semua field harus diisi');
+                     return false;
+                  }
+                  if (passwordBaru.length < 6) {
+                     Swal.showValidationMessage('Password minimal 6 karakter');
+                     return false;
+                  }
+                  if (passwordBaru !== konfirmasi) {
+                     Swal.showValidationMessage('Konfirmasi password tidak cocok');
+                     return false;
+                  }
+
+                  return fetch('<?= URLROOT ?>/dashboard/ganti_password', {
+                     method: 'POST',
+                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                     body: 'password_baru=' + encodeURIComponent(passwordBaru) + '&konfirmasi_password=' + encodeURIComponent(konfirmasi)
+                  })
+                  .then(response => response.json())
+                  .then(result => {
+                     if (!result.success) {
+                        Swal.showValidationMessage(result.message);
+                        return false;
+                     }
+                     return result;
+                  })
+                  .catch(error => {
+                     Swal.showValidationMessage('Terjadi kesalahan, coba lagi');
+                  });
                }
-            }).then(function() {
-               window.location.href = "pegawai/send_wa";
-            });';
-         echo '</script>';
-         unset($_SESSION['password_change_required']);
-      }
-   }
+            }).then((result) => {
+               if (result.isConfirmed && result.value) {
+                  Swal.fire({
+                     icon: 'success',
+                     title: 'Berhasil!',
+                     text: 'Password berhasil diubah.',
+                     confirmButtonColor: '#3085d6'
+                  }).then(() => {
+                     window.location.reload();
+                  });
+               } else {
+                  fetch('<?= URLROOT ?>/dashboard/dismiss_password_popup', { method: 'POST' });
+               }
+            });
+         }
+         document.addEventListener('DOMContentLoaded', showChangePasswordPopup);
+      </script>
+   <?php }
 }
+
+//   if ($data['notif']->status_notif == '1') {
+//             echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>';
+//             echo '<script>';
+//             echo 'Swal.fire({
+//                   icon: "' . $data['notif']->icon . '",
+//                   title: "' . $data['notif']->title . '",
+//                   text: "' . $data['notif']->text . '",
+//                   confirmButtonText: "' . $data['notif']->isi_tombol . '",
+//                   confirmButtonColor: "' . $data['notif']->warna_tombol . '",
+//                   background: "' . $data['notif']->background . '",
+//                   customClass: {
+//                      title: "warna-title",
+//                      content: "warna-konten"
+//                   }
+//                }).then(function() {
+//                   window.location.href = "pegawai/send_wa";
+//                });';
+//             echo '</script>';
+//             unset($_SESSION['password_change_required']);
+//          }
 ?>
 <style>
    .warna-title {
