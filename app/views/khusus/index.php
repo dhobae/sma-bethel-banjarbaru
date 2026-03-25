@@ -1,7 +1,7 @@
 <head>
     <title>Presensi Pegawai SMA Bethel Banjarbaru</title>
-    <link rel="stylesheet" href="<?php echo URLROOT?>/dist/lib/pahdi.css">
-    <link rel="shortcut icon" href="<?php echo URLROOT;?>/smabethel/img/icon.png">
+    <link rel="stylesheet" href="<?php echo URLROOT ?>/dist/lib/pahdi.css">
+    <link rel="shortcut icon" href="<?php echo URLROOT; ?>/smabethel/img/icon.png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet"
@@ -10,67 +10,95 @@
 
 <body>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <?php sflash2()?>
+    <?php sflash2() ?>
 
     <!-- <input type="password" id="inputRFID" onchange="prosesAbsen(this.value)" class="transparan"> -->
 
     <div style="margin-bottom:20px" class="text-center">
-        <img src="<?php echo URLROOT;?>/smabethel/img/icon.png" alt="smabethel" style="width: 80px;height: auto;" />
+        <img src="<?php echo URLROOT; ?>/smabethel/img/icon.png" alt="smabethel" style="width: 80px;height: auto;" />
     </div>
     <div style="font-family: 'courier new'; font-size:2em; margin-bottom:-10px">
         <b>~ Pilih Opsi Absen ~</b>
     </div>
     <div style="font-family: 'courier new'; gap:8px;"
-    class="d-flex justify-content-center align-items-center mt-5">
+        class="d-flex justify-content-center align-items-center mt-5">
         <a style="font-size:1rem; font-weight: bold;" href="<?php echo URLROOT ?>/absen_pegawai" class="btn btn-primary ">Absen RFID Pegawai</a>
         <a style="font-size:1rem; font-weight: bold;" href="<?php echo URLROOT ?>/absen_siswa" class="btn btn-secondary">Absen RFID Siswa</a>
     </div>
+    <div class="d-flex justify-content-center align-items-center mt-3">
+        <button class="btn btn-danger btn-sm" id="logout-khusus">Logout</button>
+    </div>
 </body>
 
+<script>
+    document.getElementById('logout-khusus').addEventListener('click', function() {
+        Swal.fire({
+            title: 'Yakin ingin logout?',
+            text: "Kamu akan keluar dari sistem",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, logout!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "<?= URLROOT ?>/logout/logout";
+            }
+        });
+    });
+</script>
+
 <style>
-
-.transparan {
-    background-color: transparent;
-    border: none;
-    outline: none;
-    position: absolute;
-    left: -9999px;
-}
-
-body {
-    background: url(<?php echo URLROOT?>/smabethel/img/gambarsmabethel2.jpg) no-repeat center center fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-    color: #cccccc;
-    text-align: center;
-    padding-top: 2rem;
-}
-
-body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    z-index: -1;
-}
-
-@keyframes blink {
-    0% {
-        opacity: 1;
+    :root {
+        --bg-url: url('<?php echo URLROOT ?>/smabethel/img/gambarsmabethel2.jpg');
     }
 
-    50% {
-        opacity: 0.5;
+    .transparan {
+        background-color: transparent;
+        border: none;
+        outline: none;
+        position: absolute;
+        left: -9999px;
     }
 
-    100% {
-        opacity: 1;
+    body {
+        background-image: var(--bg-url);
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-attachment: fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+        color: #cccccc;
+        text-align: center;
+        padding-top: 2rem;
     }
-}
 
-.blinking {
-    animation: blink 2s infinite;
-}
+    body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: -1;
+    }
+
+    @keyframes blink {
+        0% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.5;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    .blinking {
+        animation: blink 2s infinite;
+    }
 </style>

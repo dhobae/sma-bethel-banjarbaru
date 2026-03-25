@@ -764,7 +764,7 @@ class Mjadwal
 
     public function belum_ada_guru()
     {
-        $satu = "SELECT COUNT(*) AS satu FROM jadwal_lengkap WHERE guru1 IS NULL and hari !='senin' and mp1 != '33' and mp1 != '34'";
+        $satu = "SELECT COUNT(*) AS satu FROM jadwal_lengkap WHERE guru1 IS NULL and hari !='senin' and hari !='jumat' and mp1 != '33' and mp1 != '34'"; // fix guru tidak harus mengajar pada Upacara dan Ibadah
         $this->db->query($satu);
         $satu = $this->db->single();
 

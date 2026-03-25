@@ -372,11 +372,11 @@
                </tbody>
             </table>
          </div>
-         <div class="mt-3">
+         <div class="mt-3 no-print">
             <?php
             if (isset($data['wali_kelas']) && is_object($data['wali_kelas']) && $data['wali_kelas']->validasi != '1') {
                ?>
-               <span style="font-weight:bold; color:red" class="blink">Jadwal Belum di validasi</span>
+               <span style="font-weight:bold; color:red" class="blink no-print">Jadwal Belum di validasi</span>
                <br />
                <?php
                if ((isset($d) && isset($d->wali_kelas) && $d->wali_kelas == $_SESSION['nik']) || (Middleware::admin('kurikulum'))) {
@@ -400,7 +400,7 @@
                      $validator = isset($ambil->nama) ? $ambil->nama : 'Tidak Diketahui';
                   }
                   ?>
-                  <span style="font-weight:bold; color:green" class="blink">
+                  <span style="font-weight:bold; color:green" class="blink no-print">
                      Jadwal Sudah di validasi oleh : <?= $validator ?><br />
                      Divalidasi pada tanggal : <?= dateID($data['wali_kelas']->tanggal_validasi) ?>
                      <br />
@@ -470,6 +470,25 @@
          display: none !important;
       }
       
+      .main-header,
+      .main-sidebar,
+      .main-footer,
+      .content-header,
+      nav.navbar,
+      aside {
+         display: none !important;
+      }
+
+      .content-wrapper {
+         margin-left: 0 !important;
+         padding-top: 0 !important;
+         background: white !important;
+      }
+
+      .wrapper {
+         overflow: visible !important;
+      }
+
       .card {
          box-shadow: none !important;
          border: none !important;
@@ -494,7 +513,7 @@
       
       body {
          margin: 0;
-         padding: 15px;
+         padding: 0px;
       }
       
       @page {
@@ -594,7 +613,7 @@
 </script>
 
 
-<div class="modal fade" id="wali_kelas<?= $data['wali_kelas']->id_jadwal_lengkap ?>" tabindex="-1"
+<div class="modal fade no-print" id="wali_kelas<?= $data['wali_kelas']->id_jadwal_lengkap ?>" tabindex="-1"
    aria-labelledby="exampleModalLabel" aria-hidden="true">
    <div class="modal-dialog">
       <div class="modal-content p-4">

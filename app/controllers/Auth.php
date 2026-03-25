@@ -20,7 +20,7 @@ class Auth extends Controller
    public function index()
    {
       if (isLoggedIn()) {
-         return redirect('dashboard');
+         return redirect('dashboard');  
       } else {
          return redirect('auth/login');
       }

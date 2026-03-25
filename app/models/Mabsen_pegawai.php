@@ -48,10 +48,12 @@ class Mabsen_pegawai
         }
 
         // Insert absen masuk
-        $query = "INSERT INTO absen
-                  (nik, tanggal, jam_masuk, status_masuk, from_masuk, loc_masuk, keterangan)
-                  VALUES
-                  (:nik, :tanggal, TIME(:jam_masuk), :status_masuk, :from_masuk, :loc_masuk, :keterangan)";
+      $query = "INSERT INTO absen
+          (nik, tanggal, jam_masuk, status_masuk, from_masuk, loc_masuk, keterangan,
+           jam_pulang, status_pulang, from_pulang, loc_pulang, visitid)
+          VALUES
+          (:nik, :tanggal, :jam_masuk, :status_masuk, :from_masuk, :loc_masuk, :keterangan,
+           :jam_pulang, :status_pulang, :from_pulang, :loc_pulang, :visitid)";
 
         $this->db->query($query);
         $this->db->bind('nik', $nik);
@@ -59,21 +61,26 @@ class Mabsen_pegawai
         $this->db->bind('jam_masuk', date('H:i:s'));
         $this->db->bind('status_masuk', 'Hadir');
         $this->db->bind('from_masuk', $data['from_masuk']);
-
-        // Loc_masuk boleh NULL jika tidak ada koordinat
+      
         if (!empty($data['loc_masuk'])) {
             $this->db->bind('loc_masuk', $data['loc_masuk']);
         } else {
-            $this->db->bind('loc_masuk', null);
+            $this->db->bind('loc_masuk', '');
         }
 
-        $this->db->bind('keterangan', $data['keterangan']);
+        $this->db->bind('keterangan', '-');
+        $this->db->bind('jam_pulang', '00:00:00');
+        $this->db->bind('status_pulang', '-');
+        $this->db->bind('from_pulang', '-');
+        $this->db->bind('loc_pulang', '-');
+        $this->db->bind('visitid', $data['visitid']);
 
         return $this->db->execute();
     }
 
     public function absen_pulang($data)
     {
+        // /ini balum bujur
         $nik = $data['nik'];
         $tanggal = isset($data['tanggal']) ? $data['tanggal'] : date('Y-m-d');
 
@@ -84,7 +91,7 @@ class Mabsen_pegawai
         }
 
         // Cek apakah sudah absen pulang
-        if (!empty($cek->jam_pulang)) {
+        if (!empty($cek->jam_pulang) && $cek->jam_pulang != '00:00:00' && $cek->jam_pulang != '-') {
             return true; // Sudah absen pulang
         }
 
@@ -94,6 +101,7 @@ class Mabsen_pegawai
                       status_pulang = :status_pulang,
                       from_pulang = :from_pulang,
                       loc_pulang = :loc_pulang,
+                      visitid_pulang = :visitid_pulang,
                       keterangan = CONCAT(IFNULL(keterangan, ''), ' | ', :keterangan)
                   WHERE nik = :nik
                   AND tanggal = :tanggal";
@@ -103,7 +111,8 @@ class Mabsen_pegawai
         $this->db->bind('status_pulang', 'Pulang');
         $this->db->bind('from_pulang', $data['from_pulang']);
         $this->db->bind('loc_pulang', !empty($data['loc_pulang']) ? $data['loc_pulang'] : null);
-        $this->db->bind('keterangan', $data['keterangan']);
+        $this->db->bind('visitid_pulang', isset($data['visitid']) ? $data['visitid'] : null);
+        $this->db->bind('keterangan', '-');
         $this->db->bind('nik', $nik);
         $this->db->bind('tanggal', $tanggal);
 

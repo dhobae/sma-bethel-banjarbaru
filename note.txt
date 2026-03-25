@@ -1,0 +1,1 @@
+1. siswa masih absen hadir saja tidak ada pulang logikanya, namun di rfid sudah ada fitur pulang.

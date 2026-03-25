@@ -151,7 +151,7 @@ class Mdashboard
          $from_masuk = 'WFH';
       endif;
 
-      if ((date('H:i:s', time()) < date('08:00:00')) and ($from_masuk == 'WFH')) {
+if ((date('H:i:s', time()) < $wfh_masuk) and ($from_masuk == 'WFH')) {
          if ((Middleware::admin('satpam')) || (Middleware::admin('cs'))) {
             $jam3 = date('H:i:s', time() - 300);
          } else {
@@ -244,7 +244,7 @@ class Mdashboard
          $from_pulang = 'WFH';
       endif;
 
-      if ((date('H:i:s', time()) > date('14:00:00')) and ($from_pulang == 'WFH')) {
+      if ((date('H:i:s', time()) > $wfh_pulang) and ($from_pulang == 'WFH')) {
          if ((Middleware::admin('satpam')) || (Middleware::admin('cs'))) {
             $jam3 = date('H:i:s');
          } else {
@@ -340,61 +340,61 @@ class Mdashboard
       return $this->db->single();
    }
 
-   public function cek_absen_rfid($nik)
-   {
-      $sql = "SELECT * from absen where nik=:nik and tanggal=:tanggal";
-      $this->db->query($sql);
-      $this->db->bind('nik', $nik);
-      $this->db->bind('tanggal', date('Y-m-d'));
-      return $this->db->single();
-   }
+   // public function cek_absen_rfid($nik)
+   // {
+   //    $sql = "SELECT * from absen where nik=:nik and tanggal=:tanggal";
+   //    $this->db->query($sql);
+   //    $this->db->bind('nik', $nik);
+   //    $this->db->bind('tanggal', date('Y-m-d'));
+   //    return $this->db->single();
+   // }
 
-   public function hadir_rfid($data)
-   {
-      $jikaduakali = "SELECT * from absen where nik=:nik and tanggal=:tanggal";
-      $this->db->query($jikaduakali);
-      $this->db->bind('nik', $data['nik']);
-      $this->db->bind('tanggal', date('Y-m-d'));
-      $result3 = $this->db->resultSet();
+   // public function hadir_rfid($data)
+   // {
+   //    $jikaduakali = "SELECT * from absen where nik=:nik and tanggal=:tanggal";
+   //    $this->db->query($jikaduakali);
+   //    $this->db->bind('nik', $data['nik']);
+   //    $this->db->bind('tanggal', date('Y-m-d'));
+   //    $result3 = $this->db->resultSet();
 
-      if ($result3) {
-         $queryupdate = "UPDATE absen set jam_masuk=:jam3, status_masuk=:status_masuk, from_masuk=:from_masuk where nik=:nik and tanggal=:tanggal";
-         $this->db->query($queryupdate);
-         $this->db->bind('nik', $data['nik']);
-         $this->db->bind('tanggal', date('Y-m-d'));
-         $this->db->bind('jam3', date('H:i:s', time() - 300));
-         $this->db->bind('status_masuk', 'Hadir');
-         $this->db->bind('from_masuk', 'WFO');
-         $this->db->execute();
-      } else {
-         $queryupdate = "INSERT INTO absen (id, nik, tanggal, jam_masuk, status_masuk, from_masuk, jam_pulang, status_pulang, from_pulang, keterangan) values (:id, :nik, :tanggal, :jam_masuk, :status_masuk, :from_masuk, :jam_pulang, :status_pulang, :from_pulang, :keterangan)";
-         $this->db->query($queryupdate);
-         $this->db->bind('id', NULL);
-         $this->db->bind('nik', $data['nik']);
-         $this->db->bind('tanggal', date('Y-m-d'));
-         $this->db->bind('jam_masuk', date('H:i:s', time() - 300));
-         $this->db->bind('status_masuk', 'Hadir');
-         $this->db->bind('from_masuk', 'WFO');
-         $this->db->bind('jam_pulang', '00:00:00');
-         $this->db->bind('status_pulang', '-');
-         $this->db->bind('from_pulang', '-');
-         $this->db->bind('keterangan', '-');
-         $this->db->execute();
-      }
-      return true;
-   }
+   //    if ($result3) {
+   //       $queryupdate = "UPDATE absen set jam_masuk=:jam3, status_masuk=:status_masuk, from_masuk=:from_masuk where nik=:nik and tanggal=:tanggal";
+   //       $this->db->query($queryupdate);
+   //       $this->db->bind('nik', $data['nik']);
+   //       $this->db->bind('tanggal', date('Y-m-d'));
+   //       $this->db->bind('jam3', date('H:i:s', time() - 300));
+   //       $this->db->bind('status_masuk', 'Hadir');
+   //       $this->db->bind('from_masuk', 'WFO');
+   //       $this->db->execute();
+   //    } else {
+   //       $queryupdate = "INSERT INTO absen (id, nik, tanggal, jam_masuk, status_masuk, from_masuk, jam_pulang, status_pulang, from_pulang, keterangan) values (:id, :nik, :tanggal, :jam_masuk, :status_masuk, :from_masuk, :jam_pulang, :status_pulang, :from_pulang, :keterangan)";
+   //       $this->db->query($queryupdate);
+   //       $this->db->bind('id', NULL);
+   //       $this->db->bind('nik', $data['nik']);
+   //       $this->db->bind('tanggal', date('Y-m-d'));
+   //       $this->db->bind('jam_masuk', date('H:i:s', time() - 300));
+   //       $this->db->bind('status_masuk', 'Hadir');
+   //       $this->db->bind('from_masuk', 'WFO');
+   //       $this->db->bind('jam_pulang', '00:00:00');
+   //       $this->db->bind('status_pulang', '-');
+   //       $this->db->bind('from_pulang', '-');
+   //       $this->db->bind('keterangan', '-');
+   //       $this->db->execute();
+   //    }
+   //    return true;
+   // }
 
-   public function pulang_rfid($data)
-   {
-      $queryupdate = "UPDATE absen set jam_pulang=:jam_pulang, status_pulang=:status_pulang, from_pulang=:from_pulang where id=:id";
-      $this->db->query($queryupdate);
-      $this->db->bind('id', $data['id_absen']);
-      $this->db->bind('jam_pulang', date('H:i:s'));
-      $this->db->bind('status_pulang', "Pulang");
-      $this->db->bind('from_pulang', "WFO");
-      $this->db->execute();
-      return true;
-   }
+   // public function pulang_rfid($data)
+   // {
+   //    $queryupdate = "UPDATE absen set jam_pulang=:jam_pulang, status_pulang=:status_pulang, from_pulang=:from_pulang where id=:id";
+   //    $this->db->query($queryupdate);
+   //    $this->db->bind('id', $data['id_absen']);
+   //    $this->db->bind('jam_pulang', date('H:i:s'));
+   //    $this->db->bind('status_pulang', "Pulang");
+   //    $this->db->bind('from_pulang', "WFO");
+   //    $this->db->execute();
+   //    return true;
+   // }
 
 
    public function kelas_1($hari)

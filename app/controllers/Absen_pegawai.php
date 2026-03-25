@@ -26,14 +26,12 @@ class Absen_pegawai extends Controller
         $jamKerja = $this->Mabsen_pegawai->ambil_jam_kerja();
         $jam_masuk = $jamKerja->masuk;   // 07:30:00
         $jam_pulang = $jamKerja->pulang;  // 16:00:00
-        // VALIDASI JAM MASUK DAN PULANG (Toleransi masuk : 30 menit sebelum, 15 menit sesudah) , (pulang : 15 menit sebelum, 1 jam sesudah)
         $hasil = validasi_waktu_rfid($jam_masuk, $jam_pulang);
         return $hasil['status'];
     }
 
     public function index()
     {
-        // intip_data($this->getStatus());
         $this->view('khusus/absen_rfid_pegawai');
     }
 
@@ -59,15 +57,8 @@ class Absen_pegawai extends Controller
 
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
         $rfid = $_POST['isi'];
-
-        // Ambil koordinat dari client (jika ada)
-        $latitude = isset($_POST['latitude']) ? $_POST['latitude'] : '-';
-        $longitude = isset($_POST['longitude']) ? $_POST['longitude'] : '-';
-        $lokasi_koordinat = null;
-
-        if ($latitude && $longitude) {
-            $lokasi_koordinat = $latitude . ',' . $longitude;
-        }
+        $id_pengunjung = $_POST['id_pengunjung'];
+        $lokasi_koordinat = $_POST['lokasi_koordinat'];
 
         // Cek apakah kartu RFID terdaftar
         $pegawai = $this->Mabsen_pegawai->ambil_pegawai_by_rfid($rfid);
@@ -123,13 +114,14 @@ class Absen_pegawai extends Controller
                 'from_masuk' => 'WFO',
                 'loc_masuk' => $lokasi_koordinat,
                 'keterangan' => $keterangan,
+                'visitid' => $id_pengunjung,
             ];
 
             if ($this->Mabsen_pegawai->absen_masuk($data_absen)) {
                 echo json_encode([
                     'status' => 'success',
                     'type' => 'masuk',
-                    'message' => 'Selamat datang! Presensi MASUK berhasil dicatat.',
+                    'message' => 'Selamat datang! Presensi MASUK berhasil dicatat. ' . $this->getStatus(),
                     'nama' => $nama,
                     'nik' => $nik,
                     'jabatan' => $jabatan,
@@ -144,7 +136,7 @@ class Absen_pegawai extends Controller
                 ]);
             }
         } else {
-            if (empty($cek_absen->jam_pulang) || $cek_absen->jam_pulang == null) {
+            if (empty($cek_absen->jam_pulang) || $cek_absen->jam_pulang == null || $cek_absen->jam_pulang == '00:00:00' || $cek_absen->jam_pulang == '-') {
 
                 if ($this->getStatus() == 'pulang') {
 
@@ -154,6 +146,7 @@ class Absen_pegawai extends Controller
                         'from_pulang' => 'WFO',
                         'loc_pulang' => $lokasi_koordinat,
                         'keterangan' => 'Absen pulang via RFID',
+                        'visitid' => $id_pengunjung,
                     ];
 
                     if ($this->Mabsen_pegawai->absen_pulang($data_absen)) {

@@ -2,40 +2,53 @@
 
 function validasi_waktu_rfid($jamMasuk, $jamPulang)
 {
-    $now = date('H:i:s');
+    // gunakan timestamp biar akurat
+    $now = strtotime(date('H:i:s'));
 
-    $bukaMasuk  = date('H:i:s', strtotime($jamMasuk . ' -30 minutes'));
-    $tutupMasuk = date('H:i:s', strtotime($jamMasuk . ' +15 minutes'));
+    $jamMasukTs = strtotime($jamMasuk);
+    $jamPulangTs = strtotime($jamPulang);
 
-    $bukaPulang  = date('H:i:s', strtotime($jamPulang . ' -15 minutes'));
-    $tutupPulang = date('H:i:s', strtotime($jamPulang . ' +1 hour'));
+    $bukaMasuk  = strtotime($jamMasuk . ' -30 minutes'); // 07:00
+    $tutupMasuk = strtotime($jamMasuk . ' +15 minutes'); // 07:45
 
-    if ($now >= $bukaMasuk && $now <= $jamMasuk) {
+    $bukaPulang  = strtotime($jamPulang . ' -15 minutes'); // 16:45
+    $tutupPulang = strtotime($jamPulang . ' +1 hour');     // 17:45
+
+    // ======================
+    // ABSEN MASUK
+    // ======================
+    if ($now >= $bukaMasuk && $now <= $jamMasukTs) {
 
         return [
-            'status' => 'hadir',
-            // 'keterangan' => 'Absen masuk tepat waktu'
+            'status' => 'hadir'
         ];
 
-    } elseif ($now > $jamMasuk && $now <= $tutupMasuk) {
+    } elseif ($now > $jamMasukTs && $now <= $tutupMasuk) {
 
         return [
-            'status' => 'terlambat',
-            // 'keterangan' => 'Absen masuk terlambat'
+            'status' => 'terlambat'
         ];
 
-    } elseif ($now >= $bukaPulang && $now <= $tutupPulang) {
+    }
+
+    // ======================
+    // ABSEN PULANG
+    // ======================
+    elseif ($now >= $bukaPulang && $now <= $tutupPulang) {
 
         return [
-            'status' => 'pulang',
-            // 'keterangan' => 'Absen pulang berhasil'
+            'status' => 'pulang'
         ];
 
-    } else {
+    }
+
+    // ======================
+    // DI LUAR JAM
+    // ======================
+    else {
 
         return [
-            'status' => 'ditutup',
-            // 'keterangan' => 'Presensi tidak dapat dilakukan di luar jam kerja'
+            'status' => 'ditutup'
         ];
     }
 }

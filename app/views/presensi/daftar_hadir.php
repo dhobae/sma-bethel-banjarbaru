@@ -64,7 +64,7 @@ $hari_indonesia = array(
                         if ($field2->from_masuk == 'WFO') { ?>
                            <div class="col-lg-2 col-6" style="padding: 0px 3px;">
                               <?php
-                              if ($field2->jam_masuk > '08:00:00') {
+                              if ($field2->jam_masuk > '07:30:00') {
                                  $warna = 'bg-pink';
                               } else {
                                  $warna = 'bg-success';
@@ -95,7 +95,7 @@ $hari_indonesia = array(
                         { ?>
                            <div class="col-lg-2 col-6" style="padding: 0px 3px;">
                               <?php
-                              if ($field2->jam_masuk > '08:00:00') {
+                              if ($field2->jam_masuk > '07:30:00') {
                                  $warna = 'bg-danger';
                               } else {
                                  $warna = 'bg-info';
