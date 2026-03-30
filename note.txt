@@ -1,9 +1,10 @@
-1. siswa masih absen hadir saja tidak ada pulang logikanya tapi sudah dianggap hadir di absen harian siswa, namun di rfid sudah ada fitur pulang.
+risk problem :
+1. siswa masih absen hadir saja tidak ada pulang logikanya, tapi sudah dianggap hadir di absen harian siswa, namun di rfid sudah ada fitur pulang.
 
 ide :
-1. cek rfid pegawai dan siswa
-2. notif perlu ganti password 
-3. rfid tutup buka nya bisa diatur admin, tapi ini masih ide jadi ga perlu dlu.
+1. cek rfid pegawai dan siswa (done)
+2. notif perlu ganti password (done)
+3. buka tutup rfid (belum perlu konfirmasi)
 
 fitur yang perlu diubah / dikembangkan sesuai kebutuhan sekolah :
 1. 

@@ -595,7 +595,6 @@ class Presensi extends Controller
     public function teman_hadir()
     {
         $data['daftar'] = $this->Mpresensi->teman_hadir();
-
         require APPROOT . '/views/inc/header.php';
         $this->view('presensi/daftar_hadir_siswa', $data);
         require APPROOT . '/views/inc/footer.php';

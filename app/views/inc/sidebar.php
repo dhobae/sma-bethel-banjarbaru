@@ -617,6 +617,12 @@
       </a>
    </li>
    <li class="nav-item">
+      <a href="<?= URLROOT ?>/presensi/teman_hadir" class="nav-link">
+         <i class="nav-icon fa fa-check-square"></i>
+         <p>Daftar Hadir</p>
+      </a>
+   </li>
+   <li class="nav-item">
       <a href="<?= URLROOT ?>/jadwal/jadwal_pelajaran" class="nav-link">
          <i class="nav-icon fa fa-calendar" aria-hidden="true"></i>
          <p>Jadwal Pelajaran</p>
