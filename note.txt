@@ -1,12 +1,16 @@
 risk problem :
-1. siswa masih absen hadir saja tidak ada pulang logikanya, tapi sudah dianggap hadir di absen harian siswa, namun di rfid sudah ada fitur pulang.
+1. siswa masih absen hadir saja tidak ada pulang logikanya, tapi sudah dianggap hadir di absen harian siswa, namun di rfid sudah ada fitur pulang. (sudah clear)
 
 ide :
 1. cek rfid pegawai dan siswa (done)
 2. notif perlu ganti password (done)
-3. buka tutup rfid (belum perlu konfirmasi)
+3. buka tutup rfid (belum perlu konfirmasi, done ternyata perlu)
 
 fitur yang perlu diubah / dikembangkan sesuai kebutuhan sekolah :
-1. 
-2.
-3.
+
+[1 April 2026 :]
+1. ada fitur buka tutup harus , masuk bukanya 7.00 tutupnya jam 8.30, 15.00 pulang nya terbuka, pulang tutup 16.30
+2. siswa yang sedang libur kelas 11 dan 12 di admin harus ada notif sedang libur, admin yang mengurus
+3. izin siswa admin yang acc dan isi + upload file di admin (done, kalau ada error perlu revisi)
+
+[tgl selanjutnya]

@@ -754,6 +754,12 @@ class Msiswa
          }
       }
 
+      // Hapus data absen harian siswa (sinkronisasi)
+      $sql_absen = "DELETE FROM absen_harian_siswa WHERE id_libur = :id";
+      $this->db->query($sql_absen);
+      $this->db->bind('id', $id);
+      $this->db->execute();
+
       // Hapus data dari database
       $sql = "DELETE FROM izin_siswa WHERE id_izin = :id";
       $this->db->query($sql);
@@ -1085,4 +1091,269 @@ class Msiswa
       return $this->db->resultSet();
    
    }
+
+   // ADMIN
+   
+   public function simpan_izin_siswa_admin($data, $files)
+   {
+      // Ambil kelas siswa
+      $ambil = "SELECT kelas_siswa FROM siswa WHERE nis = :nis";
+      $this->db->query($ambil);
+      $this->db->bind('nis', $data['nis_siswa']);
+      $ambil1 = $this->db->single();
+      $kelas = $ambil1->kelas_siswa;
+
+      // Ambil wali kelas
+      $wakel = "SELECT wali_kelas FROM jadwal_lengkap WHERE kode_kelas = :kode_kelas";
+      $this->db->query($wakel);
+      $this->db->bind('kode_kelas', $kelas);
+      $wakel1 = $this->db->single();
+      $wali_kelas = $wakel1->wali_kelas;
+
+      // --- Proses upload file ---
+      $file_izin = null;
+
+      if ($files['file_izin']['size'] > 0) {
+         $file_name = $files['file_izin']['name'];
+         $file_tmp  = $files['file_izin']['tmp_name'];
+         $file_ext  = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+
+         $upload_dir = "../public/smabethel/file_izin/";
+         $newfile_izinName = uniqid('izin_', true) . '.' . $file_ext;
+
+         if (move_uploaded_file($file_tmp, $upload_dir . $newfile_izinName)) {
+               $file_izin = $newfile_izinName;
+         } else {
+               setFlash('Gagal mengupload file.', 'error');
+               return false;
+         }
+      }
+
+      // --- Simpan data ke database ---
+      $sql = "INSERT INTO izin_siswa 
+            (nis_izin, kelas_izin, wali_kelas_izin, jenis_izin, mulai_izin, sampai_izin, tgl_dibuat_izin, alasan_izin, status_izin, nik_status_izin, file_izin)
+            VALUES 
+            (:nis_izin, :kelas_izin, :wali_kelas_izin, :jenis_izin, :mulai_izin, :sampai_izin, :tgl_dibuat_izin, :alasan_izin, :status_izin, :nik_status_izin, :file_izin)";
+
+      $this->db->query($sql);
+      $this->db->bind('nis_izin', $data['nis_siswa']);
+      $this->db->bind('kelas_izin', $kelas);
+      $this->db->bind('wali_kelas_izin', $wali_kelas);
+      $this->db->bind('jenis_izin', $data['jenis_izin']);
+      $this->db->bind('mulai_izin', $data['mulai_izin']);
+      $this->db->bind('sampai_izin', $data['sampai_izin']);
+      $this->db->bind('tgl_dibuat_izin', date('Y-m-d'));
+      $this->db->bind('alasan_izin', $data['keterangan']);
+      $this->db->bind('status_izin', 'Disetujui');
+      $this->db->bind('nik_status_izin', $wali_kelas);
+      $this->db->bind('file_izin', $file_izin);
+      $this->db->execute();
+
+      $id_terakhir = $this->db->lastInsertId();
+
+      // INSERT ABSEN HARIAN
+      $sem = "SELECT id_jadwal_setting FROM jadwal_setting WHERE status='1'";
+      $this->db->query($sem);
+      $sem1 = $this->db->single();
+      $semester_aktif = $sem1->id_jadwal_setting;
+
+      $tgl_m = $data['mulai_izin'];
+      $tgl_a = $data['sampai_izin'];
+      $tgl1 = new DateTime("$tgl_m");
+      $tgl2 = new DateTime("$tgl_a");
+      $jumlahhari = $tgl2->diff($tgl1)->days + 1;
+
+      for ($x = 0; $x < $jumlahhari; $x++) {
+         $tanggallibur = date('Y-m-d', strtotime($tgl1->format('Y-m-d') . ' + ' . $x . ' days'));
+         $dayOfWeek = date('N', strtotime($tanggallibur));
+         if ($dayOfWeek == 6 || $dayOfWeek == 7) {
+            continue;
+         }
+         $sql = "INSERT INTO absen_harian_siswa (nis_ahs, tgl_ahs, status_ahs, jam_masuk_ahs, id_libur, kelas_ahs, wali_kelas_ahs, id_jadwal_setting_ahs) values (:nis_ahs, :tgl_ahs, :status_ahs, :jam_masuk_ahs, :id_libur, :kelas_ahs, :wali_kelas_ahs, :id_jadwal_setting_ahs)";
+         $this->db->query($sql);
+         $this->db->bind('nis_ahs', $data['nis_siswa']);
+         $this->db->bind('tgl_ahs', $tanggallibur);
+         $this->db->bind('status_ahs', 'Izin');
+         $this->db->bind('jam_masuk_ahs', '07:30:00');
+         $this->db->bind('id_libur', $id_terakhir);
+         $this->db->bind('kelas_ahs', $kelas);
+         $this->db->bind('wali_kelas_ahs', $wali_kelas);
+         $this->db->bind('id_jadwal_setting_ahs', $semester_aktif);
+         $this->db->execute();
+      }
+
+      return true;
+   }
+
+   public function simpan_edit_izin_siswa_admin($data, $files = null)
+   {
+      $sql_get = "SELECT * FROM izin_siswa WHERE id_izin = :id";
+      $this->db->query($sql_get);
+      $this->db->bind('id', $data['id_izin']);
+      $old_data = $this->db->single();
+      $old_file = $old_data->file_izin ?? null;
+
+      $file_izin = $old_file;
+
+      if ($files !== null && isset($files['file_izin']) && $files['file_izin']['size'] > 0) {
+         $file_name = $files['file_izin']['name'];
+         $file_tmp  = $files['file_izin']['tmp_name'];
+         $file_ext  = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+
+         $upload_dir = "../public/smabethel/file_izin/";
+         $new_file_name = uniqid('izin_', true) . '.' . $file_ext;
+
+         if (move_uploaded_file($file_tmp, $upload_dir . $new_file_name)) {
+            $file_izin = $new_file_name;
+            
+            // Hapus file lama jika ada dan file baru berhasil di-upload
+            if (!empty($old_data->file_izin)) {
+               $old_file_path = $upload_dir . $old_data->file_izin;
+               if (file_exists($old_file_path)) {
+                  unlink($old_file_path);
+               }
+            }
+         } else {
+            setFlash('Gagal mengupload file.', 'error');
+            return false;
+         }
+      }
+
+      $sql = "UPDATE izin_siswa 
+            SET jenis_izin = :jenis_izin, 
+                  mulai_izin = :mulai_izin, 
+                  sampai_izin = :sampai_izin, 
+                  alasan_izin = :alasan_izin,
+                  file_izin = :file_izin 
+            WHERE id_izin = :id";
+      
+      $this->db->query($sql);
+      $this->db->bind('id', $data['id_izin']);
+      $this->db->bind('jenis_izin', $data['jenis_izin']);
+      $this->db->bind('mulai_izin', $data['mulai_izin']);
+      $this->db->bind('sampai_izin', $data['sampai_izin']);
+      $this->db->bind('alasan_izin', $data['keterangan']);
+      $this->db->bind('file_izin', $file_izin);
+      $this->db->execute();
+
+      if ($old_data->status_izin == 'Disetujui') {
+         $sql_del = "DELETE FROM absen_harian_siswa WHERE id_libur = :id_libur AND nis_ahs = :nis_ahs";
+         $this->db->query($sql_del);
+         $this->db->bind('id_libur', $data['id_izin']);
+         $this->db->bind('nis_ahs', $old_data->nis_izin);
+         $this->db->execute();
+
+         $sem = "SELECT id_jadwal_setting FROM jadwal_setting WHERE status='1'";
+         $this->db->query($sem);
+         $sem1 = $this->db->single();
+         $semester_aktif = $sem1->id_jadwal_setting;
+
+         $tgl_m = $data['mulai_izin'];
+         $tgl_a = $data['sampai_izin'];
+         $tgl1 = new DateTime("$tgl_m");
+         $tgl2 = new DateTime("$tgl_a");
+         $jumlahhari = $tgl2->diff($tgl1)->days + 1;
+
+         for ($x = 0; $x < $jumlahhari; $x++) {
+            $tanggallibur = date('Y-m-d', strtotime($tgl1->format('Y-m-d') . ' + ' . $x . ' days'));
+            $dayOfWeek = date('N', strtotime($tanggallibur));
+            if ($dayOfWeek == 6 || $dayOfWeek == 7) {
+               continue;
+            }
+            $sql_ins = "INSERT INTO absen_harian_siswa (nis_ahs, tgl_ahs, status_ahs, jam_masuk_ahs, id_libur, kelas_ahs, wali_kelas_ahs, id_jadwal_setting_ahs) values (:nis_ahs, :tgl_ahs, :status_ahs, :jam_masuk_ahs, :id_libur, :kelas_ahs, :wali_kelas_ahs, :id_jadwal_setting_ahs)";
+            $this->db->query($sql_ins);
+            $this->db->bind('nis_ahs', $old_data->nis_izin);
+            $this->db->bind('tgl_ahs', $tanggallibur);
+            $this->db->bind('status_ahs', 'Izin');
+            $this->db->bind('jam_masuk_ahs', '07:30:00');
+            $this->db->bind('id_libur', $data['id_izin']);
+            $this->db->bind('kelas_ahs', $old_data->kelas_izin);
+            $this->db->bind('wali_kelas_ahs', $old_data->wali_kelas_izin);
+            $this->db->bind('id_jadwal_setting_ahs', $semester_aktif);
+            $this->db->execute();
+         }
+      }
+      return true;
+   }
+
+   public function respon_izin_admin($data)
+   {
+      $nik_pengesah = $data['wali_kelas']; // Admin bertindak atas nama wali kelas
+
+      if ($data['status_izin'] == 'Hapus') {
+         // Hapus absen harian (sinkronisasi)
+         $sql_absen = "DELETE FROM absen_harian_siswa WHERE id_libur = :id";
+         $this->db->query($sql_absen);
+         $this->db->bind('id', $data['id_izin']);
+         $this->db->execute();
+
+         $sql = "DELETE from izin_siswa where id_izin=:id";
+         $this->db->query($sql);
+         $this->db->bind('id', $data['id_izin']);
+         $this->db->execute();
+         return true;
+      } else if ($data['status_izin'] == 'Ditolak') {
+         // Hapus absen harian (sinkronisasi) jika diubah ke ditolak
+         $sql_absen = "DELETE FROM absen_harian_siswa WHERE id_libur = :id";
+         $this->db->query($sql_absen);
+         $this->db->bind('id', $data['id_izin']);
+         $this->db->execute();
+
+         $sql = "UPDATE izin_siswa set status_izin=:status_izin, nik_status_izin=:nik_status_izin where id_izin=:id";
+         $this->db->query($sql);
+         $this->db->bind('id', $data['id_izin']);
+         $this->db->bind('status_izin', $data['status_izin']);
+         $this->db->bind('nik_status_izin', $nik_pengesah);
+         $this->db->execute();
+         return true;
+      } else {
+         $sql = "UPDATE izin_siswa set status_izin=:status_izin, nik_status_izin=:nik_status_izin where id_izin=:id";
+         $this->db->query($sql);
+         $this->db->bind('id', $data['id_izin']);
+         $this->db->bind('status_izin', $data['status_izin']);
+         $this->db->bind('nik_status_izin', $nik_pengesah);
+         $this->db->execute();
+         
+         if ($data['status_izin'] == 'Disetujui') {
+            $tgl_m = $data['mulai_izin'];
+            $tgl_a = $data['sampai_izin'];
+            $tgl1 = new DateTime("$tgl_m");
+            $tgl2 = new DateTime("$tgl_a");
+            $jumlahhari = $tgl2->diff($tgl1)->days + 1;
+
+            for ($x = 0; $x < $jumlahhari; $x++) {
+               $tanggallibur = date('Y-m-d', strtotime($tgl1->format('Y-m-d') . ' + ' . $x . ' days'));
+
+               $dayOfWeek = date('N', strtotime($tanggallibur));
+               if ($dayOfWeek == 6 || $dayOfWeek == 7) {
+                  continue;
+               }
+
+               $sql = "INSERT INTO absen_harian_siswa (nis_ahs, tgl_ahs, status_ahs, jam_masuk_ahs, id_libur, kelas_ahs, wali_kelas_ahs, id_jadwal_setting_ahs) values (:nis_ahs, :tgl_ahs, :status_ahs, :jam_masuk_ahs, :id_libur, :kelas_ahs, :wali_kelas_ahs, :id_jadwal_setting_ahs)";
+               $this->db->query($sql);
+               $this->db->bind('nis_ahs', $data['nis']);
+               $this->db->bind('tgl_ahs', $tanggallibur);
+               $this->db->bind('status_ahs', 'Izin');
+               $this->db->bind('jam_masuk_ahs', '07:30:00');
+               $this->db->bind('id_libur', $data['id_izin']);
+               $this->db->bind('kelas_ahs', $data['kelas']);
+               $this->db->bind('wali_kelas_ahs', $data['wali_kelas']);
+               $this->db->bind('id_jadwal_setting_ahs', $data['semester_aktif']);
+               $this->db->execute();
+            }
+         }
+         return true;
+      }
+   }
+   
+   public function siswa_aktif_admin()
+   {
+      $sql = "SELECT *from siswa where status_siswa=:status";
+      $this->db->query($sql);
+      $this->db->bind('status', 'Aktif');
+      return $this->db->resultset();
+   }
+   
+   
+   // ADMIN
 }

@@ -127,6 +127,11 @@
 
 
 <script>
+    $('.pilihsiswaizin').select2({
+        placeholder: "~ Pilih Siswa ~",
+        dropdownParent: $('#tambahIzin')
+    });
+
     $('.pilihjadwal').select2({
         placeholder: "~ Pilih Mata Pelajaran ~"
     });

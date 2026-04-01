@@ -849,7 +849,129 @@ public function cetak_rapor_wali($id_siswa = null)
 }
    // wali kelas
 
+//--ADMIN---------------------------------
 
+   public function admin_izin_siswa() {
+      if (isset($_GET['status'])) {
+         $status = $_GET['status'];
+      } else {
+         $status = 'Menunggu ACC';
+      }
+      $data['izin_siswa'] = $this->Msiswa->izin_siswa($status);
+      $data['semester_aktif'] = $this->Msiswa->semester_aktif();
+      $data['seluruh_siswa_aktif'] = $this->Msiswa->siswa_aktif_admin();
+      require APPROOT . '/views/inc/header.php';
+      $this->view('siswa/admin_izin_siswa', $data);
+      require APPROOT . '/views/inc/footer.php';
+   }
+
+   public function admin_simpan_izin_siswa()
+   {
+      if ($_POST['mulai_izin'] > $_POST['sampai_izin']) {
+         setFlash('Gagal disimpan, Tanggal mulai tidak boleh melebihi tanggal sampai', 'error');
+         return redirect('siswa/admin_izin_siswa');
+      }
+      $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+      $file_name = $_FILES['file_izin']['name'];
+      $file_size = $_FILES['file_izin']['size'];
+      $file_tmp  = $_FILES['file_izin']['tmp_name'];
+      $file_ext  = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+
+      $allowed_ext = ['jpg', 'jpeg', 'png', 'pdf'];
+
+      if (!empty($file_name) && !in_array($file_ext, $allowed_ext)) {
+         setFlash('Format file tidak diperbolehkan. Hanya JPG, JPEG, PNG dan PDF yang bisa diupload.', 'error');
+         if ($_SESSION['role'] == 'admin') {
+            return redirect('siswa/admin_izin_siswa');
+         }
+         exit;
+      }
+
+      if ($file_size > 2000 * 1000) {
+         setFlash('Ukuran file melebihi 2MB.', 'error');
+         if ($_SESSION['role'] == 'admin') {
+            return redirect('siswa/admin_izin_siswa');
+         }
+         exit;
+      }
+
+      if ($this->Msiswa->simpan_izin_siswa_admin($_POST, $_FILES)) {
+         setFlash('Berhasil disimpan.', 'success');
+         return redirect('siswa/admin_izin_siswa?status=Disetujui');
+      } else {
+         setFlash('Gagal disimpan, periksa tanggal yang anda masukkan, jangan ada tanggal yang double', 'error');
+         return redirect('siswa/admin_izin_siswa');
+      }
+   }
+
+   public function admin_hapus_izin_siswa($id) {
+      if ($id !== false && $id > 0) {
+         $result = $this->Msiswa->hapus_pengajuan_izin($id);
+         if ($result) {
+            setFlash('Data berhasil dihapus.', 'success');
+         } else {
+            setFlash('Gagal menghapus data.', 'error');
+         }
+      } else {
+         setFlash('ID tidak valid.', 'error');
+      }
+      return redirect('siswa/admin_izin_siswa');
+   }
+
+   public function admin_simpan_edit_izin_siswa()
+   {
+      if ($_POST['mulai_izin'] > $_POST['sampai_izin']) {
+         setFlash('Gagal disimpan, Tanggal mulai tidak boleh melebihi tanggal sampai', 'error');
+         return redirect('siswa/admin_izin_siswa');
+      }
+      
+      $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+      $upload_file = false;
+      if (isset($_FILES['file_izin']) && $_FILES['file_izin']['size'] > 0) {
+         $file_name = $_FILES['file_izin']['name'];
+         $file_size = $_FILES['file_izin']['size'];
+         $file_ext  = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+
+         $allowed_ext = ['jpg', 'jpeg', 'png', 'pdf'];
+
+         if (!in_array($file_ext, $allowed_ext)) {
+            setFlash('Format file tidak diperbolehkan. Hanya JPG, JPEG, PNG dan PDF yang bisa diupload.', 'error');
+            return redirect('siswa/admin_izin_siswa');
+         }
+
+         if ($file_size > 2000 * 1000) {
+            setFlash('Ukuran file melebihi 2MB.', 'error');
+            return redirect('siswa/admin_izin_siswa');
+         }
+
+         $upload_file = true;
+      }
+
+      if ($this->Msiswa->simpan_edit_izin_siswa_admin($_POST, $upload_file ? $_FILES : null)) {
+         setFlash('Berhasil diupdate.', 'success');
+         return redirect('siswa/admin_izin_siswa?status=' . $_POST['status_kembali']);
+      } else {
+         setFlash('Gagal disimpan', 'error');
+         return redirect('siswa/admin_izin_siswa');
+      }
+   }
+
+   public function admin_respon_izin()
+   {
+      $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+      if ($this->Msiswa->respon_izin_admin($_POST)) {
+         setFlash('Berhasil disimpan.', 'success');
+         return redirect('siswa/admin_izin_siswa');
+      } else {
+         setFlash('Gagal disimpan', 'error');
+         return redirect('siswa/admin_izin_siswa');
+      }
+   }
+
+
+//--ADMIN---------------------------------
 
 
    // siswa
@@ -962,5 +1084,8 @@ public function cetak_rapor_wali($id_siswa = null)
        $this->view('siswa/rapor_cetak', $data);
    }
  // siswa
+
+
+
 
 }

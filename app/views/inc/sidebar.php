@@ -508,6 +508,29 @@
       </a>
    </li>
 
+   <li class="nav-header"><b>SISWA</b></li>
+
+   <li class="nav-item">
+         <a href="<?= URLROOT ?>/siswa/admin_izin_siswa" class="nav-link">
+            <i class="nav-icon fa fa-users" aria-hidden="true"></i>
+            <p>Izin Siswa</p>
+         </a>
+   </li>
+
+   <li class="nav-item">
+      <a href="<?= URLROOT ?>/siswa/izin_today" class="nav-link">
+         <i class="nav-icon fa fa-users" aria-hidden="true"></i>
+         <p>Siswa Izin Hari ini</p>
+      </a>
+   </li>
+
+   <li class="nav-item">
+      <a href="<?= URLROOT ?>/siswa" class="nav-link">
+         <i class="nav-icon fas fa-folder"></i>
+         <p>Siswa</p>
+      </a>
+   </li>
+
    <li class="nav-header"><b>PENGATURAN</b></li>
 
    <li class="nav-item">
@@ -593,16 +616,6 @@
       </a>
    </li>
 -->
-
-
-
-   <li class="nav-item">
-      <a href="<?= URLROOT ?>/siswa" class="nav-link">
-         <i class="nav-icon fas fa-folder"></i>
-         <p>Siswa</p>
-      </a>
-   </li>
-
 
 <?php } ?>
 
