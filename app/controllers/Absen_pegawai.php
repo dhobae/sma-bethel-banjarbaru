@@ -22,11 +22,29 @@ class Absen_pegawai extends Controller
 
     private function getStatus()
     {
-        $jamKerja  = $this->Mabsen_pegawai->ambil_jam_kerja();
-        $jam_masuk = $jamKerja->masuk;   // 07:30:00
-        $jam_pulang = $jamKerja->pulang;  // 16:00:00
-        $hasil     = validasi_waktu_rfid($jam_masuk, $jam_pulang);
-        return $hasil['status'];
+        $now = date('H:i:s');
+
+        // Ambil jadwal RFID dari settingan admin
+        $rfid = $this->Mdashboard->get_rfid_status();
+
+        // Cek apakah sekarang dalam jendela waktu masuk
+        if ($now >= $rfid->rfid_masuk_buka && $now <= $rfid->rfid_masuk_tutup) {
+            // Ambil jam kerja resmi untuk tentukan hadir/terlambat
+            $jamKerja = $this->Mabsen_pegawai->ambil_jam_kerja();
+            if ($now <= $jamKerja->masuk) {
+                return 'hadir';
+            } else {
+                return 'terlambat';
+            }
+        }
+
+        // Cek apakah sekarang dalam jendela waktu pulang
+        if ($now >= $rfid->rfid_pulang_buka && $now <= $rfid->rfid_pulang_tutup) {
+            return 'pulang';
+        }
+
+        // Di luar semua jendela waktu
+        return 'ditutup';
     }
 
     public function index()

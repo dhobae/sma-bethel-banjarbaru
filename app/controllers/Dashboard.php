@@ -301,4 +301,38 @@ class Dashboard extends Controller
         unset($_SESSION['password_change_required']);
         echo json_encode(['success' => true]);
     }
+
+    // --- KONTROL RFID (ADMIN) ---
+    public function rfid_control()
+    {
+        if ($_SESSION['role'] != 'admin') {
+            return redirect('');
+        }
+        $data['rfid_status'] = $this->Mdashboard->get_rfid_status();
+        require APPROOT . '/views/inc/header.php';
+        $this->view('dashboard/rfid_control', $data);
+        require APPROOT . '/views/inc/footer.php';
+    }
+
+    public function simpan_rfid_jadwal()
+    {
+        if ($_SESSION['role'] != 'admin') {
+            setFlash('Tidak memiliki akses', 'error');
+            return redirect('');
+        }
+
+        $data = [
+            'rfid_masuk_buka'   => $_POST['rfid_masuk_buka'],
+            'rfid_masuk_tutup'  => $_POST['rfid_masuk_tutup'],
+            'rfid_pulang_buka'  => $_POST['rfid_pulang_buka'],
+            'rfid_pulang_tutup' => $_POST['rfid_pulang_tutup'],
+        ];
+
+        if ($this->Mdashboard->update_rfid_jadwal($data)) {
+            setFlash('Jadwal RFID berhasil disimpan.', 'success');
+        } else {
+            setFlash('Gagal menyimpan jadwal RFID.', 'error');
+        }
+        return redirect('dashboard/rfid_control');
+    }
 }

@@ -695,4 +695,28 @@ if ((date('H:i:s', time()) < $wfh_masuk) and ($from_masuk == 'WFH')) {
       $this->db->execute();
       return true;
    }
+
+   // RFID BUKA/TUTUP -----------------
+   public function get_rfid_status()
+   {
+      $sql = "SELECT rfid_masuk_buka, rfid_masuk_tutup, rfid_pulang_buka, rfid_pulang_tutup FROM settingan LIMIT 1";
+      $this->db->query($sql);
+      return $this->db->single();
+   }
+
+   public function update_rfid_jadwal($data)
+   {
+      $sql = "UPDATE settingan SET 
+                rfid_masuk_buka = :rfid_masuk_buka, 
+                rfid_masuk_tutup = :rfid_masuk_tutup,
+                rfid_pulang_buka = :rfid_pulang_buka, 
+                rfid_pulang_tutup = :rfid_pulang_tutup
+              WHERE id = 1";
+      $this->db->query($sql);
+      $this->db->bind('rfid_masuk_buka', $data['rfid_masuk_buka']);
+      $this->db->bind('rfid_masuk_tutup', $data['rfid_masuk_tutup']);
+      $this->db->bind('rfid_pulang_buka', $data['rfid_pulang_buka']);
+      $this->db->bind('rfid_pulang_tutup', $data['rfid_pulang_tutup']);
+      return $this->db->execute();
+   }
 }

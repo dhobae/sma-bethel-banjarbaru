@@ -9,8 +9,8 @@ ide :
 fitur yang perlu diubah / dikembangkan sesuai kebutuhan sekolah :
 
 [1 April 2026 :]
-1. ada fitur buka tutup harus , masuk bukanya 7.00 tutupnya jam 8.30, 15.00 pulang nya terbuka, pulang tutup 16.30
-2. siswa yang sedang libur kelas 11 dan 12 di admin harus ada notif sedang libur, admin yang mengurus
+1. ada fitur buka tutup harus , masuk bukanya 7.00 tutupnya jam 8.30, 15.00 pulang nya terbuka, pulang tutup 16.30 (done)
+2. penambahan fitur siswa yang sedang libur misal kelas 11 dan 12, harus ada notif sedang libur, admin yang mengurus : ni ditanyakan lagi
 3. izin siswa admin yang acc dan isi + upload file di admin (done, kalau ada error perlu revisi)
 
 [tgl selanjutnya]

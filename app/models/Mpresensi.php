@@ -155,6 +155,74 @@ class Mpresensi
         return true;
     }
 
+    public function libur_kelas()
+    {
+        $sql = "SELECT * from libur_kelas order by tanggal_mulai DESC";
+        $this->db->query($sql);
+        return $this->db->resultSet();
+    }
+
+    public function simpan_libur_kelas($data)
+    {
+        $tanggal_mulai = $data['tanggal_mulai'];
+        $tanggal_akhir = $data['tanggal_akhir'];
+        $kelas = $data['kelas'];
+        $tgl1 = new DateTime("$tanggal_mulai");
+        $tgl2 = new DateTime("$tanggal_akhir");
+        $jumlahhari = $tgl2->diff($tgl1)->days + 1;
+
+        $sql = "INSERT into libur_kelas (tanggal_mulai, tanggal_akhir, kelas, keterangan_libur) values (:tanggal_mulai, :tanggal_akhir, :kelas, :keterangan_libur)";
+        $this->db->query($sql);
+        $this->db->bind('tanggal_mulai', $data['tanggal_mulai']);
+        $this->db->bind('tanggal_akhir', $data['tanggal_akhir']);
+        $this->db->bind('kelas', $kelas);
+        $this->db->bind('keterangan_libur', $data['keterangan']);
+        $this->db->execute();
+        $id_terakhir = $this->db->lastInsertId();
+
+        $id_libur_prefix = "LK_" . $id_terakhir;
+
+        $sqlSiswa = "SELECT nis FROM siswa WHERE status_siswa = 'Aktif' AND kelas_siswa LIKE :kelas_pattern";
+        $this->db->query($sqlSiswa);
+        $this->db->bind('kelas_pattern', $kelas . '%');
+        
+        $siswa_list = $this->db->resultSet();
+
+        for ($x = 0; $x < $jumlahhari; $x++) {
+            $tanggallibur = date('Y-m-d', strtotime($tgl1->format('Y-m-d') . ' + ' . $x . ' days'));
+
+            foreach($siswa_list as $sw) {
+                $sql4 = "INSERT INTO absen_harian_siswa(nis_ahs, tgl_ahs, status_ahs, jam_masuk_ahs, id_libur) values (:nis_ahs, :tgl_ahs, :status_ahs, :jam_masuk_ahs, :id_libur)";
+                $this->db->query($sql4);
+                $this->db->bind('nis_ahs', $sw->nis);
+                $this->db->bind('tgl_ahs', $tanggallibur);
+                $this->db->bind('jam_masuk_ahs', '07:30:00');
+                $this->db->bind('status_ahs', 'Libur');
+                $this->db->bind('id_libur', $id_libur_prefix);
+                $this->db->execute();
+            }
+        }
+
+        return true;
+    }
+
+    public function hapus_libur_kelas($id)
+    {
+        $sql = "DELETE from libur_kelas where id=:id";
+        $this->db->query($sql);
+        $this->db->bind('id', $id);
+        $this->db->execute();
+
+        $id_libur_prefix = "LK_" . $id;
+
+        $sql2 = "DELETE from absen_harian_siswa where id_libur=:id_libur";
+        $this->db->query($sql2);
+        $this->db->bind('id_libur', $id_libur_prefix);
+        $this->db->execute();
+
+        return true;
+    }
+
     public function ajukan_izin($username)
     {
         $sql = "SELECT tmp_izin.*, tmp_izin.id as idtmpnya, pegawai.nik as nip, pegawai.nama as nama  from tmp_izin left join pegawai on tmp_izin.npk = pegawai.nik where tmp_izin.npk=:username order by tmp_izin.tanggal_mulai DESC";

@@ -88,6 +88,48 @@ class Presensi extends Controller
         echo json_encode($response);
     }
 
+    public function libur_kelas()
+    {
+        $data['libur_kelas'] = $this->Mpresensi->libur_kelas();
+        require APPROOT . '/views/inc/header.php';
+        $this->view('presensi/libur_kelas', $data);
+        require APPROOT . '/views/inc/footer.php';
+    }
+
+    public function tambah_libur_kelas()
+    {
+        require APPROOT . '/views/inc/header.php';
+        $this->view('presensi/tambah_libur_kelas');
+        require APPROOT . '/views/inc/footer.php';
+    }
+
+    public function simpan_libur_kelas()
+    {
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+        if ($this->Mpresensi->simpan_libur_kelas($_POST)) {
+            setFlash('Berhasil disimpan.', 'success');
+            return redirect('presensi/libur_kelas');
+        } else {
+            setFlash('Gagal disimpan.', 'danger');
+            return redirect('presensi/libur_kelas');
+        }
+    }
+
+    public function hapus_libur_kelas($id)
+    {
+        if ($id !== false && $id > 0) {
+            $result = $this->Mpresensi->hapus_libur_kelas($id);
+            if ($result) {
+                $response = array('status' => 'success', 'message' => 'Data berhasil dihapus.');
+            } else {
+                $response = array('status' => 'error', 'message' => 'Gagal menghapus data.');
+            }
+        } else {
+            $response = array('status' => 'error', 'message' => 'ID tidak valid.');
+        }
+        echo json_encode($response);
+    }
+
     public function ajukan_izin()
     {
         $username = $_SESSION['username'];

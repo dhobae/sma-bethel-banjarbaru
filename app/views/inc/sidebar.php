@@ -598,6 +598,24 @@
       </a>
    </li>
 
+   <li class="nav-item">
+      <a href="<?= URLROOT ?>/dashboard/rfid_control" class="nav-link">
+         <i class="nav-icon fas fa-id-card"></i>
+         <p>
+            &nbsp; Setting RFID
+         </p>
+      </a>
+   </li>
+
+   <li class="nav-item">
+      <a href="<?= URLROOT ?>/presensi/libur_kelas" class="nav-link">
+         <i class="nav-icon fas fa-id-card"></i>
+         <p>
+            &nbsp; Setting Libur Kelas
+         </p>
+      </a>
+   </li>
+
    <li class="nav-header"><b>MASUKAN ANDA</b></li>
    <li class="nav-item">
       <a href="<?= URLROOT ?>/backup/pendapat_pegawai" class="nav-link">
