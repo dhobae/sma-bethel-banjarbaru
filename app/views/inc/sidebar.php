@@ -609,7 +609,7 @@
 
    <li class="nav-item">
       <a href="<?= URLROOT ?>/presensi/libur_kelas" class="nav-link">
-         <i class="nav-icon fas fa-id-card"></i>
+         <i class="nav-icon fas fa-calendar-check"></i>
          <p>
             &nbsp; Setting Libur Kelas
          </p>

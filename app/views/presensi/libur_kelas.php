@@ -63,7 +63,9 @@ require APPROOT . '../../public/dist/lib/ip.php';
                         <?php
                         if ($_SESSION['role'] == 'admin') { ?>
                            <td style="text-align:center;">
-                              <a href="javascript:void(0)" onclick="hapus('<?= $field->id ?>')" style="color:red; font-weight:bold;"> Delete</a>
+                            <a href="javascript:void(0)" onclick="hapus('<?= $field->id ?>')" class="btn btn-danger btn-sm tombol1">
+                             <i class="fa fa-trash"></i>
+                           </a>
                            </td>
                         <?php } ?>
                      </tr>

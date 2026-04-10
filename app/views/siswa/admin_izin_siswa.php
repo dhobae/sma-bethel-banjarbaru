@@ -45,6 +45,7 @@
                         <th style="width:20%">Wali Kelas</th>
                         <th style="width:150px">Tanggal Izin</th>
                         <th>Keterangan</th>
+                        <th style="width:150px">Bukti</th>
                         <th style="width:100px">Status</th>
                         <th style="width:50px">Aksi</th>
                      </tr>
@@ -85,6 +86,36 @@
                            <td>
                               <b><?= $d->jenis_izin ?></b><br />
                               Ket : <?= $d->alasan_izin ?>
+                           </td>
+                           <td class="text-center">
+                              <?php 
+                                $ext = strtolower(pathinfo($d->file_izin, PATHINFO_EXTENSION));
+                                $isPdf = ($ext === 'pdf');
+                                $filePath = URLROOT . '/smabethel/file_izin/' . $d->file_izin;
+                                ?>
+
+                                <?php if ($isPdf) : ?>
+                                <!-- Thumbnail PDF -->
+                                <div style="width: 80px; height: 80px; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; cursor: pointer; background: #f8f9fa;"
+                                        data-toggle="modal"
+                                        data-target="#modalBukti"
+                                        data-file="<?= $filePath ?>"
+                                        data-type="pdf"
+                                        data-name="<?= $d->file_izin ?>">
+                                    <i class="fas fa-file-pdf fa-2x text-danger"></i>
+                                </div>
+                                <?php else : ?>
+                                <!-- Thumbnail Gambar -->
+                                <img src="<?= $filePath ?>"
+                                        alt="Bukti"
+                                        class="img-thumbnail"
+                                        style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;"
+                                        data-toggle="modal"
+                                        data-target="#modalBukti"
+                                        data-file="<?= $filePath ?>"
+                                        data-type="image"
+                                        data-name="<?= $d->file_izin ?>">
+                                <?php endif; ?>
                            </td>
                            <!-- STATUS IZIN ------------------- -->
                            <td class="text-center">
@@ -127,6 +158,26 @@
                   </tbody>
                </table>
             </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+<!-- Modal Bukti -->
+<div class="modal fade" id="modalBukti" tabindex="-1" aria-labelledby="modalBuktiLabel" aria-hidden="true">
+   <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="modalBuktiLabel">Bukti Izin</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body text-center">
+            <div id="contentBukti"></div>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
          </div>
       </div>
    </div>
@@ -420,6 +471,35 @@
 <script>
    var originalTableBorder = $('#example').css('border');
    var originalTablePadding = $('#example').css('padding');
+
+      // Handle modal open
+   $(document).on('click', '[data-target="#modalBukti"]', function(){
+      var fileUrl = $(this).data('file');
+      var fileType = $(this).data('type');
+      var fileName = $(this).data('name');
+      
+      // Targetkan div 'contentBukti' yang sudah ada di modal
+      var contentArea = $('#contentBukti');
+      
+      // Kosongkan konten sebelumnya
+      contentArea.html('');
+
+      if (fileType === 'pdf') {
+         // Jika PDF, gunakan iframe agar langsung tampil (membutuhkan browser support)
+         // pastikan library pdf.js tidak wajib jika pakai iframe
+         var htmlPdf = '<div class="alert alert-info">File: ' + fileName + '</div>';
+         htmlPdf += '<iframe src="' + fileUrl + '" style="width: 100%; height: 500px; border: none;"></iframe>';
+         
+         // Alternatif jika ingin link download:
+         // htmlPdf += '<a href="'+fileUrl+'" target="_blank" class="btn btn-primary">Buka PDF</a>';
+         
+         contentArea.html(htmlPdf);
+      } else {
+         // Jika Gambar
+         var htmlImg = '<img src="' + fileUrl + '" class="img-fluid" style="max-width: 100%; height: auto;" alt="Bukti Izin">';
+         contentArea.html(htmlImg);
+      }
+   });
 
    $(document).ready(function() {
       $('#example').DataTable({

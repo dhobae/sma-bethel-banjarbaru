@@ -1,12 +1,22 @@
-<div class="card card-primary" style="margin-top:10px;">
-   <div class="card-header" style="height:35px; padding:5px 10px;">
-      <b>Pengaturan Hari Libur Kelas</b>
-   </div>
 
+
+
+        
+
+<div class="card card-primary" style="margin-top:10px;">
+   <div class="card-header" style="height:1px; padding:1px;">
+   </div>
    <div class="card-body">
+   <div class="bg-danger col-sm-6 mb-1" style="margin:auto; padding:10px 25px;">
+      <b>Perhatian :</b><br />
+      <ul style="margin-bottom:0px; padding-left:20px">
+         <li>Sebelum mengisikan libur kelas, pastikan terlebih dahulu memang siswa tidak ada yang sedang melakukan presensi dan pengajuan izin</li>
+         <li>Pastikan tanggal mulai dan tanggal sampai tidak menabrak data yang sudah di masukkan sebelumnya (misal : sudah mengatur libur kelas XII di tanggal 10 April 2026, maka tidak boleh mengisi 2x)</li>
+         <li>Pastikan tanggal diplih bukan tanggal libur, dan bukan hari sabtu dan minggu</li>
+      </ul>
+   </div>
       <div class="bg-danger col-sm-6" style="background-color:red; margin:auto; padding:25px;">
          <form method="post" action="<?= URLROOT ?>/presensi/simpan_libur_kelas">
-            <b>Pada hari/tanggal hari libur kelas, absensi RFID dan input absen untuk siswa di kelas tersebut akan di nonaktifkan.</b> <br /><br />
             <div class="row">
                <div class="col-sm-12">
                   <div class="form-group">
@@ -46,8 +56,10 @@
             </div>
 
             <div class="form-actions">
-               <button type="submit" name="submit" class="btn btn-warning btn-sm"> <b>Simpan</b> </button>
-               <button type="button" class="btn btn-success btn-sm"><a style="color:white;" href="<?= URLROOT ?>/presensi/libur_kelas"> <b>Kembali</b></a></button>
+               <div>
+                  <button type="submit" class="btn btn-success btn-sm tombol2" title="Simpan Data"><i class="fa fa-save"></i> &nbsp;Simpan</button>
+                  <a href="<?= URLROOT ?>/presensi/libur_kelas" class="btn btn-warning btn-sm tombol2" title="Kembali"><i class="fa fa-undo"></i> &nbsp;Kembali</a>
+               </div>
             </div>
          </form>
       </div>
