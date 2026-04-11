@@ -608,6 +608,24 @@
    </li>
 
    <li class="nav-item">
+      <a href="<?= URLROOT ?>/dashboard/ubah_akun_rfid" class="nav-link">
+         <i class="nav-icon fas fa-user-lock"></i>
+         <p>
+            &nbsp; Sandi Admin RFID
+         </p>
+      </a>
+   </li>
+
+   <li class="nav-item">
+      <a href="<?= URLROOT ?>/dashboard/ubah_akun_piket" class="nav-link">
+         <i class="nav-icon fas fa-user-lock"></i>
+         <p>
+            &nbsp; Sandi Akun Piket
+         </p>
+      </a>
+   </li>
+
+   <li class="nav-item">
       <a href="<?= URLROOT ?>/presensi/libur_kelas" class="nav-link">
          <i class="nav-icon fas fa-calendar-check"></i>
          <p>

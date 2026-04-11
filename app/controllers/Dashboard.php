@@ -335,4 +335,107 @@ class Dashboard extends Controller
         }
         return redirect('dashboard/rfid_control');
     }
+
+    // admin bisa mengubah password akun rfid & piket
+    public function ubah_akun_rfid() {
+        if ($_SESSION['role'] != 'admin') {
+            return redirect('');
+        }
+
+        $akun_rfid = $this->Mdashboard->get_akun_rfid();
+        $data['akun_rfid'] = $akun_rfid;
+
+        require APPROOT . '/views/inc/header.php';
+        $this->view('dashboard/ubah_akun_rfid', $data);
+        require APPROOT . '/views/inc/footer.php';
+    }
+
+    public function simpan_akun_rfid() {
+        if ($_SESSION['role'] != 'admin') {
+            return redirect('');
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            return redirect('dashboard/ubah_akun_rfid');
+        }
+
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+        $password_baru = trim($_POST['password_baru'] ?? '');
+        $konfirmasi_password = trim($_POST['konfirmasi_password'] ?? '');
+
+        if (empty($password_baru) || empty($konfirmasi_password)) {
+            setFlash('Semua field harus diisi.', 'danger');
+            return redirect('dashboard/ubah_akun_rfid');
+        }
+
+        if (strlen($password_baru) < 6) {
+            setFlash('Password minimal 6 karakter.', 'danger');
+            return redirect('dashboard/ubah_akun_rfid');
+        }
+
+        if ($password_baru !== $konfirmasi_password) {
+            setFlash('Konfirmasi password tidak cocok.', 'danger');
+            return redirect('dashboard/ubah_akun_rfid');
+        }
+
+        $hashed_password = password_hash($password_baru, PASSWORD_DEFAULT);
+        if ($this->Mdashboard->update_akun_rfid($hashed_password)) {
+            setFlash('Password akun RFID berhasil diubah.', 'success');
+        } else {
+            setFlash('Gagal mengubah password akun RFID.', 'danger');
+        }
+
+        return redirect('dashboard/ubah_akun_rfid');
+    }
+
+    public function ubah_akun_piket() {
+        if ($_SESSION['role'] != 'admin') {
+            return redirect('');
+        }
+
+        $akun_piket = $this->Mdashboard->get_akun_piket();
+        $data['akun_piket'] = $akun_piket;
+
+        require APPROOT . '/views/inc/header.php';
+        $this->view('dashboard/ubah_akun_piket', $data);
+        require APPROOT . '/views/inc/footer.php';
+    }
+
+    public function simpan_akun_piket() {
+        if ($_SESSION['role'] != 'admin') {
+            return redirect('');
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            return redirect('dashboard/ubah_akun_piket');
+        }
+
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+        $password_baru = trim($_POST['password_baru'] ?? '');
+        $konfirmasi_password = trim($_POST['konfirmasi_password'] ?? '');
+
+        if (empty($password_baru) || empty($konfirmasi_password)) {
+            setFlash('Semua field harus diisi.', 'danger');
+            return redirect('dashboard/ubah_akun_piket');
+        }
+
+        if (strlen($password_baru) < 6) {
+            setFlash('Password minimal 6 karakter.', 'danger');
+            return redirect('dashboard/ubah_akun_piket');
+        }
+
+        if ($password_baru !== $konfirmasi_password) {
+            setFlash('Konfirmasi password tidak cocok.', 'danger');
+            return redirect('dashboard/ubah_akun_piket');
+        }
+
+        $hashed_password = password_hash($password_baru, PASSWORD_DEFAULT);
+        if ($this->Mdashboard->update_akun_piket($hashed_password)) {
+            setFlash('Password akun Piket berhasil diubah.', 'success');
+        } else {
+            setFlash('Gagal mengubah password akun Piket.', 'danger');
+        }
+
+        return redirect('dashboard/ubah_akun_piket');
+    }
 }

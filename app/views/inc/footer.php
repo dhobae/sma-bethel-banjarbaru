@@ -136,6 +136,10 @@
         placeholder: "~ Pilih Mata Pelajaran ~"
     });
 
+    $('.pilihpegawai').select2({
+        placeholder: "~ Pilih Pegawai ~"
+    });
+
     $('.pilihkelas').select2({
         placeholder: "~ Pilih Kelas ~"
     });

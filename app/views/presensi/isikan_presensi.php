@@ -22,7 +22,7 @@
                         <td style="width:120px">NIK / Nama</td>
                         <td style="width:20px">:</td>
                         <td>
-                            <select name="nik" required style="height:28px">
+                            <select name="nik" required class="pilihpegawai">
                                 <option value="">Pilih Pegawai</option>
                                 <?php foreach ($data['pegawai'] as $d) : ?>
                                     <option value="<?= $d->nik ?>"><?= $d->nama ?></option>
@@ -90,6 +90,24 @@
     </div>
 </div>
 
+<style>
+    /* Mengatur tinggi container utama Select2 */
+.select2-container .select2-selection--single {
+    height: 28px !important;
+    display: flex;
+    align-items: center;
+}
+
+/* Mengatur posisi teks di dalamnya agar pas di tengah */
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 28px !important;
+}
+
+/* Mengatur posisi panah dropdown agar tetap presisi */
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 26px !important;
+}
+</style>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

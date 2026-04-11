@@ -172,7 +172,7 @@ if (isset($_GET['submit'])) {
                                  $totallibur_all = $totallibur_all + $ttllbur_all;
                               } else {
                                  //-- Jika normal ------------------------------------------- --
-                                 if ($field2->jam_masuk > '07:30:00') {
+                                 if ($field2->jam_masuk > '08:30:00') {
                                     $statustelat = 'Telat';
                                  } else {
                                     $statustelat = 'On Time';

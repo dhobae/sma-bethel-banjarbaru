@@ -10,9 +10,9 @@
    <div class="bg-danger col-sm-6 mb-1" style="margin:auto; padding:10px 25px;">
       <b>Perhatian :</b><br />
       <ul style="margin-bottom:0px; padding-left:20px">
-         <li>Sebelum mengisikan libur kelas, pastikan terlebih dahulu memang siswa tidak ada yang sedang melakukan presensi dan pengajuan izin</li>
+         <li>Sebelum mengisikan libur kelas, pastikan terlebih dahulu memang siswa tidak ada yang sedang melakukan presensi dan pengajuan izin pada rentang tanggal tersebut</li>
          <li>Pastikan tanggal mulai dan tanggal sampai tidak menabrak data yang sudah di masukkan sebelumnya (misal : sudah mengatur libur kelas XII di tanggal 10 April 2026, maka tidak boleh mengisi 2x)</li>
-         <li>Pastikan tanggal diplih bukan tanggal libur, dan bukan hari sabtu dan minggu</li>
+         <li>Pastikan tanggal diplih bukan tanggal libur spesial seperti libur nasional, perayaan hari raya, dll.</li>
       </ul>
    </div>
       <div class="bg-danger col-sm-6" style="background-color:red; margin:auto; padding:25px;">
@@ -39,9 +39,9 @@
                      <label>Kelas</label>
                      <select name="kelas" class="form-control" required>
                         <option value="">-- Pilih Kelas --</option>
-                        <option value="X">Kelas X</option>
-                        <option value="XI">Kelas XI</option>
-                        <option value="XII">Kelas XII</option>
+                        <option value="X">Kelas X (10)</option>
+                        <option value="XI">Kelas XI (11)</option>
+                        <option value="XII">Kelas XII (12)</option>
                      </select>
                   </div>
                </div>

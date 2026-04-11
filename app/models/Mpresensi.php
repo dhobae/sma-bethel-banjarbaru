@@ -526,8 +526,8 @@ class Mpresensi
         sum(case when absen.status_masuk='Sakit' then 1 else 0 end) as sakit,
         sum(case when absen.status_masuk='Cuti' then 1 else 0 end) as cuti,
         sum(case when absen.status_masuk='TL' then 1 else 0 end) as tl,
-        SUM(CASE WHEN absen.jam_masuk > '07:30:00' THEN 1 ELSE 0 END) AS telat,
-        SUM(CASE WHEN absen.jam_masuk <= '07:30:00' THEN 1 ELSE 0 END) AS ontime
+        SUM(CASE WHEN absen.jam_masuk > '08:30:00' THEN 1 ELSE 0 END) AS telat,
+        SUM(CASE WHEN absen.jam_masuk <= '08:30:00' THEN 1 ELSE 0 END) AS ontime
         from 
         pegawai left join absen on pegawai.nik=absen.nik 
         where pegawai.absen='aktif' and (month(tanggal)=:bulan or isnull(month(absen.tanggal)=:bulan) and year(tanggal)=:tahun or isnull(year(absen.tanggal)=:tahun))

@@ -29,9 +29,8 @@ class Absen_pegawai extends Controller
 
         // Cek apakah sekarang dalam jendela waktu masuk
         if ($now >= $rfid->rfid_masuk_buka && $now <= $rfid->rfid_masuk_tutup) {
-            // Ambil jam kerja resmi untuk tentukan hadir/terlambat
-            $jamKerja = $this->Mabsen_pegawai->ambil_jam_kerja();
-            if ($now <= $jamKerja->masuk) {
+            // Pegawai ontime hingga 08:30, selebihnya terlambat
+            if ($now <= '08:30:00') {
                 return 'hadir';
             } else {
                 return 'terlambat';

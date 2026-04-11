@@ -719,4 +719,52 @@ if ((date('H:i:s', time()) < $wfh_masuk) and ($from_masuk == 'WFH')) {
       $this->db->bind('rfid_pulang_tutup', $data['rfid_pulang_tutup']);
       return $this->db->execute();
    }
+
+   public function get_akun_rfid() {
+      $sql = "SELECT * FROM users WHERE username = :username 
+               AND role = :role 
+               AND nik_user = :nik_user LIMIT 1";
+      $this->db->query($sql);
+      $this->db->bind('username', 'rfid');
+      $this->db->bind('role', 'rfid');
+      $this->db->bind('nik_user', 'rfid');
+      return $this->db->single();
+   }
+
+   public function update_akun_rfid($hashed_password) {
+      $sql = "UPDATE users SET password = :password 
+               WHERE username = :username 
+               AND role = :role  
+               AND nik_user = :nik_user";
+      $this->db->query($sql);
+      $this->db->bind('password', $hashed_password);
+      $this->db->bind('username', 'rfid');
+      $this->db->bind('role', 'rfid');
+      $this->db->bind('nik_user', 'rfid');
+      return $this->db->execute();
+   }
+
+   public function get_akun_piket() {
+      $sql = "SELECT * FROM users WHERE username = :username 
+               AND role = :role 
+               AND nik_user = :nik_user LIMIT 1";
+      $this->db->query($sql);
+      $this->db->bind('username', 'piket');
+      $this->db->bind('role', 'piket');
+      $this->db->bind('nik_user', 'piket');
+      return $this->db->single();
+   }
+
+   public function update_akun_piket($hashed_password) {
+      $sql = "UPDATE users SET password = :password 
+               WHERE username = :username 
+               AND role = :role  
+               AND nik_user = :nik_user";
+      $this->db->query($sql);
+      $this->db->bind('password', $hashed_password);
+      $this->db->bind('username', 'piket');
+      $this->db->bind('role', 'piket');
+      $this->db->bind('nik_user', 'piket');
+      return $this->db->execute();
+   }
 }
