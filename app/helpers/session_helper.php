@@ -35,6 +35,36 @@ function isLoggedIn()
     }
 }
 
+function isAccountLocked()
+{
+    if (!isLoggedIn()) {
+        return false;
+    }
+
+    require_once __DIR__ . '/../libraries/Database.php';
+    $db = new Database();
+    $db->query('SELECT pegawai.kunci FROM users LEFT JOIN pegawai ON users.nik_user = pegawai.nik WHERE users.id_user = :id');
+    $db->bind(':id', $_SESSION['id_user']);
+    $row = $db->single();
+
+    return $row && isset($row->kunci) && $row->kunci === '1';
+}
+
+function forceLogoutIfLocked()
+{
+    if (isAccountLocked()) {
+        session_unset();
+        session_destroy();
+        setcookie(session_name(), '', time() - 3600, '/');
+
+        if (!headers_sent()) {
+            header('Location: ' . URLROOT . '/auth/login');
+        }
+        exit;
+    }
+}
+
+forceLogoutIfLocked();
 
 function sflash()
 {

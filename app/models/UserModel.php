@@ -54,10 +54,15 @@ class UserModel
         $this->db->bind(':username', $username);
 
         $row = $this->db->single();
+        if (!$row) {
+            return false;
+        }
+
+        if (isset($row->kunci) && $row->kunci == '1') {
+            return 'locked';
+        }
+
         $hash_password = $row->password;
-
-        $tes =  password_verify($password, $hash_password);
-
         if (password_verify($password, $hash_password)) {
             return $row;
         } else {

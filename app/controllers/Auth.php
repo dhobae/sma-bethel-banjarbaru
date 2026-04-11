@@ -63,7 +63,13 @@ class Auth extends Controller
             if (empty($data['username_err']) && empty($data['password_err'])) {
                $loggedInUser = $this->userModel->login($data['username'], $data['password']);
 
-               if ($loggedInUser) {
+               if ($loggedInUser === 'locked') {
+                  $data['password_err'] = 'Akun Anda terkunci. Hubungi admin.';
+                  $this->userModel->recordLoginAttempt($ip_address);
+                  $data['ip'] = $this->userModel->ip();
+                  $data['csrf_token'] = $_SESSION['csrf_token'];
+                  $this->view('auth/login', $data);
+               } elseif ($loggedInUser) {
                   $this->userModel->resetLoginAttempts($ip_address);
                   $cek_pengunjung = $this->logUserModel->pengunjung($data['username']);
                   if (!$cek_pengunjung) {
