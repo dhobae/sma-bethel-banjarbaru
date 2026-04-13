@@ -355,6 +355,7 @@
       </li>
 
       <?php if ($_SESSION['nik'] == '14820018') { ?>
+         <!-- 14820018 aman aja wkwk ini bekas bapa pahdi nik sidin -->
          <li class="nav-item">
             <a href="<?= URLROOT ?>/jadwal/jadwal" class="nav-link">
                <i class="nav-icon fas fa-folder"></i>
@@ -531,6 +532,28 @@
       </a>
    </li>
 
+   <li class="nav-header"><b>KURIKULUM</b></li>
+
+   <li class="nav-item">
+      <a href="<?= URLROOT ?>/jadwal_otomatis" class="nav-link">
+         <i class="nav-icon fa fa-cogs" aria-hidden="true"></i>
+         <p>Buat Jadwal Otomatis</p>
+      </a>
+   </li>
+
+   <li class="nav-item">
+      <a href="<?= URLROOT ?>/jadwal/jadwal" class="nav-link">
+         <i class="nav-icon fa fa-calendar" aria-hidden="true"></i>
+         <p>Jadwal Pelajaran</p>
+      </a>
+   </li>
+   <li class="nav-item">
+      <a href="<?= URLROOT ?>/jadwal/pelajaran" class="nav-link">
+         <i class="nav-icon fas fa-flask"></i>
+         <p>Mata Pelajaran</p>
+      </a>
+   </li>
+
    <li class="nav-header"><b>PENGATURAN</b></li>
 
    <li class="nav-item">
@@ -543,10 +566,17 @@
    </li>
 
    <li class="nav-item">
+      <a href="<?= URLROOT ?>/siswa/cek_rfid" class="nav-link">
+         <i class="nav-icon fas fa-id-card" aria-hidden="true"></i>
+            <p>Cek Kartu RFID Siswa</p>
+      </a>
+   </li>
+
+   <li class="nav-item">
       <a href="<?= URLROOT ?>/pegawai/cek_rfid" class="nav-link">
         <i class="nav-icon fas fa-id-card" aria-hidden="true"></i>
          <p>
-            Cek Kartu RFID
+            Cek Kartu RFID Pegawai
          </p>
       </a>
    </li>

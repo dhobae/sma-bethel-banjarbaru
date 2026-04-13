@@ -85,7 +85,7 @@
                <div class="row">
                   <div class="col">
                      <div class="form-group" style="margin-bottom:7px">
-                        <label class="label1">NIK (Nomor Induk Karyawan) <span style="color:red">*</span></label>
+                        <label class="label1">NIK (Nomor Induk Kependudukan) <span style="color:red">*</span></label>
 
                         <?php if ($_SESSION['role'] == ' admin') { ?>
                            <input type="text" name="nik" class="form-control text1" style="width:100%" required value="<?= $data['pegawai']->nik ?>">

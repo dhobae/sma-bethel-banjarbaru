@@ -72,7 +72,7 @@
             </div>
          <?php } ?>
 
-         <?php if (Middleware::admin('kurikulum')) { ?>
+         <?php if (Middleware::admin('kurikulum') || $_SESSION['role'] == 'admin') { ?>
             <?php if ($kelas == 'all') { ?>
                <div class="mb-3">
                   <a href="<?= URLROOT ?>/siswa/tambah" class="btn btn-primary btn-sm tombol3" title="Tambah data siswa"><i class="fa fa-plus-square"></i> &nbsp;Tambah Data Siswa</a>
@@ -101,7 +101,7 @@
                      <td class="text-center"><?= $no ?></td>
                      <td class="text-center"><?= $d->nis ?></td>
                      <td><?= $d->nama_siswa ?></td>
-                     <?php if (Middleware::admin('kurikulum')) { ?>
+                     <?php if (Middleware::admin('kurikulum') || $_SESSION['role'] == 'admin') { ?>
                         <td class="text-center">
                            <select name="PilihProdi" id="PilihProdi" class="kelas_siswa PilihProdi" data-id="<?= $d->id_siswa ?>" data-name="prodi">
                               <?php foreach ($data['m_prodi'] as $p) { ?>
@@ -115,7 +115,7 @@
                         </td>
                      <?php } ?>
 
-                     <?php if (Middleware::admin('kurikulum')) { ?>
+                     <?php if (Middleware::admin('kurikulum') || $_SESSION['role'] == 'admin') { ?>
                         <td class="text-center" style="padding-left: 6px !important;padding-right: 6px !important;">
                            <select name="kelas_siswa" id="PilihKelas" class="kelas_siswa PilihKelas" data-id="<?= $d->id_siswa ?>" data-name="kelas_siswa">
                               <option value="-">-</option>
@@ -145,7 +145,7 @@
                            </select>
                         </td>
                      <?php } ?>
-                     <?php if (!Middleware::admin('kurikulum')) { ?>
+                     <?php if (!(Middleware::admin('kurikulum') || $_SESSION['role'] == 'admin')) { ?>
                         <td class="text-center">
                            <?= $d->kelas_siswa ?>
                         </td>
@@ -163,13 +163,13 @@
                      </td>
 
                      <td class=" text-center">
-                        <?php if (Middleware::admin('kurikulum')) { ?>
+                        <?php if (Middleware::admin('kurikulum') || $_SESSION['role'] == 'admin') { ?>
                            <a href="<?= URLROOT ?>/siswa/edit/<?= $d->id_siswa ?>" class="btn btn-success btn-sm tombol1" title="Edit data siswa"><i class="fa fa-edit"></i></a>
                         <?php } ?>
 
                         <a href="<?= URLROOT ?>/siswa/lihat/<?= $d->id_siswa ?>" class="btn btn-info btn-sm tombol1" title="Lihat detail siswa"><i class="fa fa-eye"></i></a>
 
-                        <?php if (Middleware::admin('kurikulum')) { ?>
+                        <?php if (Middleware::admin('kurikulum') || $_SESSION['role'] == 'admin') { ?>
                            <a href="javascript:void(0)" onclick="deleteData('<?= $d->nis ?>')" class="btn btn-danger btn-sm tombol1" title="Hapus data siswa"><i class="fa fa-trash"></i></a>
                         <?php } ?>
                      </td>

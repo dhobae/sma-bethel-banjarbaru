@@ -111,7 +111,7 @@ class Siswa extends Controller
       $nis = $_POST['nis'];
       $nomor_rfid = $_POST['nomor_rfid'];
 
-      if (Middleware::admin('kurikulum')) {
+      if (Middleware::admin('kurikulum') || $_SESSION['role'] == 'admin') {
          if ($_POST['rfid']) {
             $data['cek_rfid'] =  $this->Msiswa->cek_rfid($nomor_rfid);
             if ($data['cek_rfid']) {

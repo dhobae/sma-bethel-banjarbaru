@@ -4,7 +4,8 @@
 <div class="card-body bg-navy mt-2">
     <div class="row mb-2">
         <div>
-            <a href="<?= URLROOT ?>/pegawai/master_jam" class="btn btn-warning btn-sm tomboldua" title="Tambah Master jam"><i class="fa fa-plus-square"></i> &nbsp;<b>Tambah Jam Baru</b></a>
+            <!-- fitur tambah master jam sementara dinonaktifkan -->
+            <!-- <a href="<?= URLROOT ?>/pegawai/master_jam" class="btn btn-warning btn-sm tomboldua" title="Tambah Master jam"><i class="fa fa-plus-square"></i> &nbsp;<b>Tambah Jam Baru</b></a> -->
         </div>
         <div style="text-align:center; width:100%; font-size:25px; font-weight:bold" class="mb-3">
             MASTER JAM KERJA

@@ -57,7 +57,7 @@
                   <td class="text-center"><?= $d->kelas_siswa ?></td>
                   <td class="text-center"><?= $d->nomor_hp ?></td>
                   <td class="text-center"><?= $d->nomor_hp_wali ?></td>
-                  <?php if (Middleware::admin('kurikulum')) { ?>
+                  <?php if (Middleware::admin('kurikulum') || $_SESSION['role'] == 'admin') { ?>
                      <td class="text-center" style="padding-left: 6px !important;padding-right: 6px !important;">
                         <select name="status_siswa" class="kelas_siswa PilihStatus" data-id="<?= $d->id_siswa ?>" data-name="status_siswa">
                            <option value="-">-</option>
@@ -67,7 +67,7 @@
                         </select>
                      </td>
                   <?php } ?>
-                  <?php if (!Middleware::admin('kurikulum')) { ?>
+                  <?php if (!(Middleware::admin('kurikulum') || $_SESSION['role'] == 'admin')) { ?>
                      <td class="text-center">
                         <?= $d->status_siswa ?>
                      </td>

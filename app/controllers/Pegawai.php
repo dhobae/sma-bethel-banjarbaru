@@ -126,11 +126,12 @@ class Pegawai extends Controller
 
     public function master_jam()
     {
-        if (isset($_GET['id'])) {
-            $id = $_GET['id'];
-        } else {
-            $id = 'kosong';
+        if (!isset($_GET['id']) || empty($_GET['id'])) {
+            setFlash('Fitur tambah master jam sementara dinonaktifkan.', 'warning');
+            return redirect('pegawai/master_jam_all');
         }
+
+        $id = $_GET['id'];
         $data['id'] = $id;
         $data['jam'] = $this->Mpegawai->master_jam_byid($id);
         require APPROOT . '/views/inc/header.php';
@@ -141,6 +142,11 @@ class Pegawai extends Controller
     public function simpan_jam()
     {
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+        if (!isset($_POST['id']) || empty($_POST['id']) || $_POST['id'] === 'kosong') {
+            setFlash('Fitur tambah master jam sementara dinonaktifkan.', 'warning');
+            return redirect('pegawai/master_jam_all');
+        }
+
         if ($this->Mpegawai->simpan_jam($_POST)) {
             setFlash('Berhasil disimpan.', 'success');
             return redirect('pegawai/master_jam_all');

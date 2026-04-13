@@ -10,15 +10,13 @@
          <div class="col-lg-6">
             <div class="bg-navy col-lg-12" style="background-color:gray; margin:auto; padding:25px;">
                <div class="row">
-                  <!--
                   <div class="col-lg-6">
                      <div class="form-group">
                         <label>Jumlah Hari Kerja dalam 1 bulan</label>
                         <input type="number" name="hari_kerja" value="<?= $data['jam']->hari_kerja ?>" class="form-control" style="text-align: center; font-weight:bold; width:70%">
                      </div>
                   </div>
-                  -->
-                  <input type="hidden" name="hari_kerja" value="<?= $data['jam']->hari_kerja ?>">
+                  <!-- <input type="hidden" name="hari_kerja" value="<?= $data['jam']->hari_kerja ?>"> -->
                   <div class="col-lg-6">
                      <div class="form-group">
                         <label>Berlaku Mulai dari</label>

@@ -47,7 +47,7 @@
             </div>
          </div>
 
-         <?php if (Middleware::admin('kurikulum')) { ?>
+         <?php if (Middleware::admin('kurikulum') || $_SESSION['role'] == 'admin') { ?>
             <div class="card card-primary card-outline" style="margin-top:10px;">
                <div class="card-body box-profile">
                   <div class="form-group">
@@ -60,12 +60,12 @@
          <?php } ?>
 
          <!-- siswa readonly -->
-         <?php if (!Middleware::admin('kurikulum')) { ?>
+         <?php if (!(Middleware::admin('kurikulum') || $_SESSION['role'] == 'admin')) { ?>
             <div class="card card-primary card-outline" style="margin-top:10px;">
                <div class="card-body box-profile">
                   <div class="form-group">
                      <label class="label1">
-                        Nomor RFID <small style="color:crimson"><i>*[hanya kurikulum yang dapat mengubah]</i></small>
+                        Nomor RFID <small style="color:crimson"><i>*[hanya kurikulum atau admin yang dapat mengubah]</i></small>
                      </label>
 
                      <div class="form-control text1" 
