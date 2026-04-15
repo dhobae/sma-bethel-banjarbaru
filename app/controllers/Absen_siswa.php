@@ -106,6 +106,19 @@ class Absen_siswa extends Controller
           
         // Cek status izin/alpa hari ini
         $cek_status   = $this->Mabsen_siswa->cek_absen_siswa($nis);
+
+        if (!empty($cek_status)) {
+            foreach ($cek_status as $cek) {
+                if ($cek->nis_ahs == 'all') {
+                    echo json_encode([
+                        'status'  => 'info',
+                        'message' => 'Hari Libur: ' . (!empty($cek->keterangan) ? $cek->keterangan : 'Libur Nasional'),
+                    ]);
+                    return;
+                }
+            }
+        }
+
         $status_masuk = null;
 
         if (!empty($cek_status) && isset($cek_status[0])) {

@@ -49,6 +49,9 @@ class Absen_pegawai extends Controller
 
     public function index()
     {
+        // $data['cek_absen'] = $this->Mabsen_pegawai->cek_absen(17760062);
+
+        // intip_data($data);
         $this->view('khusus/absen_rfid_pegawai');
     }
 
@@ -89,13 +92,26 @@ class Absen_pegawai extends Controller
         }
 
         $data['cek_absen'] = $this->Mabsen_pegawai->cek_absen($pegawai->nik);
+
+        if (!empty($data['cek_absen'])) {
+            foreach ($data['cek_absen'] as $cek) {
+                if ($cek->nik == 'all') {
+                    echo json_encode([
+                        'status'  => 'info',
+                        'message' => 'Hari Libur: ' . (!empty($cek->keterangan) ? $cek->keterangan : 'Libur Nasional'),
+                    ]);
+                    return;
+                }
+            }
+        }
+
         $status_masuk      = null;
 
         if (!empty($data['cek_absen']) && isset($data['cek_absen'][0])) {
             $status_masuk = $data['cek_absen'][0]->status_masuk;
         }
 
-        if ($status_masuk == 'Cuti1' || $status_masuk == 'Cuti2') {
+        if ($status_masuk == 'Cuti' || $status_masuk == 'Cuti1' || $status_masuk == 'Cuti2') {
             echo json_encode([
                 'status'  => 'info',
                 'message' => 'Anda Sedang Izin Cuti',
