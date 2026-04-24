@@ -196,10 +196,10 @@ if ((date('H:i:s', time()) < $wfh_masuk) and ($from_masuk == 'WFH')) {
          $this->db->execute();
       }
 
-      $no_hp = $this->ambil_nomor_datang($nik);
-      $data['no_telp'] = $no_hp->nomor_hp;
-      $data['isi_pesan'] = "[Presensi SMA Bethel BJB].\n\nSelamat Bekerja " . $no_hp->nama . ", anda sudah melakukan presensi datang pada jam " . $jam3 . ", status : " . $from_masuk;
-      notifWA($data);
+      // $no_hp = $this->ambil_nomor_datang($nik);
+      // $data['no_telp'] = $no_hp->nomor_hp;
+      // $data['isi_pesan'] = "[Presensi SMA Bethel BJB].\n\nSelamat Bekerja " . $no_hp->nama . ", anda sudah melakukan presensi datang pada jam " . $jam3 . ", status : " . $from_masuk;
+      // notifWA($data);
 
       return true;
    }
@@ -265,10 +265,10 @@ if ((date('H:i:s', time()) < $wfh_masuk) and ($from_masuk == 'WFH')) {
       $this->db->bind('visitid_pulang', $data['visitid_pulang']);
       $this->db->execute();
 
-      $no_hp = $this->ambil_nomor_pulang($nik);
-      $data['no_telp'] = $no_hp->nomor_hp;
-      $data['isi_pesan'] = "[Presensi SMA Bethel BJB].\n\nSelamat Beristirahat " . $no_hp->nama . ", anda sudah melakukan presensi pulang pada jam " . $jam3 . ", status : " . $from_pulang;
-      notifWA($data);
+      // $no_hp = $this->ambil_nomor_pulang($nik);
+      // $data['no_telp'] = $no_hp->nomor_hp;
+      // $data['isi_pesan'] = "[Presensi SMA Bethel BJB].\n\nSelamat Beristirahat " . $no_hp->nama . ", anda sudah melakukan presensi pulang pada jam " . $jam3 . ", status : " . $from_pulang;
+      // notifWA($data);
 
       return true;
    }

@@ -9530,6 +9530,31 @@ ALTER TABLE `users`
   MODIFY `id_user` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=674;
 COMMIT;
 
+ALTER TABLE `absen` CHANGE `nik` `nik` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+ALTER TABLE `izin` CHANGE `nik` `nik` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+ALTER TABLE `izin_keluar_jam_kerja` CHANGE `nik` `nik` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `absen_harian_siswa` CHANGE `nis_ahs` `nis_ahs` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `absen_kelas_siswa` CHANGE `nis_aks` `nis_aks` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `izin_mengajar` CHANGE `nik` `nik` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `izin_siswa` CHANGE `nis_izin` `nis_izin` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `tmp_izin` CHANGE `npk` `npk` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+
+UPDATE `siswa` SET `rfid` = '3370199738' WHERE `siswa`.`id_siswa` = 36;
+UPDATE `siswa` SET `rfid` = '3364037994' WHERE `siswa`.`id_siswa` = 16;
+UPDATE `siswa` SET `rfid` = '3360352874' WHERE `siswa`.`id_siswa` = 14;
+UPDATE `siswa` SET `rfid` = '3370415706' WHERE `siswa`.`id_siswa` = 13;
+UPDATE `siswa` SET `rfid` = '3363027626' WHERE `siswa`.`id_siswa` = 11;
+UPDATE `siswa` SET `rfid` = '3359567578' WHERE `siswa`.`id_siswa` = 10;
+UPDATE `siswa` SET `rfid` = '3368225354' WHERE `siswa`.`id_siswa` = 106;
+UPDATE `siswa` SET `rfid` = '3356890442' WHERE `siswa`.`id_siswa` = 1;
+UPDATE `siswa` SET `rfid` = '2394193831' WHERE `siswa`.`id_siswa` = 4;
+UPDATE `siswa` SET `rfid` = '3368609450' WHERE `siswa`.`id_siswa` = 7;
+UPDATE `siswa` SET `rfid` = '2384091303' WHERE `siswa`.`id_siswa` = 8;
+UPDATE `siswa` SET `rfid` = '3358924154' WHERE `siswa`.`id_siswa` = 9;
+UPDATE `siswa` SET `rfid` = '3355767962' WHERE `siswa`.`id_siswa` = 3;
+UPDATE `siswa` SET `rfid` = '2391061399' WHERE `siswa`.`id_siswa` = 35;
+UPDATE `siswa` SET `rfid` = '3369620314' WHERE `siswa`.`id_siswa` = 2;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

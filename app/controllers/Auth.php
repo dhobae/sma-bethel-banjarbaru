@@ -122,6 +122,14 @@ class Auth extends Controller
          if (password_verify('user', $user->password)) {
             $_SESSION['password_change_required'] = true;
          }
+         if (
+         password_verify('user', $user->password) || 
+         password_verify('SMABETHEL', $user->password) || 
+         password_verify('smabethel', $user->password) || 
+         password_verify('password', $user->password)
+      ) {
+         $_SESSION['password_change_required'] = true;
+      }
       }
 
       if($_SESSION['role'] == 'siswa') {
