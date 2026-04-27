@@ -13,4 +13,13 @@ fitur yang perlu diubah / dikembangkan sesuai kebutuhan sekolah :
 2. penambahan fitur siswa yang sedang libur misal kelas 11 dan 12, harus ada notif sedang libur, admin yang mengurus : ni ditanyakan lagi (done)
 3. izin siswa admin yang acc dan isi + upload file di admin (done, kalau ada error perlu revisi)
 
-[tgl selanjutnya]
+[27 April 2026] (sudah sosialisasi dengan guru/pegawai di sma bethel)
+
+1. presensi mengajar ditambah peraturan kaya jam ke 1 hanya dibuka jam 7.30-8.30
+2.
+3.
+4.
+
+ERROR :
+jam kerja masih error di rekap lwn di halaman scan rfid
+
