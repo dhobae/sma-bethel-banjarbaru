@@ -21,5 +21,5 @@ fitur yang perlu diubah / dikembangkan sesuai kebutuhan sekolah :
 4.
 
 ERROR :
-jam kerja masih error di rekap lwn di halaman scan rfid, (lagi ditanyakan ke pa pahdi)
+jam kerja masih error di rekap lwn di halaman scan rfid, (ternyata jar pa pahdi, total jam kerja itu dikurang jam istirahat juga, jadi misal kerja 2 jam kurang 1 jam istirahat jadi sisa 1 jam kerja karena dihitung, jadi misalkan belum 1 jam. total kerja nya tuh kd tehitung karena di kurang 1 jam lwn)
 
