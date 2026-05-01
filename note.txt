@@ -14,12 +14,17 @@ fitur yang perlu diubah / dikembangkan sesuai kebutuhan sekolah :
 3. izin siswa admin yang acc dan isi + upload file di admin (done, kalau ada error perlu revisi)
 
 [27 April 2026] (sudah sosialisasi dengan guru/pegawai di sma bethel)
-
-1. presensi mengajar ditambah peraturan kaya jam ke 1 hanya dibuka jam 7.30-8.30 jadi ada peraturan buat guru part time, (perlu ambil data ke ibu aya nge wa)
+1. presensi mengajar ditambah peraturan kaya jam ke 1 hanya dibuka jam 7.30-8.30 jadi ada peraturan buat guru part time, (perlu ambil data ke ibu aya nge wa, kd perlu ada aja di file jadwal jamnya). 
 2.
 3.
 4.
 
-ERROR :
+[0000 Bulan Tahun]
+1.
+2.
+3.
+4.
+
+ERROR (SDH FIXED) :
 jam kerja masih error di rekap lwn di halaman scan rfid, (ternyata jar pa pahdi, total jam kerja itu dikurang jam istirahat juga, jadi misal kerja 2 jam kurang 1 jam istirahat jadi sisa 1 jam kerja karena dihitung, jadi misalkan belum 1 jam. total kerja nya tuh kd tehitung karena di kurang 1 jam lwn)
 
