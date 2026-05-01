@@ -15,11 +15,11 @@ fitur yang perlu diubah / dikembangkan sesuai kebutuhan sekolah :
 
 [27 April 2026] (sudah sosialisasi dengan guru/pegawai di sma bethel)
 
-1. presensi mengajar ditambah peraturan kaya jam ke 1 hanya dibuka jam 7.30-8.30
+1. presensi mengajar ditambah peraturan kaya jam ke 1 hanya dibuka jam 7.30-8.30 jadi ada peraturan buat guru part time, (perlu ambil data ke ibu aya nge wa)
 2.
 3.
 4.
 
 ERROR :
-jam kerja masih error di rekap lwn di halaman scan rfid
+jam kerja masih error di rekap lwn di halaman scan rfid, (lagi ditanyakan ke pa pahdi)
 
