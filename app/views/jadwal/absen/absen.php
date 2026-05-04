@@ -54,8 +54,15 @@ if ($tgl > date('Y-m-d')) {
             <?= dayID($tgl) ?>, <?= dateID($tgl) ?>
          </b>
       </div>
-      <div class="tengah judul1 mb-4" style="margin-top:-5px">
+      <div class="tengah judul1" style="margin-top:-5px">
          <b>Presensi Mengajar hanya bisa di isi menggunakan WIFI Sekolah</b>
+      </div>
+      <div class="tengah mb-3" style="font-size:0.9em; color:#333; background-color:#ffffcc; padding:10px; border-radius:5px; line-height:1.6;">
+         <b>Jadwal Jam Presensi Mengajar:</b><br>
+         <span style="font-size:0.85em;">
+         Jam 1: 07.30-08.15 | Jam 2: 08.15-09.00 | Jam 3: 09.00-09.45 | Jam 4: 09.45-10.30 | Jam 5: 11.00-11.45<br>
+         Jam 6: 11.45-12.30 | Jam 7: 12.30-13.15 | Jam 8: 13.45-14.30 | Jam 9: 14.30-15.15 | Jam 10: 15.15-16.00
+         </span>
       </div>
 
       <div class="mb-2">
@@ -101,17 +108,17 @@ if ($tgl > date('Y-m-d')) {
                   </tr>
                   <tr style="font-family:'calibri'">
                      <th style="background-color:red; color:white; font-weight:bold">Jam<br />&nbsp;&nbsp;Kelas&nbsp;&nbsp;</th>
-                     <th style="width:10%; font-size:1.1em" class="text-nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jam Ke 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                     <th style="width:10%; font-size:1.1em" class="text-nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jam Ke 2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                     <th style="width:10%; font-size:1.1em" class="text-nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jam Ke 3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                     <th style="width:10%; font-size:1.1em" class="text-nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jam Ke 4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                     <th style="width:10%; font-size:1.1em" class="text-nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jam Ke 5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                     <th style="width:10%; font-size:1.1em" class="text-nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jam Ke 6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                     <th style="width:10%; font-size:1.1em" class="text-nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jam Ke 7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                     <th style="width:10%; font-size:1.1em" class="text-nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jam Ke 8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                     <th style="width:10%; font-size:1.1em" class="text-nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jam Ke 9&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                     <th style="width:10%; font-size:1.1em" class="text-nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jam Ke 10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                     <!-- <th style="width:10%; font-size:1.1em" class="text-nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jam Ke 11&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th> -->
+                     <th style="width:10%; font-size:1.1em" class="text-nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jam Ke 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>07.30-08.15</th>
+                     <th style="width:10%; font-size:1.1em" class="text-nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jam Ke 2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>08.15-09.00</th>
+                     <th style="width:10%; font-size:1.1em" class="text-nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jam Ke 3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>09.00-09.45</th>
+                     <th style="width:10%; font-size:1.1em" class="text-nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jam Ke 4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>09.45-10.30</th>
+                     <th style="width:10%; font-size:1.1em" class="text-nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jam Ke 5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>11.00-11.45</th>
+                     <th style="width:10%; font-size:1.1em" class="text-nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jam Ke 6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>11.45-12.30</th>
+                     <th style="width:10%; font-size:1.1em" class="text-nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jam Ke 7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>12.30-13.15</th>
+                     <th style="width:10%; font-size:1.1em" class="text-nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jam Ke 8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>13.45-14.30</th>
+                     <th style="width:10%; font-size:1.1em" class="text-nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jam Ke 9&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>14.30-15.15</th>
+                     <th style="width:10%; font-size:1.1em" class="text-nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jam Ke 10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>15.15-16.00</th>
+                     <!-- <th style="width:10%; font-size:1.1em" class="text-nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jam Ke 11&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>15.30-16.15</th> -->
                   </tr>
                </thead>
                <tbody>
@@ -182,7 +189,7 @@ if ($tgl > date('Y-m-d')) {
                                        <a href="#" onclick="absen('<?= $d['kelas'] ?>','<?= $d['ruang'] ?>','<?= $i ?>', '<?= $tgl ?>', '<?= $d['hari'] ?>','<?= $d['id_pelajaran' . $i] ?>','<?= $d['wali_kelas'] ?>')" style="text-decoration: none; color:green">
                                     -->
 
-                                       <a href="<?= URLROOT ?>/jadwal/isi_absen?kelas=<?= $d['kelas'] ?>&ruang=<?= $d['ruang'] ?>&jam=<?= $i ?>&tgl=<?= $tgl ?>&hari=<?= $d['hari'] ?>&id_pelajaran=<?= $d['id_pelajaran' . $i] ?>&wali_kelas=<?= $d['wali_kelas'] ?>" style="text-decoration: none; color:green">
+                                       <a href="<?= URLROOT ?>/jadwal/isi_absen?kelas=<?= $d['kelas'] ?>&ruang=<?= $d['ruang'] ?>&jam=<?= $i ?>&tgl=<?= $tgl ?>&hari=<?= $d['hari'] ?>&id_pelajaran=<?= $d['id_pelajaran' . $i] ?>&wali_kelas=<?= $d['wali_kelas'] ?>" onclick="return validateJamTime(<?= $i ?>, '<?= $tgl ?>')" style="text-decoration: none; color:green">
 
                                           <div style="background:white; position: absolute; top: 0; left: 0; width: 100%; height: 100%; padding-top:5px">
                                              <span class="singkatan"><?= $d['singkatan' . $i] ?><br /></span>
@@ -248,7 +255,7 @@ if ($tgl > date('Y-m-d')) {
                                              <a href="#" onclick="absen('<?= $d['kelas'] ?>','<?= $d['ruang'] ?>','<?= $i ?>', '<?= $tgl ?>', '<?= $d['hari'] ?>','<?= $d['id_pelajaran' . $i] ?>','<?= $d['wali_kelas'] ?>')" style="text-decoration: none; color:green"> 
                                              -->
 
-                                             <a href="<?= URLROOT ?>/jadwal/isi_absen?kelas=<?= $d['kelas'] ?>&ruang=<?= $d['ruang'] ?>&jam=<?= $i ?>&tgl=<?= $tgl ?>&hari=<?= $d['hari'] ?>&id_pelajaran=<?= $d['id_pelajaran' . $i] ?>&wali_kelas=<?= $d['wali_kelas'] ?>" style="text-decoration: none; color:green">
+                                             <a href="<?= URLROOT ?>/jadwal/isi_absen?kelas=<?= $d['kelas'] ?>&ruang=<?= $d['ruang'] ?>&jam=<?= $i ?>&tgl=<?= $tgl ?>&hari=<?= $d['hari'] ?>&id_pelajaran=<?= $d['id_pelajaran' . $i] ?>&wali_kelas=<?= $d['wali_kelas'] ?>" onclick="return validateJamTime(<?= $i ?>, '<?= $tgl ?>')" style="text-decoration: none; color:green">
 
                                                 <span class="singkatan"><?= $d['singkatan' . $i] ?><br /></span>
                                                 <span class="guru">
@@ -556,44 +563,60 @@ if ($tgl > date('Y-m-d')) {
          icon: "info",
          showCancelButton: false,
          confirmButtonColor: "#3085d6",
-         cancelButtonColor: "#d33",
          confirmButtonText: "Ok",
-      }).then((result) => {
-         if (result.isConfirmed) {
-            $.ajax({
-               url: '<?= URLROOT ?>/absen/reset_absen/' + id,
-               type: 'GET',
-               dataType: 'json',
-
-               success: function(response) {
-                  console.log(response)
-                  if (response.status == 'success') {
-                     Swal.fire({
-                        title: 'Sukses!',
-                        text: response.message,
-                        icon: 'success'
-                     }).then((result) => {
-                        location.reload();
-                     });
-                  } else {
-                     Swal.fire({
-                        title: 'Error!',
-                        text: response.message,
-                        icon: 'error'
-                     });
-                  }
-               },
-               error: function(xhr, status, error) {
-                  console.error('AJAX Request Error:', status, error);
-                  Swal.fire({
-                     title: 'Error!',
-                     text: 'Terjadi kesalahan.',
-                     icon: 'error'
-                  });
-               }
-            });
-         }
       });
+   }
+
+   function validateJamTime(jam, tanggal) {
+      var jamRanges = {
+         1: ['07:30', '08:15'],
+         2: ['08:15', '09:00'],
+         3: ['09:00', '09:45'],
+         4: ['09:45', '10:30'],
+         5: ['11:00', '11:45'],
+         6: ['11:45', '12:30'],
+         7: ['12:30', '13:15'],
+         8: ['13:45', '14:30'],
+         9: ['14:30', '15:15'],
+         10: ['15:15', '16:00']
+      };
+
+      if (!jamRanges[jam]) {
+         return true;
+      }
+
+      var now = new Date();
+      var selectedDate = new Date(tanggal + 'T00:00:00');
+      var startTime = jamRanges[jam][0].split(':');
+      var endTime = jamRanges[jam][1].split(':');
+      var start = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), parseInt(startTime[0]), parseInt(startTime[1]));
+      var end = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), parseInt(endTime[0]), parseInt(endTime[1]));
+
+      // Format waktu dengan dot (.) untuk display
+      var startDisplay = jamRanges[jam][0].replace(':', '.');
+      var endDisplay = jamRanges[jam][1].replace(':', '.');
+
+      if (now < start) {
+         Swal.fire({
+            title: 'Belum Waktunya',
+            html: 'Jam ke ' + jam + ' hanya dapat diisi antara ' + startDisplay + ' - ' + endDisplay + '.',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+         });
+         return false;
+      }
+
+      if (now > end) {
+         Swal.fire({
+            title: 'Sudah Lewat Waktu',
+            html: 'Jam ke ' + jam + ' hanya dapat diisi antara ' + startDisplay + ' - ' + endDisplay + '.',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+         });
+         return false;
+      }
+
+      return true;
    }
 </script>
 

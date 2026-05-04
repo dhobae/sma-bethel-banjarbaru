@@ -9555,6 +9555,20 @@ UPDATE `siswa` SET `rfid` = '3355767962' WHERE `siswa`.`id_siswa` = 3;
 UPDATE `siswa` SET `rfid` = '2391061399' WHERE `siswa`.`id_siswa` = 35;
 UPDATE `siswa` SET `rfid` = '3369620314' WHERE `siswa`.`id_siswa` = 2;
 
+UPDATE pegawai 
+SET 
+    nama = 'Yohana Ludi Astari',
+    username = '6301037103890001',
+    nik = '6301037103890001'
+WHERE id_pegawai = 19;
+
+UPDATE users
+SET
+    nama_user = 'Yohana Ludi Astari',
+    username = '6301037103890001',
+    nik_user = '6301037103890001'
+WHERE id_user = 44;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

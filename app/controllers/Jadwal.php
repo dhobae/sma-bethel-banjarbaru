@@ -466,16 +466,66 @@ class Jadwal extends Controller
       }
    }
 
+   private function get_jam_range()
+   {
+      return [
+         1 => ['07:30', '08:15'],
+         2 => ['08:15', '09:00'],
+         3 => ['09:00', '09:45'],
+         4 => ['09:45', '10:30'],
+         5 => ['11:00', '11:45'],
+         6 => ['11:45', '12:30'],
+         7 => ['12:30', '13:15'],
+         8 => ['13:45', '14:30'],
+         9 => ['14:30', '15:15'],
+         10 => ['15:15', '16:00'],
+      ];
+   }
+
+   private function is_jam_allowed($jam, $tgl, &$message = null)
+   {
+      $ranges = $this->get_jam_range();
+      if (!isset($ranges[$jam])) {
+         $message = 'Jam tidak valid.';
+         return false;
+      }
+
+      $start = strtotime($tgl . ' ' . $ranges[$jam][0]);
+      $end = strtotime($tgl . ' ' . $ranges[$jam][1]);
+      $now = time();
+
+      // Format jam untuk display dengan dot (.)
+      $start_display = str_replace(':', '.', $ranges[$jam][0]);
+      $end_display = str_replace(':', '.', $ranges[$jam][1]);
+
+      if ($now < $start) {
+         $message = 'Jam ke ' . $jam . ' hanya dapat diisi antara ' . $start_display . ' - ' . $end_display . '. Belum waktunya.';
+         return false;
+      }
+
+      if ($now > $end) {
+         $message = 'Jam ke ' . $jam . ' hanya dapat diisi antara ' . $start_display . ' - ' . $end_display . '. Sudah lewat waktu.';
+         return false;
+      }
+
+      return true;
+   }
+
    public function isi_absen()
    {
       $data['kelas'] = $_GET['kelas'];
       $data['ruang'] = $_GET['ruang'];
-      $data['jam'] = $_GET['jam'];
+      $data['jam'] = intval($_GET['jam']);
       $data['tgl'] = $_GET['tgl'];
       $data['hari'] = $_GET['hari'];
       $data['id_pelajaran'] = $_GET['id_pelajaran'];
       $data['wali_kelas'] = $_GET['wali_kelas'];
       $kelas_ruang = $data['kelas'] . $data['ruang'];
+
+      if (!$this->is_jam_allowed($data['jam'], $data['tgl'], $warning)) {
+         setFlash($warning, 'warning');
+         return redirect('jadwal/absen?tanggal=' . $data['tgl']);
+      }
 
       $data['cek_izin'] = $this->Mjadwal->cek_izin($data['tgl'], $data['kelas'] . $data['ruang']);
 
@@ -491,12 +541,17 @@ class Jadwal extends Controller
    {
       $data['kelas'] = $_GET['kelas'];
       $data['ruang'] = $_GET['ruang'];
-      $data['jam'] = $_GET['jam'];
+      $data['jam'] = intval($_GET['jam']);
       $data['tgl'] = $_GET['tgl'];
       $data['hari'] = $_GET['hari'];
       $data['id_pelajaran'] = $_GET['id_pelajaran'];
       $data['wali_kelas'] = $_GET['wali_kelas'];
       $kelas_ruang = $data['kelas'] . $data['ruang'];
+
+      if (!$this->is_jam_allowed($data['jam'], $data['tgl'], $warning)) {
+         setFlash($warning, 'warning');
+         return redirect('jadwal/absen?tanggal=' . $data['tgl']);
+      }
 
       $data['cek_izin'] = $this->Mjadwal->cek_izin($data['tgl'], $data['kelas'] . $data['ruang']);
 
@@ -512,6 +567,12 @@ class Jadwal extends Controller
    {
       $tgl = $_POST['tgl'];
       $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+      $jam = isset($_POST['jam']) ? intval($_POST['jam']) : null;
+      if (!$this->is_jam_allowed($jam, $tgl, $warning)) {
+         setFlash($warning, 'warning');
+         return redirect('jadwal/absen?tanggal=' . $tgl);
+      }
+
       if ($this->Mjadwal->simpan_isi_absen($_POST)) {
          setFlash('Berhasil disimpan.', 'success');
          return redirect('jadwal/absen?tanggal=' . $tgl);
