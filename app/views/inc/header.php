@@ -38,6 +38,9 @@
     <!-- Toastr -->
     <link rel="stylesheet" href="<?= URLROOT ?>/dist/plugins/toastr/toastr.min.css">
 
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed sidebar-collapse">

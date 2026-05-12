@@ -9569,6 +9569,18 @@ SET
     nik_user = '6301037103890001'
 WHERE id_user = 44;
 
+UPDATE pegawai 
+SET 
+    username = 'belum dibari, tapi ngaran sidin fix fikri',
+    nik = 'belum dibari, tapi ngaran sidin fix fikri'
+WHERE id_pegawai = 8;
+
+UPDATE users
+SET
+    username = 'belum dibari, tapi ngaran sidin fix fikri',
+    nik_user = 'belum dibari, tapi ngaran sidin fix fikri'
+WHERE id_user = 9;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

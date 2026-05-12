@@ -177,6 +177,7 @@ if ($_SESSION['role'] != 'admin') {
          <div class="card-body box-profile" style="padding:7px">
             <h5 class="description-header">
                <?php
+               require_once APPROOT . '/helpers/location_helper.php';
                get_client_ip();
                $ipnya = get_client_ip();
                $i = 0;
@@ -192,13 +193,15 @@ if ($_SESSION['role'] != 'admin') {
                   $ada = $ada + $status[$i];
                }
                if ($ada > 0) :
-                  echo "<span id='jam3' style='color: black;'><span class='blink'>Anda sedang berada di lingkungan Sekolah</span>";
+                  // IP cocok = langsung WFO
+                  echo "<span id='wfo-status-box' data-ip-wfo='1' style='color: black;'><span class='blink'>Anda sedang berada di lingkungan Sekolah</span>";
                   echo "<br />";
                   echo "<span style='font-size:28px;font-weight:bold'>WFO</span><br/>";
                else :
-                  echo "<span id='jam3' style='color: black;'><span class='blink'>Anda berada di luar lingkungan Sekolah</span>";
+                  // IP tidak cocok = tampilkan placeholder, JS akan update berdasarkan GPS
+                  echo "<span id='wfo-status-box' data-ip-wfo='0' style='color: black;'><span class='blink' id='wfo-status-text'>Mendeteksi lokasi Anda...</span>";
                   echo "<br />";
-                  echo "<span style='font-size:28px;font-weight:bold'>WFH</span><br/>";
+                  echo "<span id='wfo-status-label' style='font-size:28px;font-weight:bold'>WF</span><br/>";
                endif;
                ?>
             </h5>
@@ -206,7 +209,6 @@ if ($_SESSION['role'] != 'admin') {
       </div>
    </div>
 </div>
-
 
 <!--
 <?php //if ($_SESSION['role'] != 'admin') {
@@ -760,6 +762,46 @@ if (isset($jam_k)) {
       </div>
    </div>
 </div>
+
+<!-- INFORMASI LOKASI REAL-TIME (RINGKAS) -->
+<?php if ($_SESSION['role'] != 'admin') { ?>
+<div class="row" style="margin-top: 15px;">
+
+   <div class="col-lg-6">
+      <div class="card card-primary card-outline">
+         <div class="card-header">
+            <h3 class="card-title">
+               <i class="fas fa-map"></i> Peta Lokasi
+            </h3>
+         </div>
+         <div class="card-body">
+            <div id="map" style="height: 250px; border-radius: 5px; border: 1px solid #ddd;"></div>
+         </div>
+      </div>
+   </div>
+
+   <div class="col-lg-6">
+      <div class="card card-info card-outline">
+         <div class="card-header">
+            <h3 class="card-title">
+               <i class="fas fa-map-marker-alt"></i> Informasi Lokasi Anda
+            </h3>
+         </div>
+         <div class="card-body">
+            <div id="location-loading" style="padding: 12px; background-color: #e2e3e5; border-radius: 5px; text-align: center; color: #383d41; border: 1px solid #d6d8db; font-size: 14px; display: block;">
+               <i class="fas fa-spinner fa-spin"></i> Mendeteksi informasi lokasi...
+            </div>
+            <div id="location-info" style="padding: 12px; background-color: #f8f9fa; border-radius: 5px; display: none;">
+               <p style="margin: 12px 0; font-size: 15px;"><strong>📍 Akurasi:</strong> <span id="accuracy-info" style="color: #0c5460; font-weight: 600;">-</span></p>
+               <p style="margin: 12px 0; font-size: 15px;"><strong>📏 Jarak dari Sekolah:</strong> <span id="distance-info" style="color: #0c5460; font-weight: 600;">-</span></p>
+               <p style="margin: 12px 0; font-size: 15px;"><strong>🏢 Status:</strong> <span id="status-info" style="color: #0c5460; font-weight: 600;">-</span></p>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<?php } ?>
+
 
 
 

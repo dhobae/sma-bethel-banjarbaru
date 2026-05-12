@@ -34,6 +34,7 @@
 
 	<?php
 	require APPROOT . '../../public/dist/lib/ip.php';
+	require_once APPROOT . '/helpers/location_helper.php';
 	get_client_ip();
 	$ipnya = get_client_ip();
 
@@ -66,18 +67,17 @@
 
 					<form class="form-horizontal" role="form" method="post" action="<?= URLROOT; ?>/auth/login" id="pahdi">
 
-						<div class="text-center" style="font-family: 'calibri'; margin-bottom:10px">
-							<span style="font-size:14px; font-weight:bold">Status Posisi berdasarkan IP Address Device,
-								<?php if ($ada > 0) {
-									echo "anda berada di lingkungan sekolah<br/>";
-									echo "<span style='font-size:30px; color:green'>WFO</span>";
-									echo "<input type='hidden' name='dari' value='WFO'>";
-								} else {
-									echo "anda berada di luar lingkungan sekolah<br/>";
-									echo "<span style='font-size:30px; color:red'>WFH</span>";
-									echo "<input type='hidden' name='dari' value='WFH'>";
-								}
-								?>
+						<div class="text-center" style="font-family: 'calibri'; margin-bottom:10px" id="wfo-status-container" data-ip-wfo="<?= ($ada > 0) ? '1' : '0' ?>">
+							<span style="font-size:14px; font-weight:bold" id="wfo-status-header">Status Posisi Anda<br />
+								<?php if ($ada > 0) { ?>
+									<span id="wfo-status-text">Anda sedang berada di lingkungan Sekolah (IP)</span><br/>
+									<span id="wfo-status-label" style='font-size:30px; color:green'>WFO</span>
+									<input type='hidden' name='dari' id='inputDari' value='WFO'>
+								<?php } else { ?>
+									<span id="wfo-status-text">Mengecek lokasi (GPS)...</span><br/>
+									<span id="wfo-status-label" style='font-size:30px; color:orange'>Memuat</span>
+									<input type='hidden' name='dari' id='inputDari' value='WFH'>
+								<?php } ?>
 							</span>
 						</div>
 
@@ -112,4 +112,66 @@
 		<script src="<?= URLROOT; ?>/skatel/js/jquery-2.1.0.min.js"></script>
 		<script src="<?= URLROOT; ?>/skatel/js/bootstrap.js"></script>
 		<script src="<?= URLROOT; ?>/skatel/js/modernizr.js"></script>
+		
+		<script type="text/javascript">
+			const SCHOOL_LAT = <?= SCHOOL_LAT ?>;
+			const SCHOOL_LNG = <?= SCHOOL_LNG ?>;
+			const WFO_RADIUS = <?= WFO_RADIUS ?>;
+
+			function calculateDistance(lat1, lon1, lat2, lon2) {
+				const R = 6371000;
+				const dLat = (lat2 - lat1) * Math.PI / 180;
+				const dLon = (lon2 - lon1) * Math.PI / 180;
+				const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+						Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+						Math.sin(dLon / 2) * Math.sin(dLon / 2);
+				const c = 2 * Math.asin(Math.sqrt(a));
+				return R * c;
+			}
+
+			function updateStatusDisplay(isWFO, method) {
+				const wfoText = document.getElementById('wfo-status-text');
+				const wfoLabel = document.getElementById('wfo-status-label');
+				const inputDari = document.getElementById('inputDari');
+				
+				if (isWFO) {
+					wfoText.innerHTML = 'Anda sedang berada di lingkungan Sekolah (' + method + ')';
+					wfoLabel.innerHTML = 'WFO';
+					wfoLabel.style.color = 'green';
+					inputDari.value = 'WFO';
+				} else {
+					wfoText.innerHTML = 'Anda berada di luar lingkungan Sekolah';
+					wfoLabel.innerHTML = 'WFH';
+					wfoLabel.style.color = 'red';
+					inputDari.value = 'WFH';
+				}
+			}
+
+			function getLocation() {
+				const container = document.getElementById('wfo-status-container');
+				if (container.getAttribute('data-ip-wfo') === '1') {
+					// Sudah WFO karena IP
+					return;
+				}
+
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(
+						function(position) {
+							const distance = calculateDistance(position.coords.latitude, position.coords.longitude, SCHOOL_LAT, SCHOOL_LNG);
+							updateStatusDisplay(distance <= WFO_RADIUS, 'GPS');
+						},
+						function(error) {
+							console.log("Geolocation error: " + error.message);
+							updateStatusDisplay(false, 'Error');
+						}
+					);
+				} else {
+					updateStatusDisplay(false, 'No GPS');
+				}
+			}
+
+			$(function() {
+				getLocation();
+			});
+		</script>
 	</body>

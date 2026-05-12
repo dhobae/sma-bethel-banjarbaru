@@ -215,7 +215,7 @@ if ($tgl > date('Y-m-d')) {
                                           </a>
                                           <!-- JIKA WFH ---------------- -->
                                        <?php } else { ?>
-                                          <a href="#" onclick="wfh('<?= $d['kelas'] ?>','<?= $d['ruang'] ?>','<?= $i ?>', '<?= $tgl ?>', '<?= $d['hari'] ?>','<?= rawurlencode($d['singkatan' . $i]) ?>','<?= $d['wali_kelas'] ?>')" style="text-decoration: none; color:green">
+                                          <a href="#" onclick="checkGeolocationAndAbsen('<?= $d['kelas'] ?>','<?= $d['ruang'] ?>','<?= $i ?>', '<?= $tgl ?>', '<?= $d['hari'] ?>','<?= rawurlencode($d['singkatan' . $i]) ?>','<?= $d['wali_kelas'] ?>')" style="text-decoration: none; color:green">
                                              <span class="singkatan"><?= $d['singkatan' . $i] ?><br /></span>
                                              <span class="guru">
                                                 <?php
@@ -465,7 +465,34 @@ if ($tgl > date('Y-m-d')) {
       });
    }
 
+   function checkGeolocationAndAbsen(kelas, ruang, jam, tanggal, hari, singkatan, wali_kelas) {
+      if (window.locationChecked) {
+         if (window.isGlobalWFO) {
+            absen(kelas, ruang, jam, tanggal, hari, singkatan, wali_kelas);
+         } else {
+            Swal.fire({
+               title: "Di Luar Jangkauan",
+               html: "Presensi mengajar gagal. Anda tidak terhubung ke WIFI Sekolah dan lokasi GPS Anda berada di luar radius sekolah.",
+               icon: "warning",
+               showCancelButton: false,
+               confirmButtonColor: "#3085d6",
+               confirmButtonText: "Ok",
+            });
+         }
+      } else {
+         Swal.fire({
+            title: "Mengecek Lokasi",
+            html: "Sistem sedang memeriksa lokasi GPS Anda, mohon tunggu sebentar. Jika lokasi tidak kunjung terdeteksi, pastikan Anda telah memberikan izin lokasi (Location Permission) di browser Anda.",
+            icon: "info",
+            showCancelButton: false,
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "Ok",
+         });
+      }
+   }
+
    function wfh() {
+      // Kept for backward compatibility
       Swal.fire({
          title: "Bukan WIFI Sekolah",
          html: "Presensi mengajar hanya bisa di isi menggunakan koneksi WIFI Sekolah",
@@ -474,41 +501,6 @@ if ($tgl > date('Y-m-d')) {
          confirmButtonColor: "#3085d6",
          cancelButtonColor: "#d33",
          confirmButtonText: "Ok",
-      }).then((result) => {
-         if (result.isConfirmed) {
-            $.ajax({
-               url: '<?= URLROOT ?>/absen/reset_absen/' + id,
-               type: 'GET',
-               dataType: 'json',
-
-               success: function(response) {
-                  console.log(response)
-                  if (response.status == 'success') {
-                     Swal.fire({
-                        title: 'Sukses!',
-                        text: response.message,
-                        icon: 'success'
-                     }).then((result) => {
-                        location.reload();
-                     });
-                  } else {
-                     Swal.fire({
-                        title: 'Error!',
-                        text: response.message,
-                        icon: 'error'
-                     });
-                  }
-               },
-               error: function(xhr, status, error) {
-                  console.error('AJAX Request Error:', status, error);
-                  Swal.fire({
-                     title: 'Error!',
-                     text: 'Terjadi kesalahan.',
-                     icon: 'error'
-                  });
-               }
-            });
-         }
       });
    }
 </script>

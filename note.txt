@@ -19,6 +19,12 @@ fitur yang perlu diubah / dikembangkan sesuai kebutuhan sekolah :
 3.
 4.
 
+[04 Mei 2026]
+1. peningkatan sistem, penambahan fitur geolokasi untuk presensi yang lebih presisi (dari WA ibu aya)
+2.
+3.
+4.
+
 [0000 Bulan Tahun]
 1.
 2.

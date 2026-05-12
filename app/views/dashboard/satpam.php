@@ -70,7 +70,7 @@ if ($_SESSION['role'] != 'admin') {
     <div class="col-lg-6 text-center">
         <div class="card card-primary card-outline" style="margin-top:10px; height:auto; min-height:90px">
             <div class="card-body box-profile" style="padding:7px">
-                <h5 class="description-header">
+                <h5 class="description-header" id="wfo-status-box" data-ip-wfo="<?= ($ada > 0) ? '1' : '0' ?>">
                     <?php
                     get_client_ip();
                     $ipnya = get_client_ip();
@@ -86,16 +86,23 @@ if ($_SESSION['role'] != 'admin') {
                         }
                         $ada = $ada + $status[$i];
                     }
-                    if ($ada > 0) :
-                        echo "<span id='jam3' style='color: black;'><span class='blink'>Anda sedang berada di lingkungan Sekolah</span>";
-                        echo "<br />";
-                        echo "<span style='font-size:28px;font-weight:bold'>WFO</span><br/>";
-                    else :
-                        echo "<span id='jam3' style='color: black;'><span class='blink'>Anda berada di luar lingkungan Sekolah</span>";
-                        echo "<br />";
-                        echo "<span style='font-size:28px;font-weight:bold'>WFH</span><br/>";
-                    endif;
                     ?>
+                    
+                    <span id="jam3" style="color: black;"><span class="blink" id="wfo-status-text">
+                        <?php if ($ada > 0) { ?>
+                            Anda sedang berada di lingkungan Sekolah
+                        <?php } else { ?>
+                            Mengecek lokasi (GPS)...
+                        <?php } ?>
+                    </span></span><br />
+                    
+                    <span style="font-size:28px;font-weight:bold" id="wfo-status-label">
+                        <?php if ($ada > 0) { ?>
+                            WFO
+                        <?php } else { ?>
+                            Memuat
+                        <?php } ?>
+                    </span><br/>
                 </h5>
             </div>
         </div>

@@ -114,11 +114,14 @@ class Mdashboard
    public function hadir($data)
    {
       require APPROOT . '../../public/dist/lib/ip.php';
+      require APPROOT . '/helpers/location_helper.php';
+
       $nik = $_SESSION['username'];
       $tanggal = date("Y-m-d");
       $status_masuk = 'Hadir';
       $loc_masuk = $data['loc_masuk'];
 
+      // Get master jam settings
       $sql_wfh = "SELECT * from master_jam limit 1";
       $this->db->query($sql_wfh);
       $result = $this->db->single();
@@ -127,6 +130,7 @@ class Mdashboard
          $wfh_pulang = $result->wfh_pulang;
       }
 
+      // TAHAP 1: Cek IP Address (seperti sebelumnya)
       get_client_ip();
       $ipnya = get_client_ip();
       $i = 0;
@@ -145,13 +149,22 @@ class Mdashboard
          $ada = $ada + $status[$i];
       }
 
-      if ($ada > 0) :
-         $from_masuk = 'WFO';
-      else :
-         $from_masuk = 'WFH';
-      endif;
+      // TAHAP 2: Jika IP tidak cocok, cek koordinat dengan radius 100m
+      if ($ada > 0) {
+         $from_masuk = 'WFO'; // IP cocok = WFO
+      } else {
+         // IP tidak cocok, cek koordinat
+         $location = parseLocation($loc_masuk);
+         if ($location) {
+            $distance = calculateDistance($location['lat'], $location['lng'], SCHOOL_LAT, SCHOOL_LNG);
+            $from_masuk = $distance <= WFO_RADIUS ? 'WFO' : 'WFH';
+         } else {
+            $from_masuk = 'WFH'; // Default WFH jika koordinat tidak valid
+         }
+      }
 
-if ((date('H:i:s', time()) < $wfh_masuk) and ($from_masuk == 'WFH')) {
+      // Set waktu masuk berdasarkan settings
+      if ((date('H:i:s', time()) < $wfh_masuk) and ($from_masuk == 'WFH')) {
          if ((Middleware::admin('satpam')) || (Middleware::admin('cs'))) {
             $jam3 = date('H:i:s', time() - 300);
          } else {
@@ -161,6 +174,7 @@ if ((date('H:i:s', time()) < $wfh_masuk) and ($from_masuk == 'WFH')) {
          $jam3 = date('H:i:s', time() - 300);
       }
 
+      // Check if already absen hari ini
       $jikaduakali = "SELECT * from absen where nik=:nik and tanggal=:tanggal";
       $this->db->query($jikaduakali);
       $this->db->bind('nik', $nik);
@@ -196,22 +210,20 @@ if ((date('H:i:s', time()) < $wfh_masuk) and ($from_masuk == 'WFH')) {
          $this->db->execute();
       }
 
-      // $no_hp = $this->ambil_nomor_datang($nik);
-      // $data['no_telp'] = $no_hp->nomor_hp;
-      // $data['isi_pesan'] = "[Presensi SMA Bethel BJB].\n\nSelamat Bekerja " . $no_hp->nama . ", anda sudah melakukan presensi datang pada jam " . $jam3 . ", status : " . $from_masuk;
-      // notifWA($data);
-
       return true;
    }
 
    public function pulang($data)
    {
       require APPROOT . '../../public/dist/lib/ip.php';
+      require APPROOT . '/helpers/location_helper.php';
+
       $nik = $_SESSION['username'];
       $tanggal = date("Y-m-d");
       $status_pulang = 'Pulang';
       $loc_pulang = $data['loc_pulang'];
 
+      // Get master jam settings
       $sql_wfh = "SELECT * from master_jam limit 1";
       $this->db->query($sql_wfh);
       $result = $this->db->single();
@@ -220,6 +232,7 @@ if ((date('H:i:s', time()) < $wfh_masuk) and ($from_masuk == 'WFH')) {
          $wfh_pulang = $result->wfh_pulang;
       }
 
+      // TAHAP 1: Cek IP Address (seperti sebelumnya)
       get_client_ip();
       $ipnya = get_client_ip();
       $i = 0;
@@ -238,12 +251,21 @@ if ((date('H:i:s', time()) < $wfh_masuk) and ($from_masuk == 'WFH')) {
          $ada = $ada + $status[$i];
       }
 
-      if ($ada > 0) :
-         $from_pulang = 'WFO';
-      else :
-         $from_pulang = 'WFH';
-      endif;
+      // TAHAP 2: Jika IP tidak cocok, cek koordinat dengan radius 300m
+      if ($ada > 0) {
+         $from_pulang = 'WFO'; // IP cocok = WFO
+      } else {
+         // IP tidak cocok, cek koordinat
+         $location = parseLocation($loc_pulang);
+         if ($location) {
+            $distance = calculateDistance($location['lat'], $location['lng'], SCHOOL_LAT, SCHOOL_LNG);
+            $from_pulang = $distance <= WFO_RADIUS ? 'WFO' : 'WFH';
+         } else {
+            $from_pulang = 'WFH'; // Default WFH jika koordinat tidak valid
+         }
+      }
 
+      // Set waktu pulang berdasarkan settings
       if ((date('H:i:s', time()) > $wfh_pulang) and ($from_pulang == 'WFH')) {
          if ((Middleware::admin('satpam')) || (Middleware::admin('cs'))) {
             $jam3 = date('H:i:s');
@@ -264,11 +286,6 @@ if ((date('H:i:s', time()) < $wfh_masuk) and ($from_masuk == 'WFH')) {
       $this->db->bind('loc_pulang', $loc_pulang);
       $this->db->bind('visitid_pulang', $data['visitid_pulang']);
       $this->db->execute();
-
-      // $no_hp = $this->ambil_nomor_pulang($nik);
-      // $data['no_telp'] = $no_hp->nomor_hp;
-      // $data['isi_pesan'] = "[Presensi SMA Bethel BJB].\n\nSelamat Beristirahat " . $no_hp->nama . ", anda sudah melakukan presensi pulang pada jam " . $jam3 . ", status : " . $from_pulang;
-      // notifWA($data);
 
       return true;
    }

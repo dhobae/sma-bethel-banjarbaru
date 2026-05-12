@@ -21,6 +21,7 @@ require APPROOT . '../../public/dist/lib/ip.php';
          <div class="card-body box-profile">
             <h5 class="description-header">
                <?php
+               require_once APPROOT . '/helpers/location_helper.php';
                get_client_ip();
                $ipnya = get_client_ip();
                $i = 0;
@@ -36,13 +37,15 @@ require APPROOT . '../../public/dist/lib/ip.php';
                   $ada = $ada + $status[$i];
                }
                if ($ada > 0) :
-                  echo "<span id='jam3' style='color: black;'><span class='blink'>Anda sedang berada di lingkungan Sekolah</span>";
+                  // IP cocok = langsung WFO
+                  echo "<span id='wfo-status-box' data-ip-wfo='1' style='color: black;'><span class='blink'>Anda sedang berada di lingkungan Sekolah</span>";
                   echo "<br />";
                   echo "<span style='font-size:28px;font-weight:bold'>WFO</span><br/>";
                else :
-                  echo "<span id='jam3' style='color: black;'><span class='blink'>Anda berada di luar lingkungan Sekolah</span>";
+                  // IP tidak cocok = tampilkan placeholder, JS akan update berdasarkan GPS
+                  echo "<span id='wfo-status-box' data-ip-wfo='0' style='color: black;'><span class='blink' id='wfo-status-text'>Mendeteksi lokasi Anda...</span>";
                   echo "<br />";
-                  echo "<span style='font-size:28px;font-weight:bold'>WFH</span><br/>";
+                  echo "<span id='wfo-status-label' style='font-size:28px;font-weight:bold'>...</span><br/>";
                endif;
                ?>
             </h5>

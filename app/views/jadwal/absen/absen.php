@@ -271,7 +271,7 @@ if ($tgl > date('Y-m-d')) {
                                              </a>
                                              <!-- JIKA WFH ---------------- -->
                                           <?php } else { ?>
-                                             <a href="#" onclick="wfh('<?= $d['kelas'] ?>','<?= $d['ruang'] ?>','<?= $i ?>', '<?= $tgl ?>', '<?= $d['hari'] ?>','<?= rawurlencode($d['singkatan' . $i]) ?>','<?= $d['wali_kelas'] ?>')" style="text-decoration: none; color:green">
+                                             <a href="#" onclick="checkGeolocationAndAbsen('<?= URLROOT ?>/jadwal/isi_absen?kelas=<?= $d['kelas'] ?>&ruang=<?= $d['ruang'] ?>&jam=<?= $i ?>&tgl=<?= $tgl ?>&hari=<?= $d['hari'] ?>&id_pelajaran=<?= $d['id_pelajaran' . $i] ?>&wali_kelas=<?= $d['wali_kelas'] ?>', <?= $i ?>, '<?= $tgl ?>')" style="text-decoration: none; color:green">
                                                 <span class="singkatan"><?= $d['singkatan' . $i] ?><br /></span>
                                                 <span class="guru">
                                                    <?php
@@ -556,7 +556,36 @@ if ($tgl > date('Y-m-d')) {
       });
    }
 
+   function checkGeolocationAndAbsen(url, jam, tanggal) {
+      if (window.locationChecked) {
+         if (window.isGlobalWFO) {
+            if (validateJamTime(jam, tanggal)) {
+               window.location.href = url;
+            }
+         } else {
+            Swal.fire({
+               title: "Di Luar Jangkauan",
+               html: "Presensi mengajar gagal. Anda tidak terhubung ke WIFI Sekolah atau lokasi GPS Anda berada di luar radius sekolah.",
+               icon: "warning",
+               showCancelButton: false,
+               confirmButtonColor: "#3085d6",
+               confirmButtonText: "Ok",
+            });
+         }
+      } else {
+         Swal.fire({
+            title: "Mengecek Lokasi",
+            html: "Sistem sedang memeriksa lokasi GPS Anda, mohon tunggu sebentar. Jika lokasi tidak kunjung terdeteksi, pastikan Anda telah memberikan izin lokasi (Location Permission) di browser Anda.",
+            icon: "info",
+            showCancelButton: false,
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "Ok",
+         });
+      }
+   }
+
    function wfh() {
+      // Kept for backward compatibility if used elsewhere
       Swal.fire({
          title: "Bukan WIFI Sekolah",
          html: "Presensi mengajar hanya bisa di isi menggunakan koneksi WIFI Sekolah",

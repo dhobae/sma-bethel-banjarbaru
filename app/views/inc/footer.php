@@ -40,86 +40,209 @@
 <script src="<?= URLROOT; ?>/vendor/datatables-buttons/js/buttons.colVis.min.js"></script>
 <script src="<?= URLROOT; ?>/vendor/datatables-buttons/js/jszip.min.js"></script>
 
+<!-- Leaflet CSS & JS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 
-
+<?php require_once APPROOT . '/helpers/location_helper.php'; ?>
 <script type="text/javascript">
+    // Mengambil koordinat dan radius dari location_helper.php (Single Source of Truth)
+    const SCHOOL_LAT = <?= SCHOOL_LAT ?>;
+    const SCHOOL_LNG = <?= SCHOOL_LNG ?>;
+    const WFO_RADIUS = <?= WFO_RADIUS ?>;
+
+    // Variabel global agar view lain (seperti absen.php) bisa melihat status WFO
+    window.isGlobalWFO = false;
+    window.locationChecked = false;
+
     function getLocation() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(showPosition, showError);
+        } else {
+            updateLocationStatusToWFH();
         }
-    };
+    }
+
+    function updateLocationStatusToWFH() {
+        // Set default WFH jika lokasi tidak bisa didapat
+        window.isGlobalWFO = false;
+        window.locationChecked = true;
+
+        // Update info lokasi dengan default values
+        const accuracyEl = document.getElementById('accuracy-info');
+        const distanceEl = document.getElementById('distance-info');
+        const statusEl = document.getElementById('status-info');
+        
+        if (accuracyEl) accuracyEl.textContent = 'Tidak tersedia';
+        if (distanceEl) distanceEl.textContent = 'Tidak tersedia';
+        if (statusEl) statusEl.innerHTML = '<strong style="color: #ffc107;">WFH</strong><br/><small style="color:#666;">Lokasi tidak dapat dideteksi</small>';
+        
+        // Sembunyikan loading, tampilkan info
+        const locationLoading = document.getElementById('location-loading');
+        const locationInfo = document.getElementById('location-info');
+        if (locationLoading) {
+            locationLoading.style.display = 'none';
+        }
+        if (locationInfo) {
+            locationInfo.style.display = 'block';
+        }
+
+        const wfoBox = document.getElementById('wfo-status-box');
+        if (wfoBox && wfoBox.getAttribute('data-ip-wfo') === '0') {
+            const wfoText = document.getElementById('wfo-status-text');
+            const wfoLabel = document.getElementById('wfo-status-label');
+            
+            if (wfoText) wfoText.innerHTML = 'Anda berada di luar lingkungan Sekolah';
+            if (wfoLabel) wfoLabel.innerHTML = 'WFH';
+        }
+    }
 
     function showPosition(position) {
-        console.log("Latitude: " + position.coords.latitude + ", " +
-            "Longitude: " + position.coords.longitude + ", " + "Akurasi :" + position.coords.accuracy);
-        $("#loc_masuk").val(position.coords.latitude + ', ' + position.coords.longitude);
-        $("#loc_pulang").val(position.coords.latitude + ', ' + position.coords.longitude);
-        var map = L.map('map').setView([position.coords.latitude, position.coords.longitude], 16);
+        const userLat = position.coords.latitude;
+        const userLng = position.coords.longitude;
+        const accuracy = Math.round(position.coords.accuracy);
+        
+        console.log("Latitude: " + userLat + ", Longitude: " + userLng + ", Accuracy: " + accuracy);
+        
+        // Simpan koordinat ke form input
+        if ($("#loc_masuk").length) $("#loc_masuk").val(userLat + ', ' + userLng);
+        if ($("#loc_pulang").length) $("#loc_pulang").val(userLat + ', ' + userLng);
+        
+        // Inisialisasi peta jika element map ada
+        if (document.getElementById('map')) {
+            const map = L.map('map').setView([userLat, userLng], 16);
 
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(map);
 
+            // Marker lokasi user
+            L.marker([userLat, userLng]).addTo(map)
+                .bindPopup('Lokasi Anda saat ini');
 
-        var marker = L.marker([position.coords.latitude, position.coords.longitude]).addTo(map);
+            // Circle radius WFO
+            L.circle([SCHOOL_LAT, SCHOOL_LNG], {
+                color: 'red',
+                fillColor: '#f03',
+                fillOpacity: 0.5,
+                radius: WFO_RADIUS
+            }).addTo(map)
+                .bindPopup('Area WFO (' + WFO_RADIUS + 'm dari Sekolah)');
 
-        //RADIUS KANTOR
-        <?php
-        $locate = '';
-
-        if (isset($_username)) {
-            $sql = "SELECT * FROM dosen WHERE npk='{$_username}'";
-            $query = mysqli_query($koneksi, $sql);
-            if (mysqli_num_rows($query) == 1) {
-                $field = mysqli_fetch_array($query);
-                if ($field['id_kantor'] == 1) {
-                    $locate = '-3.443483,114.822717';
-                } else {
-                    $locate = '-3.2968008,114.6025797';
-                }
-            } else {
-                $locate = '-3.443483,114.822717';
-            }
-        } else {
-            $locate = '-3.443483,114.822717';
+            // Marker sekolah di pusat circle
+            L.marker([SCHOOL_LAT, SCHOOL_LNG]).addTo(map)
+                .bindPopup('<b>Lokasi Sekolah</b>');
         }
-        ?>
-        var locate = '<?php echo $locate; ?>';
-        var LocateArr = locate.split(',');
-        var lat_kantor = LocateArr[0];
-        var lng_kantor = LocateArr[1];
-        var circle = L.circle([lat_kantor, lng_kantor], {
-            color: 'red',
-            fillColor: '#f03',
-            fillOpacity: 0.5,
-            radius: 70
-        }).addTo(map);
-        akurasi = Math.round(position.coords.accuracy);
-        if (akurasi > 100) {
-            $("#alert").text('Tingkat akurasi lokasi tergantung perangkat GPS anda.');
-        } else {
-            $("#alert").text('Akurasi lokasi: ' + akurasi + 'm');
+
+        // UPDATE DASHBOARD INFO LOKASI
+        updateDashboardLocationInfo(userLat, userLng, accuracy);
+    }
+
+    // Function untuk menghitung jarak (Haversine formula)
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371000; // Radius bumi dalam meter
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = 
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.asin(Math.sqrt(a));
+        return R * c;
+    }
+
+    // Function untuk update dashboard info lokasi
+    function updateDashboardLocationInfo(userLat, userLng, accuracy) {
+        // Hitung jarak dari sekolah
+        const distance = calculateDistance(userLat, userLng, SCHOOL_LAT, SCHOOL_LNG);
+        
+        // Update accuracy info
+        const accuracyEl = document.getElementById('accuracy-info');
+        if (accuracyEl) {
+            if (accuracy > 100) {
+                accuracyEl.textContent = accuracy + ' meter (Kurang akurat)';
+            } else {
+                accuracyEl.textContent = accuracy + ' meter (Sangat akurat)';
+            }
+        }
+        
+        // Update distance info
+        const distanceEl = document.getElementById('distance-info');
+        if (distanceEl) {
+            distanceEl.textContent = distance.toFixed(2) + ' meter';
+        }
+        
+        // Update status WFO/WFH pada map info
+        const statusEl = document.getElementById('status-info');
+        let isWFO = distance <= WFO_RADIUS;
+        let status = isWFO ? 'WFO' : 'WFH';
+        
+        window.isGlobalWFO = isWFO;
+        window.locationChecked = true;
+
+        if (statusEl) {
+            let statusColor = isWFO ? '#28a745' : '#ffc107'; // Green atau Yellow
+            let message = isWFO 
+                ? 'Anda berada di dalam radius sekolah' 
+                : 'Anda berada di luar radius sekolah';
+            
+            statusEl.innerHTML = 
+                '<strong style="color:' + statusColor + ';">' + status + '<span style="color:#666;"> (GPS)</span>' + '</strong><br/>' +
+                '<small style="color:#666;">' + message + '</small>';
+        }
+
+        // Tampilkan info lokasi, sembunyikan loading
+        const locationLoading = document.getElementById('location-loading');
+        const locationInfo = document.getElementById('location-info');
+        if (locationLoading) {
+            locationLoading.style.display = 'none';
+        }
+        if (locationInfo) {
+            locationInfo.style.display = 'block';
+        }
+
+        // Update status di header dashboard utama jika IP gagal (data-ip-wfo='0')
+        const wfoBox = document.getElementById('wfo-status-box');
+        if (wfoBox && wfoBox.getAttribute('data-ip-wfo') === '0') {
+            const wfoText = document.getElementById('wfo-status-text');
+            const wfoLabel = document.getElementById('wfo-status-label');
+            
+            if (isWFO) {
+                wfoText.innerHTML = 'Anda sedang berada di lingkungan Sekolah';
+                wfoLabel.innerHTML = 'WFO';
+            } else {
+                wfoText.innerHTML = 'Anda berada di luar lingkungan Sekolah';
+                wfoLabel.innerHTML = 'WFH';
+            }
         }
     }
 
     function showError(error) {
+        let errorMessage = '';
+        
         switch (error.code) {
             case error.PERMISSION_DENIED:
                 console.log("User denied the request for Geolocation.");
-                $("#alert").text('Anda tidak mengizinkan akses lokasi. Sebaiknya izinkan aplikasi mengakses lokasi anda agar mengoptimalkan performa aplikasi.');
+                errorMessage = 'Izin akses lokasi ditolak. Silakan izinkan di pengaturan browser.';
                 break;
             case error.POSITION_UNAVAILABLE:
-                console.log("Location information is unavailable.")
+                console.log("Location information is unavailable.");
+                errorMessage = 'Informasi lokasi tidak tersedia. Pastikan GPS aktif.';
                 break;
             case error.TIMEOUT:
-                console.log("The request to get user location timed out.")
+                console.log("The request to get user location timed out.");
+                errorMessage = 'Permintaan lokasi timeout. Cek koneksi internet/GPS Anda.';
                 break;
             case error.UNKNOWN_ERROR:
-                console.log("An unknown error occurred.")
+                console.log("An unknown error occurred.");
+                errorMessage = 'Terjadi kesalahan saat mengakses lokasi.';
                 break;
         }
+        
+        updateLocationStatusToWFH();
     }
+
     $(function() {
         getLocation();
     });
