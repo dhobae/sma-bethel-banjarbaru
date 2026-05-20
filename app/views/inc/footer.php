@@ -54,10 +54,38 @@
     // Variabel global agar view lain (seperti absen.php) bisa melihat status WFO
     window.isGlobalWFO = false;
     window.locationChecked = false;
+    let locationWatchId = null;
+    let locationTimeoutId = null;
 
     function getLocation() {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition, showError);
+            // Set timeout fallback 10 detik
+            locationTimeoutId = setTimeout(function() {
+                if (!window.locationChecked) {
+                    console.warn("⏱ Geolocation timeout - setting default WFH");
+                    updateLocationStatusToWFH();
+                }
+            }, 10000);
+
+            // Gunakan watchPosition untuk monitoring berkelanjutan (lebih akurat)
+            locationWatchId = navigator.geolocation.watchPosition(
+                function(position) {
+                    // Lokasi berhasil - clear timeout
+                    if (locationTimeoutId) {
+                        clearTimeout(locationTimeoutId);
+                    }
+                    showPosition(position);
+                },
+                function(error) {
+                    console.warn("Geolocation error: " + error.message);
+                    updateLocationStatusToWFH();
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 0
+                }
+            );
         } else {
             updateLocationStatusToWFH();
         }
@@ -102,11 +130,20 @@
         const userLng = position.coords.longitude;
         const accuracy = Math.round(position.coords.accuracy);
         
-        console.log("Latitude: " + userLat + ", Longitude: " + userLng + ", Accuracy: " + accuracy);
+        console.log("✓ Lokasi terdeteksi: Lat=" + userLat + ", Lng=" + userLng + ", Accuracy=" + accuracy + "m");
         
-        // Simpan koordinat ke form input
-        if ($("#loc_masuk").length) $("#loc_masuk").val(userLat + ', ' + userLng);
-        if ($("#loc_pulang").length) $("#loc_pulang").val(userLat + ', ' + userLng);
+        // Simpan koordinat ke form input DENGAN SEGERA
+        const locMasuk = document.getElementById('loc_masuk');
+        const locPulang = document.getElementById('loc_pulang');
+        
+        if (locMasuk) locMasuk.value = userLat + ', ' + userLng;
+        if (locPulang) locPulang.value = userLat + ', ' + userLng;
+        
+        console.log("✓ Form fields updated");
+        
+        // Set flag locationChecked dengan SEGERA
+        window.locationChecked = true;
+        console.log("✓ window.locationChecked = true");
         
         // Inisialisasi peta jika element map ada
         if (document.getElementById('map')) {
@@ -137,6 +174,8 @@
 
         // UPDATE DASHBOARD INFO LOKASI
         updateDashboardLocationInfo(userLat, userLng, accuracy);
+        
+        console.log("✓ updateDashboardLocationInfo completed");
     }
 
     // Function untuk menghitung jarak (Haversine formula)
@@ -156,6 +195,12 @@
     function updateDashboardLocationInfo(userLat, userLng, accuracy) {
         // Hitung jarak dari sekolah
         const distance = calculateDistance(userLat, userLng, SCHOOL_LAT, SCHOOL_LNG);
+        
+        // Set global flags dengan JELAS
+        window.isGlobalWFO = distance <= WFO_RADIUS;
+        window.locationChecked = true;
+        
+        console.log("✓ Jarak dari sekolah: " + distance.toFixed(2) + "m, WFO: " + window.isGlobalWFO);
         
         // Update accuracy info
         const accuracyEl = document.getElementById('accuracy-info');
@@ -177,9 +222,6 @@
         const statusEl = document.getElementById('status-info');
         let isWFO = distance <= WFO_RADIUS;
         let status = isWFO ? 'WFO' : 'WFH';
-        
-        window.isGlobalWFO = isWFO;
-        window.locationChecked = true;
 
         if (statusEl) {
             let statusColor = isWFO ? '#28a745' : '#ffc107'; // Green atau Yellow
@@ -219,23 +261,28 @@
     }
 
     function showError(error) {
+        // Clear timeout jika ada error
+        if (locationTimeoutId) {
+            clearTimeout(locationTimeoutId);
+        }
+
         let errorMessage = '';
         
         switch (error.code) {
             case error.PERMISSION_DENIED:
-                console.log("User denied the request for Geolocation.");
+                console.warn("❌ User denied Geolocation permission");
                 errorMessage = 'Izin akses lokasi ditolak. Silakan izinkan di pengaturan browser.';
                 break;
             case error.POSITION_UNAVAILABLE:
-                console.log("Location information is unavailable.");
+                console.warn("❌ Location information unavailable");
                 errorMessage = 'Informasi lokasi tidak tersedia. Pastikan GPS aktif.';
                 break;
             case error.TIMEOUT:
-                console.log("The request to get user location timed out.");
+                console.warn("❌ Geolocation timeout");
                 errorMessage = 'Permintaan lokasi timeout. Cek koneksi internet/GPS Anda.';
                 break;
             case error.UNKNOWN_ERROR:
-                console.log("An unknown error occurred.");
+                console.warn("❌ Unknown geolocation error");
                 errorMessage = 'Terjadi kesalahan saat mengakses lokasi.';
                 break;
         }

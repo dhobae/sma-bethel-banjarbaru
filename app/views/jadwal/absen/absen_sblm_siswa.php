@@ -516,13 +516,14 @@ if ($tgl > date('Y-m-d')) {
    }
 
    function checkGeolocationAndAbsen(kelas, ruang, jam, tanggal, hari, singkatan, wali_kelas) {
+      // Jika sudah terdeteksi
       if (window.locationChecked) {
          if (window.isGlobalWFO) {
             absen(kelas, ruang, jam, tanggal, hari, singkatan, wali_kelas);
          } else {
             Swal.fire({
                title: "Di Luar Jangkauan",
-               html: "Presensi mengajar gagal. Anda tidak terhubung ke WIFI Sekolah dan lokasi GPS Anda berada di luar radius sekolah.",
+               html: "Presensi mengajar gagal. Anda tidak terhubung ke WiFi Sekolah atau lokasi GPS Anda berada di luar radius sekolah.",
                icon: "warning",
                showCancelButton: false,
                confirmButtonColor: "#3085d6",
@@ -530,13 +531,133 @@ if ($tgl > date('Y-m-d')) {
             });
          }
       } else {
+         // Masih loading - tampilkan loading dialog
+         let checkAttempts = 0;
+         const maxAttempts = 40; // 40 x 250ms = 10 detik
+         
          Swal.fire({
-            title: "Mengecek Lokasi",
-            html: "Sistem sedang memeriksa lokasi GPS Anda, mohon tunggu sebentar. Jika lokasi tidak kunjung terdeteksi, pastikan Anda telah memberikan izin lokasi (Location Permission) di browser Anda.",
+            title: "Mendeteksi Lokasi",
+            html: `
+               <div style="text-align: center; padding: 20px;">
+                  <div style="margin-bottom: 20px;">
+                     <i class="fas fa-spinner fa-spin" style="font-size: 2.5em; color: #3085d6;"></i>
+                  </div>
+                  <p style="margin-bottom: 15px;">
+                     Sistem sedang memeriksa lokasi GPS Anda, mohon tunggu...
+                  </p>
+                  <small style="color: #666;">
+                     Pastikan Anda telah memberikan izin akses lokasi di browser
+                  </small>
+               </div>
+            `,
             icon: "info",
-            showCancelButton: false,
+            showCancelButton: true,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
             confirmButtonColor: "#3085d6",
-            confirmButtonText: "Ok",
+            confirmButtonText: "Proses Selesai",
+            cancelButtonText: "Batal",
+            didOpen: () => {
+               // Disable confirm button sampai lokasi terdeteksi
+               Swal.getConfirmButton().disabled = true;
+               
+               // Check location setiap 250ms
+               let locationCheckInterval = setInterval(function() {
+                  checkAttempts++;
+                  
+                  if (window.locationChecked) {
+                     clearInterval(locationCheckInterval);
+                     
+                     // Lokasi sudah terdeteksi
+                     if (window.isGlobalWFO) {
+                        // ✓ Lokasi terdeteksi dan WFO
+                        Swal.hideLoading();
+                        Swal.update({
+                           html: `
+                              <div style="text-align: center; padding: 20px;">
+                                 <div style="margin-bottom: 15px;">
+                                    <i class="fas fa-check-circle" style="font-size: 2.5em; color: #28a745;"></i>
+                                 </div>
+                                 <p><strong>✓ Lokasi Terdeteksi</strong></p>
+                                 <small style="color: #666;">Anda berada di area sekolah. Melanjutkan...</small>
+                              </div>
+                           `,
+                           icon: "success",
+                           showCancelButton: false,
+                           confirmButtonText: "Lanjutkan"
+                        });
+                        
+                        // Auto trigger setelah 1.5 detik
+                        setTimeout(function() {
+                           absen(kelas, ruang, jam, tanggal, hari, singkatan, wali_kelas);
+                        }, 1500);
+                     } else {
+                        // ✗ Lokasi terdeteksi tapi di luar jangkauan
+                        Swal.hideLoading();
+                        Swal.update({
+                           html: `
+                              <div style="text-align: center; padding: 20px;">
+                                 <div style="margin-bottom: 15px;">
+                                    <i class="fas fa-map-marker-alt" style="font-size: 2.5em; color: #ffc107;"></i>
+                                 </div>
+                                 <p><strong>⚠ Lokasi Terdeteksi</strong></p>
+                                 <p style="color: #d32f2f; font-weight: 600; margin-top: 10px;">
+                                    Anda berada di luar radius sekolah
+                                 </p>
+                                 <small style="color: #666; display: block; margin-top: 10px;">
+                                    Presensi mengajar hanya dapat dilakukan saat berada di area sekolah atau terhubung WiFi Sekolah
+                                 </small>
+                              </div>
+                           `,
+                           icon: "warning",
+                           showCancelButton: false,
+                           confirmButtonText: "Mengerti"
+                        });
+                     }
+                  } else if (checkAttempts >= maxAttempts) {
+                     // Timeout - gagal mendeteksi setelah 10 detik
+                     clearInterval(locationCheckInterval);
+                     
+                     Swal.hideLoading();
+                     Swal.update({
+                        html: `
+                           <div style="text-align: center; padding: 20px;">
+                              <div style="margin-bottom: 15px;">
+                                 <i class="fas fa-exclamation-triangle" style="font-size: 2.5em; color: #d32f2f;"></i>
+                              </div>
+                              <p><strong>❌ Lokasi Tidak Terdeteksi</strong></p>
+                              <p style="color: #d32f2f; margin-top: 10px; font-size: 0.9em;">
+                                 Sistem tidak dapat mendeteksi lokasi setelah 10 detik
+                              </p>
+                              <div style="background: #f5f5f5; padding: 12px; border-radius: 5px; margin-top: 15px; text-align: left; font-size: 0.85em;">
+                                 <p><strong>Kemungkinan penyebab:</strong></p>
+                                 <ul style="text-align: left; margin: 10px 0; padding-left: 20px;">
+                                    <li>GPS/Lokasi belum diaktifkan di perangkat</li>
+                                    <li>Browser belum diberikan izin akses lokasi</li>
+                                    <li>Sinyal GPS lemah atau tidak tersedia</li>
+                                    <li>Koneksi internet sedang offline</li>
+                                 </ul>
+                              </div>
+                              <p style="color: #666; margin-top: 15px; font-size: 0.85em;">
+                                 Silakan aktifkan GPS dan izin lokasi, lalu coba lagi
+                              </p>
+                           </div>
+                        `,
+                        icon: "error",
+                        showCancelButton: false,
+                        confirmButtonText: "Coba Lagi"
+                     }).then(() => {
+                        // Refresh page to retry
+                        location.reload();
+                     });
+                  }
+               }, 250);
+            }
+         }).then((result) => {
+            if (!result.isConfirmed && result.isDismissed) {
+               // User clicked Batal
+               console.log("Proses dibatalkan user");
+            }
          });
       }
    }

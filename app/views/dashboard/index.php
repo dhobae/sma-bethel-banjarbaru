@@ -841,11 +841,18 @@ if (isset($jam_k)) {
          <div class="modal-header">
             <span class="huruf" style="font-size:20px; color: black;font-weight:bold;">PRESENSI KEHADIRAN</span>
          </div>
-         <form method="post" action="<?= URLROOT ?>/dashboard/hadir">
+         <form method="post" action="<?= URLROOT ?>/dashboard/hadir" id="form-hadir">
             <div class="modal-body" style="color:black;">
                <center>
                   <input type="hidden" name="loc_masuk" id="loc_masuk" />
                   <input type="hidden" value="" id="visitid" name="visitid" style="width:300px">
+                  <!-- Loading indicator untuk lokasi -->
+                  <div id="location-loading-masuk" style="display:block; margin-bottom:15px;">
+                     <i class="fas fa-spinner fa-spin"></i> <b>Mendeteksi lokasi...</b>
+                  </div>
+                  <div id="location-ready-masuk" style="display:none; margin-bottom:15px; color:white; background:rgba(255,255,255,0.2); padding:8px; border-radius:5px;">
+                     <i class="fas fa-check-circle"></i> <b>Lokasi siap</b>
+                  </div>
                   <b>
                      Selamat Pagi <br />
                      <h3> <span id="jam"> <?= $_SESSION['nama'] ?> </span> </h3>
@@ -859,7 +866,7 @@ if (isset($jam_k)) {
                </center>
             </div>
             <div class="modal-footer justify-content-between">
-               <button type="submit" class="btn btn-danger btn-sm" name="hadirkan" onclick="window.navigator.vibrate(300);"> Presensi Masuk </button>
+               <button type="submit" class="btn btn-danger btn-sm" id="btn-hadir" name="hadirkan" disabled onclick="window.navigator.vibrate(300);"> Presensi Masuk </button>
                <button type="button" class="btn btn-outline-light btn-sm" data-dismiss="modal"> Keluar </button>
             </div>
          </form>
@@ -875,11 +882,18 @@ if (isset($jam_k)) {
          <div class="modal-header">
             <span class="huruf" style="font-size:20px; font-weight:bold;">PRESENSI PULANG</span>
          </div>
-         <form method="post" action="<?= URLROOT ?>/dashboard/pulang">
+         <form method="post" action="<?= URLROOT ?>/dashboard/pulang" id="form-pulang">
             <div class="modal-body">
                <center>
                   <input type="hidden" name="loc_pulang" id="loc_pulang" />
                   <input type="hidden" value="" id="visitid_pulang" name="visitid_pulang" style="width:300px">
+                  <!-- Loading indicator untuk lokasi -->
+                  <div id="location-loading-pulang" style="display:block; margin-bottom:15px;">
+                     <i class="fas fa-spinner fa-spin"></i> <b style="color:white;">Mendeteksi lokasi...</b>
+                  </div>
+                  <div id="location-ready-pulang" style="display:none; margin-bottom:15px; color:white; background:rgba(255,255,255,0.2); padding:8px; border-radius:5px;">
+                     <i class="fas fa-check-circle"></i> <b>Lokasi siap</b>
+                  </div>
                   <b>
                      Selamat Siang/Sore <br />
                      <h3> <span id="jam" style="color:white !important;"> <?= $_SESSION['nama'] ?> </span> </h3>
@@ -893,10 +907,124 @@ if (isset($jam_k)) {
                </center>
             </div>
             <div class="modal-footer justify-content-between">
-               <button type="submit" class="btn btn-outline-light btn-sm" name="pulangkan" onclick="window.navigator.vibrate(300);"> Presensi Pulang </button>
+               <button type="submit" class="btn btn-outline-light btn-sm" id="btn-pulang" name="pulangkan" disabled onclick="window.navigator.vibrate(300);"> Presensi Pulang </button>
                <button type="button" class="btn btn-outline-light btn-sm" data-dismiss="modal"> Keluar </button>
             </div>
          </form>
       </div>
    </div>
 </div>
+
+<script>
+// JavaScript untuk menangani validasi presensi dengan lokasi
+document.addEventListener('DOMContentLoaded', function() {
+    // Monitor status lokasi global dari footer.js
+    function updateModalLocations() {
+        const locMasukEl = document.getElementById('loc_masuk');
+        const locPulangEl = document.getElementById('loc_pulang');
+        const btnHadir = document.getElementById('btn-hadir');
+        const btnPulang = document.getElementById('btn-pulang');
+        const loadingMasuk = document.getElementById('location-loading-masuk');
+        const readyMasuk = document.getElementById('location-ready-masuk');
+        const loadingPulang = document.getElementById('location-loading-pulang');
+        const readyPulang = document.getElementById('location-ready-pulang');
+
+        // Jika lokasi sudah selesai dideteksi
+        if (window.locationChecked) {
+            // Update form input dengan lokasi
+            if (!locMasukEl.value && document.querySelector('#map')) {
+                // Tunggu sampai koordinat terisi di loc_masuk dari showPosition
+                if (locMasukEl.value) {
+                    locPulangEl.value = locMasukEl.value;
+                }
+            }
+
+            // Update UI - Sembunyikan loading, tampilkan ready
+            if (loadingMasuk) loadingMasuk.style.display = 'none';
+            if (readyMasuk) readyMasuk.style.display = 'block';
+            if (loadingPulang) loadingPulang.style.display = 'none';
+            if (readyPulang) readyPulang.style.display = 'block';
+
+            // Enable buttons
+            if (btnHadir) btnHadir.disabled = false;
+            if (btnPulang) btnPulang.disabled = false;
+
+            return true; // Lokasi siap
+        }
+
+        return false; // Masih loading
+    }
+
+    // Update setiap 300ms sampai lokasi siap
+    let checkInterval = setInterval(function() {
+        if (updateModalLocations()) {
+            clearInterval(checkInterval);
+        }
+    }, 300);
+
+    // Timeout fallback - stop checking setelah 15 detik
+    setTimeout(function() {
+        clearInterval(checkInterval);
+        // Force update UI meski locationChecked belum true
+        const loadingMasuk = document.getElementById('location-loading-masuk');
+        const readyMasuk = document.getElementById('location-ready-masuk');
+        const loadingPulang = document.getElementById('location-loading-pulang');
+        const readyPulang = document.getElementById('location-ready-pulang');
+        
+        if (loadingMasuk) loadingMasuk.style.display = 'none';
+        if (readyMasuk) readyMasuk.style.display = 'block';
+        if (loadingPulang) loadingPulang.style.display = 'none';
+        if (readyPulang) readyPulang.style.display = 'block';
+    }, 15000);
+
+    // Handle form submit untuk presensi hadir
+    const formHadir = document.getElementById('form-hadir');
+    if (formHadir) {
+        formHadir.addEventListener('submit', function(e) {
+            if (!window.locationChecked) {
+                e.preventDefault();
+                alert('⏳ Mohon tunggu lokasi selesai dideteksi sebelum submit presensi');
+                return false;
+            }
+            
+            const locMasuk = document.getElementById('loc_masuk').value;
+            if (!locMasuk) {
+                e.preventDefault();
+                alert('❌ Lokasi tidak berhasil dideteksi. Pastikan GPS/Lokasi aktif dan coba lagi');
+                return false;
+            }
+        });
+    }
+
+    // Handle form submit untuk presensi pulang
+    const formPulang = document.getElementById('form-pulang');
+    if (formPulang) {
+        formPulang.addEventListener('submit', function(e) {
+            if (!window.locationChecked) {
+                e.preventDefault();
+                alert('⏳ Mohon tunggu lokasi selesai dideteksi sebelum submit presensi');
+                return false;
+            }
+            
+            const locPulang = document.getElementById('loc_pulang').value;
+            if (!locPulang) {
+                e.preventDefault();
+                alert('❌ Lokasi tidak berhasil dideteksi. Pastikan GPS/Lokasi aktif dan coba lagi');
+                return false;
+            }
+        });
+    }
+
+    // Update UI saat modal dibuka - PASTIKAN SINKRONISASI
+    $('#modal-success').on('show.bs.modal', function() {
+        updateModalLocations();
+    });
+
+    $('#modal-danger').on('show.bs.modal', function() {
+        updateModalLocations();
+    });
+
+    // JANGAN reset locationChecked saat modal ditutup
+    // Itu akan menyebabkan loading tampil lagi saat modal dibuka kembali
+});
+</script>
