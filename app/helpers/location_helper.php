@@ -7,12 +7,16 @@
  */
 
 // Koordinat pusat sekolah
-const SCHOOL_LAT = -3.434947;
-const SCHOOL_LNG = 114.835456;
+// const SCHOOL_LAT = -3.434947;
+// const SCHOOL_LNG = 114.835456;
 
 // rumahku
-// const SCHOOL_LAT = -3.4342626805540206;
-// const SCHOOL_LNG = 114.84252087287351;
+const SCHOOL_LAT = -3.4342626805540206;
+const SCHOOL_LNG = 114.84252087287351;
+
+// kampus
+// const SCHOOL_LAT = -3.443813725137871;
+// const SCHOOL_LNG = 114.82272825608985;
 
 const WFO_RADIUS = 150; // dalam meter
 

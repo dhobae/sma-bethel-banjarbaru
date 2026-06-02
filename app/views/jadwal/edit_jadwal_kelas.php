@@ -32,6 +32,7 @@
                                     value="<?= $data['jadwal']->id_jadwal_lengkap ?>">
                                 <input type="hidden" name="kelasnya"
                                     value="<?= $data['jadwal']->kelas ?><?= $data['jadwal']->ruang ?>">
+                                <input type="hidden" name="nik_lama_validasi_oleh" value="<?= $data['jadwal']->validasi_oleh ?>">
                                 <td class="text-center" style="vertical-align: middle">
                                     <?= $i ?>
                                 </td>

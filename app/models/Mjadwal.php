@@ -223,12 +223,33 @@ class Mjadwal
         }
         $this->db->execute();
 
-        $sql2 = "UPDATE jadwal_lengkap set validasi=:validasi where kode_kelas=:kode_kelas";
-        $this->db->query($sql2);
-        $this->db->bind('validasi', '0');
-        $this->db->bind('kode_kelas', $data['kelasnya']);
+        // Jika admin yang mengedit, validasi otomatis 1 (tidak perlu validasi ulang)
+        if ($_SESSION['role'] == 'admin') {
+            $sql2 = "UPDATE jadwal_lengkap set validasi=:validasi, validasi_oleh=:validasi_oleh, tanggal_validasi=:tanggal_validasi where kode_kelas=:kode_kelas";
+            $this->db->query($sql2);
+            $this->db->bind('validasi', '1');
+            $this->db->bind('validasi_oleh', $data['nik_lama_validasi_oleh']);
+            $this->db->bind('tanggal_validasi', date('Y-m-d'));
+            $this->db->bind('kode_kelas', $data['kelasnya']);
+        } else {
+            $sql2 = "UPDATE jadwal_lengkap set validasi=:validasi where kode_kelas=:kode_kelas";
+            $this->db->query($sql2);
+            $this->db->bind('validasi', '0');
+            $this->db->bind('kode_kelas', $data['kelasnya']);
+        }
         $this->db->execute();
         return true;
+
+        //    $sql2 = "UPDATE jadwal_lengkap set validasi=:validasi 
+        //         WHERE berlaku_jadwal_dari = (
+        //             SELECT berlaku_dari
+        //             FROM jadwal_setting
+        //             WHERE status = 1
+        //             LIMIT 1)";
+        // $this->db->query($sql2);
+        // $this->db->bind('validasi', '0');
+        // $this->db->execute();
+        // return true;
     }
 
     public function simpan_wali_kelas($data)
